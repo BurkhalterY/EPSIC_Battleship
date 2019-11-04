@@ -19,8 +19,9 @@ namespace EPSIC_Bataille_Navale.Controllers
             this.view = view;
         }
 
-        public State Click(int x, int y)
+        public virtual State Click(int x, int y)
         {
+            playerTurn = (playerTurn + 1) % 2;
             if (grids[playerTurn].grid[x, y].state == State.noActivity)
             {
                 State state;
@@ -38,16 +39,19 @@ namespace EPSIC_Bataille_Navale.Controllers
                         grids[playerTurn].grid[x, y].state = State.boat;
                         state = State.boat;
                     }
-                    
+
                 }
                 else
                 {
                     grids[playerTurn].grid[x, y].state = State.noBoat;
                     state = State.noBoat;
                 }
-                playerTurn = (playerTurn + 1) % 2;
                 view.RefreshGrid();
                 return state;
+            }
+            else
+            {
+                playerTurn = (playerTurn + 1) % 2;
             }
             return State.invalid;
         }
