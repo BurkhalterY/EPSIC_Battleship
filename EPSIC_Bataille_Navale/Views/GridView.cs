@@ -1,34 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using EPSIC_Bataille_Navale.Controllers;
-using EPSIC_Bataille_Navale.Models;
 
 namespace EPSIC_Bataille_Navale.Views
 {
     public partial class GridView : UserControl
     {
         protected CustomPictureBox[,] grid;
+        public int size = 10;
 
         public GridView()
         {
             InitializeComponent();
-            MakeGrid(10);
+            MakeGrid();
         }
 
         public GridView(int size)
         {
             InitializeComponent();
-            MakeGrid(size);
+            this.size = size;
+            MakeGrid();
         }
 
-        protected void MakeGrid(int size)
+        protected void MakeGrid()
         {
             grid = new CustomPictureBox[size, size];
 
@@ -43,6 +37,7 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Location = new System.Drawing.Point(i * cellSize + 25, j * cellSize + 25);
                     grid[i, j].Name = "cell" + i + "_" + j;
                     grid[i, j].Size = new System.Drawing.Size(cellSize, cellSize);
+                    grid[i, j].BackColor = Color.White;
                     grid[i, j].TabIndex = 2;
                     grid[i, j].TabStop = false;
                     grid[i, j].Click += new System.EventHandler(CellClick);

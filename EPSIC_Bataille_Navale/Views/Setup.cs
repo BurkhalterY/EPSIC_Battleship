@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
 
@@ -14,7 +8,7 @@ namespace EPSIC_Bataille_Navale.Views
 {
     public partial class Setup : GridView
     {
-        private SetupController controller;
+        public SetupController controller;
 
         public Setup(int size) : base(size)
         {
@@ -79,7 +73,9 @@ namespace EPSIC_Bataille_Navale.Views
             setup.controller.AIChoise();
 
             Game game = new Game(10, 0);
-            game.controller.SetGrids(new Grid[] { controller.grid, setup.controller.grid });
+            game.controller.grids = new Grid[] { controller.grid, setup.controller.grid };
+            game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
+            game.MakeSecondGrid();
             ((MainForm)Parent.FindForm()).LoadView(game);
         }
     }

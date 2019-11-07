@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
+using System;
+using System.Collections.Generic;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -13,7 +10,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         private int phase = 0;
         private List<int[]> shots = new List<int[]>();
         private List<int[]> possibles = new List<int[]>();
-        private int[] step = new int[4];
+        private int[] step = new int[6];
         private byte directions = 0b1111; // urdl
 
         public SoloGameController(Game view) : base(view) {}
@@ -32,43 +29,41 @@ namespace EPSIC_Bataille_Navale.Controllers
                         }
                     }
                 }
-            }
-            Random random = new Random();
-
-            int cellSelected = random.Next(0, possibles.Count - 1);
-            State state = base.Click(possibles[cellSelected][0], possibles[cellSelected][1]);
-            shots.Add(new int[] { possibles[cellSelected][0], possibles[cellSelected][1], State2Int(state) });
-            possibles.RemoveAt(cellSelected);
-
-            if (state == State.fullBoat)
-            {
                 phase = 0;
             }
+            Random random = new Random();
+            int cellSelected = random.Next(0, possibles.Count - 1);
+            int x = possibles[cellSelected][0];
+            int y = possibles[cellSelected][1];
+            State state = base.Click(x, y);
+            shots.Add(new int[] { x, y, State2Int(state) });
+            possibles.RemoveAt(cellSelected);
+
             if (phase == 0)
             {
                 if (state == State.boat)
                 {
                     phase = 1;
                     directions = 0b1111;
-                    step[0] = step[2] = possibles[cellSelected][1];
-                    step[1] = step[3] = possibles[cellSelected][0];
+                    step[1] = step[3] = step[4] = x;
+                    step[0] = step[2] = step[5] = y;
 
                     possibles.Clear();
-                    if (GetLastShot()[1] - 1 >= 0 && !IsAldryClicked(GetLastShot()[0], GetLastShot()[1] - 1))
+                    if (y - 1 >= 0 && !IsAldryClicked(x, y - 1))
                     {
-                        possibles.Add(new int[] { GetLastShot()[0], GetLastShot()[1] - 1 });
+                        possibles.Add(new int[] { x, y - 1 });
                     }
-                    if (GetLastShot()[0] + 1 < grids[0].grid.GetLength(0) && !IsAldryClicked(GetLastShot()[0] + 1, GetLastShot()[1]))
+                    if (x + 1 < grids[0].grid.GetLength(0) && !IsAldryClicked(x + 1, y))
                     {
-                        possibles.Add(new int[] { GetLastShot()[0] + 1, GetLastShot()[1] });
+                        possibles.Add(new int[] { x + 1, y });
                     }
-                    if (GetLastShot()[1] + 1 < grids[0].grid.GetLength(1) && !IsAldryClicked(GetLastShot()[0], GetLastShot()[1] + 1))
+                    if (y + 1 < grids[0].grid.GetLength(1) && !IsAldryClicked(x, y + 1))
                     {
-                        possibles.Add(new int[] { GetLastShot()[0], GetLastShot()[1] + 1 });
+                        possibles.Add(new int[] { x, y + 1 });
                     }
-                    if (GetLastShot()[0] - 1 >= 0 && !IsAldryClicked(GetLastShot()[0] - 1, GetLastShot()[1]))
+                    if (x - 1 >= 0 && !IsAldryClicked(x - 1, y))
                     {
-                        possibles.Add(new int[] { GetLastShot()[0] - 1, GetLastShot()[1] });
+                        possibles.Add(new int[] { x - 1, y });
                     }
                 }
             }
@@ -76,59 +71,90 @@ namespace EPSIC_Bataille_Navale.Controllers
             {
                 if (state == State.noBoat)
                 {
-                    if (step[0] > GetLastShot()[1])
+                    if (step[0] > y)
                     {
                         directions &= 0b0111;
                     }
-                    else if (step[1] < GetLastShot()[0])
+                    else if (step[1] < x)
                     {
                         directions &= 0b1011;
                     }
-                    else if (step[2] < GetLastShot()[1])
+                    else if (step[2] < y)
                     {
                         directions &= 0b1101;
                     }
-                    else if (step[3] > GetLastShot()[0])
+                    else if (step[3] > x)
                     {
                         directions &= 0b1110;
                     }
                 }
                 else if (state == State.boat)
                 {
-                    if (step[0] == GetLastShot()[1])
+                    if (step[5] == y)
                     {
-                        Console.WriteLine("h");
-                        step[1] = Math.Min(step[1], GetLastShot()[0]);
-                        step[3] = Math.Max(step[3], GetLastShot()[0]);
+                        step[1] = Math.Min(step[1], x);
+                        step[3] = Math.Max(step[3], x);
                         directions &= 0b0101;
                     }
-                    else if (step[1] == GetLastShot()[0])
+                    else if (step[4] == x)
                     {
-                        Console.WriteLine("v");
-                        step[0] = Math.Min(step[0], GetLastShot()[1]);
-                        step[2] = Math.Max(step[2], GetLastShot()[1]);
+                        step[0] = Math.Min(step[0], y);
+                        step[2] = Math.Max(step[2], y);
                         directions &= 0b1010;
                     }
                 }
 
-                if ((directions & 0b1000) == 0b1000 && step[0] - 1 >= 0 && !IsAldryClicked(step[3], step[0] - 1))
+                possibles.Clear();
+                if (state != State.fullBoat)
                 {
-                    possibles.Add(new int[] { step[3], step[0] - 1 });
+                    if ((directions & 0b1000) == 0b1000 && step[0] - 1 >= 0 && !IsAldryClicked(step[4], step[0] - 1))
+                    {
+                        possibles.Add(new int[] { step[4], step[0] - 1 });
+                    }
+                    if ((directions & 0b0100) == 0b0100 && step[3] + 1 < grids[0].grid.GetLength(0) && !IsAldryClicked(step[3] + 1, step[5]))
+                    {
+                        possibles.Add(new int[] { step[3] + 1, step[5] });
+                    }
+                    if ((directions & 0b0010) == 0b0010 && step[2] + 1 < grids[0].grid.GetLength(1) && !IsAldryClicked(step[4], step[2] + 1))
+                    {
+                        possibles.Add(new int[] { step[4], step[2] + 1 });
+                    }
+                    if ((directions & 0b0001) == 0b0001 && step[1] - 1 >= 0 && !IsAldryClicked(step[1] - 1, step[5]))
+                    {
+                        possibles.Add(new int[] { step[1] - 1, step[5] });
+                    }
                 }
-                if ((directions & 0b0100) == 0b0100 && step[1] + 1 < grids[0].grid.GetLength(0) && !IsAldryClicked(step[1] + 1, step[2]))
+
+                if (possibles.Count == 0)
                 {
-                    possibles.Add(new int[] { step[1] + 1, step[2] });
-                }
-                if ((directions & 0b0010) == 0b0010 && step[2] + 1 < grids[0].grid.GetLength(1) && !IsAldryClicked(step[1], step[2] + 1))
-                {
-                    possibles.Add(new int[] { step[1], step[2] + 1 });
-                }
-                if ((directions & 0b0001) == 0b0001 && step[3] - 1 >= 0 && !IsAldryClicked(step[3] - 1, step[0]))
-                {
-                    possibles.Add(new int[] { step[3] - 1, step[0] });
+                    for (int i = 0; i < shots.Count; i++)
+                    {
+                        if (grids[playerTurn].grid[shots[i][0], shots[i][1]].state == State.boat)
+                        {
+                            directions = 0b1111;
+                            step[1] = step[3] = step[4] = shots[i][0];
+                            step[0] = step[2] = step[5] = shots[i][1];
+
+                            if (shots[i][1] - 1 >= 0 && !IsAldryClicked(shots[i][0], shots[i][1] - 1))
+                            {
+                                possibles.Add(new int[] { shots[i][0], shots[i][1] - 1 });
+                            }
+                            if (shots[i][0] + 1 < grids[0].grid.GetLength(0) && !IsAldryClicked(shots[i][0] + 1, shots[i][1]))
+                            {
+                                possibles.Add(new int[] { shots[i][0] + 1, shots[i][1] });
+                            }
+                            if (shots[i][1] + 1 < grids[0].grid.GetLength(1) && !IsAldryClicked(shots[i][0], shots[i][1] + 1))
+                            {
+                                possibles.Add(new int[] { shots[i][0], shots[i][1] + 1 });
+                            }
+                            if (shots[i][0] - 1 >= 0 && !IsAldryClicked(shots[i][0] - 1, shots[i][1]))
+                            {
+                                possibles.Add(new int[] { shots[i][0] - 1, shots[i][1] });
+                            }
+                        }
+                    }
                 }
             }
-            Console.WriteLine(Convert.ToString(directions, 2));
         }
 
         private bool IsAldryClicked(int x, int y)
@@ -177,24 +203,15 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
         }
 
-        private int[] GetLastShot()
-        {
-            if (shots.Count == 0)
-            {
-                return new int[] { -1, -1, -1 };
-            }
-            else
-            {
-                return shots[shots.Count - 1];
-            }
-        }
-
         public override State Click(int x, int y)
         {
             if(playerTurn == 0)
             {
                 base.Click(x, y);
                 //System.Threading.Thread.Sleep(1500);
+            }
+            if(playerTurn == 1)
+            {
                 AIPlay();
             }
             return State.invalid;

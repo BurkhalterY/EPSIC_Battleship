@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
 
@@ -24,10 +17,9 @@ namespace EPSIC_Bataille_Navale.Views
             {
                 case 0: controller = new SoloGameController(this); break;
             }
-            ClearGrid();
         }
 
-        public void MakeSecondGrid(int size)
+        public void MakeSecondGrid()
         {
             gridSecond = new CustomPictureBox[size, size];
 
@@ -42,6 +34,7 @@ namespace EPSIC_Bataille_Navale.Views
                     gridSecond[i, j].Location = new System.Drawing.Point(i * cellSize + 475, j * cellSize + 25);
                     gridSecond[i, j].Name = "cell_second" + i + "_" + j;
                     gridSecond[i, j].Size = new System.Drawing.Size(cellSize, cellSize);
+                    gridSecond[i, j].BackColor = Color.White;
                     gridSecond[i, j].TabIndex = 2;
                     gridSecond[i, j].TabStop = false;
                     Controls.Add(gridSecond[i, j]);
@@ -110,6 +103,13 @@ namespace EPSIC_Bataille_Navale.Views
                     }
                 }
             }
+        }
+
+        public void Finish(string winnerName)
+        {
+            Home home = new Home();
+            ((MainForm)Parent.FindForm()).LoadView(home);
+            home.SetTitle(winnerName + " a gagné !");
         }
     }
 }

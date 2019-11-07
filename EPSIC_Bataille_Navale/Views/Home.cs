@@ -1,12 +1,6 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.DirectoryServices.AccountManagement;
 using System.Windows.Forms;
 
 namespace EPSIC_Bataille_Navale.Views
@@ -17,12 +11,25 @@ namespace EPSIC_Bataille_Navale.Views
         public Home()
         {
             InitializeComponent();
+            txt_pseudo.Text = UserPrincipal.Current.DisplayName;
             controller = new HomeController(this);
+        }
+
+        public void SetTitle(string title)
+        {
+            lbl_title.Text = title;
         }
 
         private void Btn_solo_Click(object sender, EventArgs e)
         {
-            ((MainForm)Parent.FindForm()).LoadView(new Setup(10));
+            Setup setup = new Setup(10);
+            setup.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
+            ((MainForm)Parent.FindForm()).LoadView(setup);
+        }
+
+        private void Btn_credits_Click(object sender, EventArgs e)
+        {
+            ((MainForm)Parent.FindForm()).LoadView(new Credits());
         }
     }
 }

@@ -2,9 +2,6 @@
 using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -13,6 +10,7 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         private Setup view = null;
         public Grid grid;
+        public string playerName = "";
         private int[] clickedCell = new int[2];
         private List<int[]> possibleCells = new List<int[]>();
 
@@ -178,6 +176,8 @@ namespace EPSIC_Bataille_Navale.Controllers
 
         public void AIChoise()
         {
+            playerName = "L'IA";
+
             Random random = new Random();
             while(grid.boatsList.Count > 0)
             {

@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +54,12 @@
     <Compile Include="Controllers\SoloGameController.cs" />
     <Compile Include="Models\Boat.cs" />
     <Compile Include="Models\Cell.cs" />
+    <Compile Include="Views\Credits.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Credits.Designer.cs">
+      <DependentUpon>Credits.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\CustomPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -98,6 +105,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\Credits.resx">
+      <DependentUpon>Credits.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Game.resx">
       <DependentUpon>Game.cs</DependentUpon>
     </EmbeddedResource>
