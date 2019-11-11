@@ -13,6 +13,7 @@ namespace EPSIC_Bataille_Navale.Views
         public Game(int size, int code) : base(size)
         {
             InitializeComponent();
+            // Quel typ de jeux
             switch (code)
             {
                 case 0: controller = new SoloGameController(this); break;
@@ -20,6 +21,7 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
+        // Création de la seconde grille de jeu (IA)
         public void MakeSecondGrid()
         {
             gridSecond = new CustomPictureBox[size, size];
@@ -44,12 +46,14 @@ namespace EPSIC_Bataille_Navale.Views
             RefreshGrid();
         }
 
+        // Quand on click sur une cellule, on envoie dans le CustomPictureBox
         protected override void CellClick(object sender, EventArgs e)
         {
             CustomPictureBox customPictureBox = (CustomPictureBox)sender;
             controller.Click(customPictureBox.x, customPictureBox.y);
         }
 
+        // Rafraichissement de la grille
         public void RefreshGrid()
         {
             Grid dataGrid = controller.grids[1];
@@ -59,6 +63,7 @@ namespace EPSIC_Bataille_Navale.Views
                 {
                     switch (dataGrid.grid[i, j].state)
                     {
+                        // Définition des couleurs des status des cellules
                         case State.noActivity:
                             grid[i, j].BackColor = Color.White;
                             break;
@@ -75,6 +80,7 @@ namespace EPSIC_Bataille_Navale.Views
                 }
             }
 
+            // Quelle est l'état de la cellule
             dataGrid = controller.grids[0];
             for (int i = 0; i < dataGrid.grid.GetLength(0); i++)
             {
@@ -107,11 +113,17 @@ namespace EPSIC_Bataille_Navale.Views
             Refresh();
         }
 
+        // Quand le jeu est fini
         public void Finish(string winnerName)
         {
             Home home = new Home();
             ((MainForm)Parent.FindForm()).LoadView(home);
             home.SetTitle(winnerName + " a gagné !");
+        }
+
+        private void Game_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

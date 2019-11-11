@@ -16,6 +16,7 @@ namespace EPSIC_Bataille_Navale.Views
         {
             InitializeComponent();
 
+            // Ajout d'une police pour le titre
             try
             {
                 PrivateFontCollection pfc = new PrivateFontCollection();
@@ -27,6 +28,7 @@ namespace EPSIC_Bataille_Navale.Views
 
             }
 
+            // Essaye de récupérer le nom de session du joueur
             try {
                 txt_pseudo.Text = UserPrincipal.Current.DisplayName;
             }
@@ -37,11 +39,13 @@ namespace EPSIC_Bataille_Navale.Views
             controller = new HomeController(this);
         }
 
+        // Définir un titre
         public void SetTitle(string title)
         {
             lbl_title.Text = title;
         }
 
+        // Le bouton pour lancer une partie solo
         private void Btn_solo_Click(object sender, EventArgs e)
         {
             Setup setup = new Setup(10, 0);
@@ -49,6 +53,7 @@ namespace EPSIC_Bataille_Navale.Views
             ((MainForm)Parent.FindForm()).LoadView(setup);
         }
 
+        // Le bouton pour lancer une partie online (A FAIRE)
         private void Btn_online_Click(object sender, EventArgs e)
         {
             OnlineConfig onlineConfig = new OnlineConfig();
@@ -56,11 +61,13 @@ namespace EPSIC_Bataille_Navale.Views
             ((MainForm)Parent.FindForm()).LoadView(onlineConfig);
         }
 
+        // Le bouton pour voir les crédits du jeu
         private void Btn_credits_Click(object sender, EventArgs e)
         {
             ((MainForm)Parent.FindForm()).LoadView(new Credits());
         }
 
+        // Le bouton pour lancer une démo du jeu (Avec 2 IA qui s'affronte)
         private void Btn_demo_Click(object sender, EventArgs e)
         {
             Setup setup = new Setup(10, 1);
@@ -75,6 +82,11 @@ namespace EPSIC_Bataille_Navale.Views
             game.MakeSecondGrid();
             ((MainForm)Parent.FindForm()).LoadView(game);
             game.controller.Click(0, 0);
+        }
+
+        private void lbl_title_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -5,6 +5,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 {
     public abstract class GameController
     {
+        // Propriétées de la classe Game
         protected Game view = null;
         public Grid[] grids;
         public string[] playersNames = new string[2];
@@ -15,11 +16,13 @@ namespace EPSIC_Bataille_Navale.Controllers
             this.view = view;
         }
 
+        // Pas implémenté
         public virtual void Click(int x, int y)
         {
 
         }
 
+        // Check la propriété du boutton cliqué
         public State ClickAt(int x, int y)
         {
             playerTurn = (playerTurn + 1) % 2;

@@ -48,5 +48,9 @@ namespace EPSIC_Bataille_Navale.Views
             server.Stop();
         }
 
+        private void OnlineConfig_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -50,6 +50,7 @@
             this.lbl_credits.TabIndex = 2;
             this.lbl_credits.Text = "Jeu de bataille navale\r\n2019\r\nBurkhalter Yannis\r\nBrisset Samuel\r\nSidot Antoine";
             this.lbl_credits.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lbl_credits.Click += new System.EventHandler(this.lbl_credits_Click);
             // 
             // Credits
             // 

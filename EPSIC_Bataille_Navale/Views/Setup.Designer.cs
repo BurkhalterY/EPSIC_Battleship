@@ -72,6 +72,7 @@
             this.Controls.Add(this.txt_action);
             this.Name = "Setup";
             this.Size = new System.Drawing.Size(500, 500);
+            this.Load += new System.EventHandler(this.Setup_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
