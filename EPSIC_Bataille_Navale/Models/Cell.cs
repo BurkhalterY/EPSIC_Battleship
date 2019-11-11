@@ -1,8 +1,9 @@
-﻿
-namespace EPSIC_Bataille_Navale.Models
+﻿namespace EPSIC_Bataille_Navale.Models
 {
+    // Classe qui définie l'état des cellules
     public enum State
     {
+        // Différent type d'état pour les cellules
         noActivity,
         noBoat,
         boat,
@@ -10,6 +11,7 @@ namespace EPSIC_Bataille_Navale.Models
         invalid
     }
 
+    // Création de la classe "Cell"
     public class Cell
     {
         public State state = State.noActivity;
