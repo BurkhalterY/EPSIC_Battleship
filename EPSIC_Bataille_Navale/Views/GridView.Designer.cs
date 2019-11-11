@@ -30,12 +30,13 @@
         {
             this.SuspendLayout();
             // 
-            // Grid
+            // GridView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "Grid";
+            this.Name = "GridView";
             this.Size = new System.Drawing.Size(450, 450);
+            this.Load += new System.EventHandler(this.GridView_Load);
             this.ResumeLayout(false);
 
         }

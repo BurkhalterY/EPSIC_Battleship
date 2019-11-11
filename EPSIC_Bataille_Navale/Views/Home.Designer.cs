@@ -57,6 +57,7 @@
             this.lbl_title.TabIndex = 1;
             this.lbl_title.Text = "Battleship!";
             this.lbl_title.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.lbl_title.Click += new System.EventHandler(this.lbl_title_Click);
             // 
             // btn_online
             // 
