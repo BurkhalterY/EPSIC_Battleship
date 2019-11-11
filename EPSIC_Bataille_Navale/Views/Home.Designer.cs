@@ -64,6 +64,7 @@
             this.btn_online.TabIndex = 2;
             this.btn_online.Text = "Online";
             this.btn_online.UseVisualStyleBackColor = true;
+            this.btn_online.Click += new System.EventHandler(this.Btn_online_Click);
             // 
             // btn_credits
             // 

@@ -31,9 +31,9 @@ namespace EPSIC_Bataille_Navale.Views
                 {
                     gridSecond[i, j] = new CustomPictureBox(i, j);
                     gridSecond[i, j].BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-                    gridSecond[i, j].Location = new System.Drawing.Point(i * cellSize + 475, j * cellSize + 25);
+                    gridSecond[i, j].Location = new Point(i * cellSize + 475, j * cellSize + 25);
                     gridSecond[i, j].Name = "cell_second" + i + "_" + j;
-                    gridSecond[i, j].Size = new System.Drawing.Size(cellSize, cellSize);
+                    gridSecond[i, j].Size = new Size(cellSize, cellSize);
                     gridSecond[i, j].BackColor = Color.White;
                     gridSecond[i, j].TabIndex = 2;
                     gridSecond[i, j].TabStop = false;
@@ -103,6 +103,7 @@ namespace EPSIC_Bataille_Navale.Views
                     }
                 }
             }
+            Refresh();
         }
 
         public void Finish(string winnerName)

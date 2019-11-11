@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
-
     public class SetupController
     {
         private Setup view = null;

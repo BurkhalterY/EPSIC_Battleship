@@ -33,14 +33,14 @@ namespace EPSIC_Bataille_Navale.Views
                 for (int j = 0; j < size; j++)
                 {
                     grid[i, j] = new CustomPictureBox(i, j);
-                    grid[i, j].BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-                    grid[i, j].Location = new System.Drawing.Point(i * cellSize + 25, j * cellSize + 25);
+                    grid[i, j].BorderStyle = BorderStyle.FixedSingle;
+                    grid[i, j].Location = new Point(i * cellSize + 25, j * cellSize + 25);
                     grid[i, j].Name = "cell" + i + "_" + j;
                     grid[i, j].Size = new System.Drawing.Size(cellSize, cellSize);
                     grid[i, j].BackColor = Color.White;
                     grid[i, j].TabIndex = 2;
                     grid[i, j].TabStop = false;
-                    grid[i, j].Click += new System.EventHandler(CellClick);
+                    grid[i, j].Click += new EventHandler(CellClick);
                     Controls.Add(grid[i, j]);
                 }
             }

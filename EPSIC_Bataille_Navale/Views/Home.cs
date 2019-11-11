@@ -22,9 +22,16 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_solo_Click(object sender, EventArgs e)
         {
-            Setup setup = new Setup(10);
+            Setup setup = new Setup(10, 0);
             setup.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
             ((MainForm)Parent.FindForm()).LoadView(setup);
+        }
+
+        private void Btn_online_Click(object sender, EventArgs e)
+        {
+            OnlineConfig onlineConfig = new OnlineConfig();
+            onlineConfig.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
+            ((MainForm)Parent.FindForm()).LoadView(onlineConfig);
         }
 
         private void Btn_credits_Click(object sender, EventArgs e)

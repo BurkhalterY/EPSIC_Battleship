@@ -2,6 +2,7 @@
 using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -36,7 +37,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             int x = possibles[cellSelected][0];
             int y = possibles[cellSelected][1];
             State state = base.Click(x, y);
-            shots.Add(new int[] { x, y, State2Int(state) });
+            shots.Add(new int[] { x, y });
             possibles.RemoveAt(cellSelected);
 
             if (phase == 0)
@@ -169,49 +170,15 @@ namespace EPSIC_Bataille_Navale.Controllers
             return false;
         }
 
-        private static int State2Int(State state)
-        {
-            switch (state)
-            {
-                case State.noActivity:
-                    return 0;
-                case State.noBoat:
-                    return 1;
-                case State.boat:
-                    return 2;
-                case State.fullBoat:
-                    return 3;
-                default:
-                    return 4;
-            }
-        }
-
-        private static State Int2State(int state)
-        {
-            switch (state)
-            {
-                case 0:
-                    return State.noActivity;
-                case 1:
-                    return State.noBoat;
-                case 2:
-                    return State.boat;
-                case 3:
-                    return State.fullBoat;
-                default:
-                    return State.invalid;
-            }
-        }
-
         public override State Click(int x, int y)
         {
             if(playerTurn == 0)
             {
                 base.Click(x, y);
-                //System.Threading.Thread.Sleep(1500);
             }
             if(playerTurn == 1)
             {
+                //Thread.Sleep(1000);
                 AIPlay();
             }
             return State.invalid;

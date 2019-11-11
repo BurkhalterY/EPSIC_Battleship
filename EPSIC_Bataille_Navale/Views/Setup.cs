@@ -9,10 +9,12 @@ namespace EPSIC_Bataille_Navale.Views
     public partial class Setup : GridView
     {
         public SetupController controller;
+        public int gameType = 0;
 
-        public Setup(int size) : base(size)
+        public Setup(int size, int gameType) : base(size)
         {
             InitializeComponent();
+            this.gameType = gameType;
             controller = new SetupController(this, size);
             ClearGrid();
         }
@@ -23,7 +25,7 @@ namespace EPSIC_Bataille_Navale.Views
             controller.Click(customPictureBox.x, customPictureBox.y);
         }
 
-       
+
         public void RefreshGrid(Grid gridData, int[] clickedCell, List<int[]> possibleCells)
         {
             ClearGrid();
@@ -31,7 +33,7 @@ namespace EPSIC_Bataille_Navale.Views
             {
                 for (int j = 0; j < gridData.grid.GetLength(1); j++)
                 {
-                    if(gridData.grid[i, j].boat != null)
+                    if (gridData.grid[i, j].boat != null)
                     {
                         grid[i, j].BackColor = Color.DarkBlue;
                     }
@@ -69,14 +71,25 @@ namespace EPSIC_Bataille_Navale.Views
 
         public void Finish()
         {
-            Setup setup = new Setup(grid.GetLength(0));
-            setup.controller.AIChoise();
+            if (gameType == 0)
+            {
+                Setup setup = new Setup(grid.GetLength(0), 1);
+                setup.controller.AIChoise();
 
-            Game game = new Game(10, 0);
-            game.controller.grids = new Grid[] { controller.grid, setup.controller.grid };
-            game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
-            game.MakeSecondGrid();
-            ((MainForm)Parent.FindForm()).LoadView(game);
+                Game game = new Game(grid.GetLength(0), 0);
+                game.controller.grids = new Grid[] { controller.grid, setup.controller.grid };
+                game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
+                game.MakeSecondGrid();
+                ((MainForm)Parent.FindForm()).LoadView(game);
+            }
+            else if (gameType == 2 || gameType == 3)
+            {
+               /* Game game = new Game(grid.GetLength(0), gameType);
+                game.controller.grids = new Grid[] { controller.grid, setup.controller.grid };
+                game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
+                game.MakeSecondGrid();
+                ((MainForm)Parent.FindForm()).LoadView(game);*/
+            }
         }
     }
 }
