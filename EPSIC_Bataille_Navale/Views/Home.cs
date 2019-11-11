@@ -11,7 +11,13 @@ namespace EPSIC_Bataille_Navale.Views
         public Home()
         {
             InitializeComponent();
-            txt_pseudo.Text = UserPrincipal.Current.DisplayName;
+            try {
+                txt_pseudo.Text = UserPrincipal.Current.DisplayName;
+            }
+            catch (PrincipalServerDownException e)
+            {
+                txt_pseudo.Text = "Player";
+            }
             controller = new HomeController(this);
         }
 
