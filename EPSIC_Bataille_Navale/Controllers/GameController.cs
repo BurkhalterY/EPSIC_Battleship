@@ -9,13 +9,18 @@ namespace EPSIC_Bataille_Navale.Controllers
         public Grid[] grids;
         public string[] playersNames = new string[2];
         public int playerTurn = 0;
-
+        public bool finish = false;
         public GameController(Game view)
         {
             this.view = view;
         }
 
-        public virtual State Click(int x, int y)
+        public virtual void Click(int x, int y)
+        {
+
+        }
+
+        public State ClickAt(int x, int y)
         {
             playerTurn = (playerTurn + 1) % 2;
             if (grids[playerTurn].grid[x, y].state == State.noActivity)
@@ -41,7 +46,8 @@ namespace EPSIC_Bataille_Navale.Controllers
                         grids[playerTurn].boats.Remove(grids[playerTurn].grid[x, y].boat);
                         if (grids[playerTurn].boats.Count == 0)
                         {
-                            view.Finish(playersNames[(playerTurn + 1) % 2]);
+                            playerTurn = (playerTurn + 1) % 2;
+                            finish = true;
                         }
                         state = State.fullBoat;
                     }

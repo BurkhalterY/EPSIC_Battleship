@@ -8,17 +8,9 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         public ServerGameController(Game view) : base(view) { }
 
-        public override State Click(int x, int y)
+        public override void Click(int x, int y)
         {
-            if (playerTurn == 0)
-            {
-                base.Click(x, y);
-            }
-            if (playerTurn == 1)
-            {
-                
-            }
-            return State.invalid;
+           
         }
     }
 }

@@ -16,6 +16,7 @@ namespace EPSIC_Bataille_Navale.Views
             switch (code)
             {
                 case 0: controller = new SoloGameController(this); break;
+                case 3: controller = new DemoGameController(this); break;
             }
         }
 

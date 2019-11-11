@@ -1,4 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.DirectoryServices.AccountManagement;
 using System.Windows.Forms;
@@ -43,6 +44,22 @@ namespace EPSIC_Bataille_Navale.Views
         private void Btn_credits_Click(object sender, EventArgs e)
         {
             ((MainForm)Parent.FindForm()).LoadView(new Credits());
+        }
+
+        private void Btn_demo_Click(object sender, EventArgs e)
+        {
+            Setup setup = new Setup(10, 1);
+            setup.controller.AIChoise();
+
+            Setup setup2 = new Setup(10, 1);
+            setup2.controller.AIChoise();
+
+            Game game = new Game(setup.controller.grid.grid.GetLength(0), 3);
+            game.controller.grids = new Grid[] { setup.controller.grid, setup2.controller.grid };
+            game.controller.playersNames = new string[] { "IA1", "IA2" };
+            game.MakeSecondGrid();
+            ((MainForm)Parent.FindForm()).LoadView(game);
+            game.controller.Click(0, 0);
         }
     }
 }

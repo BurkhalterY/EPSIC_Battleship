@@ -34,6 +34,7 @@
             this.btn_credits = new System.Windows.Forms.Button();
             this.txt_pseudo = new System.Windows.Forms.TextBox();
             this.lbl_pseudo = new System.Windows.Forms.Label();
+            this.btn_demo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btn_solo
@@ -92,10 +93,21 @@
             this.lbl_pseudo.TabIndex = 6;
             this.lbl_pseudo.Text = "Votre nom :";
             // 
+            // btn_demo
+            // 
+            this.btn_demo.Location = new System.Drawing.Point(42, 443);
+            this.btn_demo.Name = "btn_demo";
+            this.btn_demo.Size = new System.Drawing.Size(156, 23);
+            this.btn_demo.TabIndex = 7;
+            this.btn_demo.Text = "Démo (IA vs. IA)";
+            this.btn_demo.UseVisualStyleBackColor = true;
+            this.btn_demo.Click += new System.EventHandler(this.Btn_demo_Click);
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btn_demo);
             this.Controls.Add(this.lbl_pseudo);
             this.Controls.Add(this.txt_pseudo);
             this.Controls.Add(this.btn_credits);
@@ -117,5 +129,6 @@
         private System.Windows.Forms.Button btn_credits;
         private System.Windows.Forms.TextBox txt_pseudo;
         private System.Windows.Forms.Label lbl_pseudo;
+        private System.Windows.Forms.Button btn_demo;
     }
 }
