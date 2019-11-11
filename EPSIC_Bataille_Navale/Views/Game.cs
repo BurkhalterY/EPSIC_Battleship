@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Windows.Forms;
 using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
 
@@ -9,6 +10,7 @@ namespace EPSIC_Bataille_Navale.Views
     {
         public GameController controller;
         private CustomPictureBox[,] gridSecond;
+        public RichTextBox history;
 
         public Game(int size, int code) : base(size)
         {
@@ -41,6 +43,17 @@ namespace EPSIC_Bataille_Navale.Views
                     Controls.Add(gridSecond[i, j]);
                 }
             }
+            history = new RichTextBox();
+            history.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            history.Location = new Point(475, size * cellSize + 25);
+            history.Name = "txt_history";
+            history.Size = new Size(Width / 3, Width / 3 - 50);
+            history.TabIndex = 3;
+            history.TabStop = false;
+            history.ReadOnly = true;
+            history.Multiline = true;
+            history.ScrollBars = RichTextBoxScrollBars.Vertical;
+            Controls.Add(history);
             RefreshGrid();
         }
 

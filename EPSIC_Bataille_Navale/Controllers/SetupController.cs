@@ -177,15 +177,14 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             playerName = "L'IA";
 
-            Random random = new Random();
-            while(grid.boatsList.Count > 0)
+            while (grid.boatsList.Count > 0)
             {
-                int x = random.Next(0, grid.grid.GetLength(0) - 1);
-                int y = random.Next(0, grid.grid.GetLength(1) - 1);
+                int x = new Random().Next(0, grid.grid.GetLength(0) - 1);
+                int y = new Random().Next(0, grid.grid.GetLength(1) - 1);
                 Click(x, y);
                 if(possibleCells.Count > 0)
                 {
-                    int[] cell = possibleCells[random.Next(0, possibleCells.Count - 1)];
+                    int[] cell = possibleCells[new Random().Next(0, possibleCells.Count - 1)];
                     Click(cell[0], cell[1]);
                 }
                 else

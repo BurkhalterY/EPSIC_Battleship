@@ -1,5 +1,7 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
+using System;
+using System.Drawing;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -64,6 +66,9 @@ namespace EPSIC_Bataille_Navale.Controllers
                     state = State.noBoat;
                 }
                 view.RefreshGrid();
+                view.history.SelectionColor = playerTurn == 0 ? Color.Red : Color.Blue;
+                view.history.AppendText(((char)(x + 65)).ToString() + (y + 1) + Environment.NewLine);
+                view.history.ScrollToCaret();
                 return state;
             }
             else
