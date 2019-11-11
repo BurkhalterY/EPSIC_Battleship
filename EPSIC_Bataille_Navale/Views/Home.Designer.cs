@@ -50,11 +50,12 @@
             // lbl_title
             // 
             this.lbl_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_title.ForeColor = System.Drawing.Color.White;
             this.lbl_title.Location = new System.Drawing.Point(3, 0);
             this.lbl_title.Name = "lbl_title";
             this.lbl_title.Size = new System.Drawing.Size(744, 250);
             this.lbl_title.TabIndex = 1;
-            this.lbl_title.Text = "Bienvenue !";
+            this.lbl_title.Text = "Battleship!";
             this.lbl_title.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // btn_online
@@ -87,6 +88,7 @@
             // lbl_pseudo
             // 
             this.lbl_pseudo.AutoSize = true;
+            this.lbl_pseudo.ForeColor = System.Drawing.Color.White;
             this.lbl_pseudo.Location = new System.Drawing.Point(250, 285);
             this.lbl_pseudo.Name = "lbl_pseudo";
             this.lbl_pseudo.Size = new System.Drawing.Size(61, 13);

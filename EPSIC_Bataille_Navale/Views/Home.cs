@@ -2,6 +2,9 @@
 using EPSIC_Bataille_Navale.Models;
 using System;
 using System.DirectoryServices.AccountManagement;
+using System.Drawing;
+using System.Drawing.Text;
+using System.IO;
 using System.Windows.Forms;
 
 namespace EPSIC_Bataille_Navale.Views
@@ -12,6 +15,18 @@ namespace EPSIC_Bataille_Navale.Views
         public Home()
         {
             InitializeComponent();
+
+            try
+            {
+                PrivateFontCollection pfc = new PrivateFontCollection();
+                pfc.AddFontFile("..\\..\\medias\\spacecruiser.ttf");
+                lbl_title.Font = new Font(pfc.Families[0], 32, FontStyle.Regular);
+            }
+            catch (FileNotFoundException e)
+            {
+
+            }
+
             try {
                 txt_pseudo.Text = UserPrincipal.Current.DisplayName;
             }

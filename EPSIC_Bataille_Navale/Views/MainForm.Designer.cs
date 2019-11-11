@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // panel
             // 
+            this.panel.BackColor = System.Drawing.Color.Transparent;
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(750, 500);
@@ -42,6 +44,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(750, 500);
             this.Controls.Add(this.panel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
