@@ -44,6 +44,7 @@
             // 
             // lbl_credits
             // 
+            this.lbl_credits.ForeColor = System.Drawing.Color.White;
             this.lbl_credits.Location = new System.Drawing.Point(0, 0);
             this.lbl_credits.Name = "lbl_credits";
             this.lbl_credits.Size = new System.Drawing.Size(747, 471);
