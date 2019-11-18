@@ -1,4 +1,5 @@
-﻿using EPSIC_Bataille_Navale.Views;
+﻿using EPSIC_Bataille_Navale.Models;
+using EPSIC_Bataille_Navale.Views;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {

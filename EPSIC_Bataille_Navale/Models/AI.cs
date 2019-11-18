@@ -1,9 +1,8 @@
-﻿
-using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.Controllers;
 using System;
 using System.Collections.Generic;
 
-namespace EPSIC_Bataille_Navale.Controllers
+namespace EPSIC_Bataille_Navale.Models
 {
     class AI
     {
