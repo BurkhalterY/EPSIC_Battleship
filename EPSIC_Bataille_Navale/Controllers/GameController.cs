@@ -1,7 +1,7 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
 using System;
-using System.Drawing;
+using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -9,10 +9,11 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         // Propriétées de la classe Game
         protected Game view = null;
-        public Grid[] grids;
+        public GridModel[] grids;
         public string[] playersNames = new string[2];
         public int playerTurn = 0;
         public bool finish = false;
+
         public GameController(Game view)
         {
             this.view = view;
@@ -69,9 +70,9 @@ namespace EPSIC_Bataille_Navale.Controllers
                     state = State.noBoat;
                 }
                 view.RefreshGrid();
-                view.history.SelectionColor = playerTurn == 0 ? Color.Red : Color.Blue;
+                view.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
                 view.history.AppendText(((char)(x + 65)).ToString() + (y + 1) + Environment.NewLine);
-                view.history.ScrollToCaret();
+                view.history.ScrollToEnd();
                 return state;
             }
             else

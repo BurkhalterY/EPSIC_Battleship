@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSIC_Bataille_Navale", "EPSIC_Bataille_Navale\EPSIC_Bataille_Navale.csproj", "{B06ACE9A-725F-4540-8C02-A253D4037A14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPSIC_Bataille_Navale", "EPSIC_Bataille_Navale\EPSIC_Bataille_Navale.csproj", "{17251CB0-8000-4DD0-B886-23E2AD49B0E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B06ACE9A-725F-4540-8C02-A253D4037A14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B06ACE9A-725F-4540-8C02-A253D4037A14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B06ACE9A-725F-4540-8C02-A253D4037A14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B06ACE9A-725F-4540-8C02-A253D4037A14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17251CB0-8000-4DD0-B886-23E2AD49B0E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17251CB0-8000-4DD0-B886-23E2AD49B0E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17251CB0-8000-4DD0-B886-23E2AD49B0E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17251CB0-8000-4DD0-B886-23E2AD49B0E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D692E30D-7987-4398-8A43-E4CDE8260CD7}
+		SolutionGuid = {8FF62F00-D521-4007-9287-0DF9158DAF50}
 	EndGlobalSection
 EndGlobal

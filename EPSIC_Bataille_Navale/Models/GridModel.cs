@@ -3,14 +3,14 @@
 namespace EPSIC_Bataille_Navale.Models
 {
     // Création de la classe "Grid"
-    public class Grid
+    public class GridModel
     {
         public Cell[,] grid;
         public List<Boat> boats = new List<Boat>();
         public List<int> boatsList = new List<int>(new int[] { 2, 3, 3, 4, 5 }); // Liste des différentes taille des bateaux
 
         // Création de la grille
-        public Grid(int gridSize)
+        public GridModel(int gridSize)
         {
             grid = new Cell[gridSize, gridSize];
             // parcours tout les "x"

@@ -8,7 +8,7 @@ namespace EPSIC_Bataille_Navale.Controllers
     public class SetupController
     { // Déclaration des propriétées
         private Setup view = null;
-        public Grid grid;
+        public GridModel grid;
         public string playerName = "";
         private int[] clickedCell = new int[2];
         private List<int[]> possibleCells = new List<int[]>();
@@ -17,7 +17,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             // Création d'une nouvelle grille
             this.view = view;
-            grid = new Grid(size);
+            grid = new GridModel(size);
         }
 
         public void Click(int x, int y)

@@ -1,5 +1,6 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
+using System.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -21,6 +22,8 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             if (playerTurn == 1)
             {
+                view.Refresh();
+                Thread.Sleep(500);
                 ai.AIPlay();
             }
             if (finish)
