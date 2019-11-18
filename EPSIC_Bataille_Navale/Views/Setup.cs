@@ -8,9 +8,11 @@ namespace EPSIC_Bataille_Navale.Views
 {
     public partial class Setup : GridView
     {
+        // Propriété de la classe Setup
         public SetupController controller;
         public int gameType = 0;
 
+        // Initialisation
         public Setup(int size, int gameType) : base(size)
         {
             InitializeComponent();
@@ -19,13 +21,14 @@ namespace EPSIC_Bataille_Navale.Views
             ClearGrid();
         }
 
+        // Quand on clique sur une cellule
         protected override void CellClick(object sender, EventArgs e)
         {
             CustomPictureBox customPictureBox = (CustomPictureBox)sender;
             controller.Click(customPictureBox.x, customPictureBox.y);
         }
 
-
+        // Rafraichissement de la grille
         public void RefreshGrid(Grid gridData, int[] clickedCell, List<int[]> possibleCells)
         {
             ClearGrid();
@@ -49,26 +52,31 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
+        // Le bouton qui annule le dernier bateau
         private void Btn_cancel_Click(object sender, EventArgs e)
         {
             controller.DeleteLastBoat();
         }
 
+        // Le prochain bouton est valide
         public void EnableNextButton(bool value)
         {
             btn_next.Enabled = value;
         }
 
+        // Le bouton cancel est valide
         public void EnableCancelButton(bool value)
         {
             btn_cancel.Enabled = value;
         }
 
+        // Bouton pour clique
         private void Btn_next_Click(object sender, EventArgs e)
         {
             Finish();
         }
 
+        // Quand le jeu est fini
         public void Finish()
         {
             if (gameType == 0)
@@ -90,6 +98,11 @@ namespace EPSIC_Bataille_Navale.Views
                 game.MakeSecondGrid();
                 ((MainForm)Parent.FindForm()).LoadView(game);*/
             }
+        }
+
+        private void Setup_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

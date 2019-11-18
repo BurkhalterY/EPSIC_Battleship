@@ -13,11 +13,17 @@ namespace EPSIC_Bataille_Navale.Views
             LoadView(new Home());
         }
 
+        // Création de la view
         public void LoadView(Control view)
         {
             view.Dock = DockStyle.Fill;
             panel.Controls.Clear();
             panel.Controls.Add(view);
+        }
+
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

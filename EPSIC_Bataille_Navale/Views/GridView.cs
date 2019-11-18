@@ -15,6 +15,7 @@ namespace EPSIC_Bataille_Navale.Views
             MakeGrid();
         }
 
+        // Initialisation
         public GridView(int size)
         {
             InitializeComponent();
@@ -22,6 +23,7 @@ namespace EPSIC_Bataille_Navale.Views
             MakeGrid();
         }
 
+        // Création de la grille
         protected void MakeGrid()
         {
             grid = new CustomPictureBox[size, size];
@@ -46,6 +48,7 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
+        // Enlever une case que l'on n'a choisis
         protected void ClearGrid()
         {
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -59,5 +62,10 @@ namespace EPSIC_Bataille_Navale.Views
 
 
         protected virtual void CellClick(object sender, EventArgs e) { }
+
+        private void GridView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

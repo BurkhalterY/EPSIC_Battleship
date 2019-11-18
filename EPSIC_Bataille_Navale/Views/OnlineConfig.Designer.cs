@@ -92,6 +92,7 @@
             this.Controls.Add(this.btn_host);
             this.Name = "OnlineConfig";
             this.Size = new System.Drawing.Size(750, 500);
+            this.Load += new System.EventHandler(this.OnlineConfig_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

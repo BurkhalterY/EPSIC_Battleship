@@ -1,6 +1,6 @@
-﻿
-namespace EPSIC_Bataille_Navale.Models
+﻿namespace EPSIC_Bataille_Navale.Models
 {
+    // Création de la classe "Boat"
     public class Boat
     {
         public int length = 0;
