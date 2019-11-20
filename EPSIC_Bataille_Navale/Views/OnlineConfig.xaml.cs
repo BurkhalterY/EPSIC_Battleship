@@ -29,7 +29,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_back_Click(object sender, EventArgs e)
         {
-            (Parent as MainWindow).Content = new Home();
+            Window.GetWindow(this).Content = new Home();
         }
         private void Btn_join_Click(object sender, EventArgs e)
         {

@@ -1,10 +1,9 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.DirectoryServices.AccountManagement;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace EPSIC_Bataille_Navale.Views
 {

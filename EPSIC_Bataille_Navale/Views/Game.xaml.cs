@@ -1,9 +1,10 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
 using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -22,7 +23,7 @@ namespace EPSIC_Bataille_Navale.Views
         public Game(int size, int code) : base()
         {
             InitializeComponent();
-            // Quel type de jeux
+            this.size = size;
             switch (code)
             {
                 case 0: controller = new SoloGameController(this); break;
@@ -31,57 +32,53 @@ namespace EPSIC_Bataille_Navale.Views
             MakeGrid();
         }
 
-        // Rafraichissement de la grille
         public void RefreshGrid()
         {
             for (int i = 0; i < controller.grids[1].grid.GetLength(0); i++)
             {
                 for (int j = 0; j < controller.grids[1].grid.GetLength(1); j++)
                 {
+                    Sprite sprite = new Sprite(Properties.Resources.water);
                     switch (controller.grids[1].grid[i, j].state)
                     {
-                        // Définition des couleurs des status des cellules
-                        case State.noActivity:
-                            grid[i, j].Background = Brushes.White;
-                            break;
                         case State.noBoat:
-                            grid[i, j].Background = Brushes.Yellow;
+                            sprite.AddSprite(Properties.Resources.miss);
                             break;
                         case State.boat:
-                            grid[i, j].Background = Brushes.Red;
+                            sprite.AddSprite(Properties.Resources.touch);
                             break;
                         case State.fullBoat:
-                            grid[i, j].Background = Brushes.DarkRed;
+                            Boat boat = controller.grids[1].grid[i, j].boat;
+                            sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[1].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[1].grid[i, j]) - 1, 0);
+                            sprite.RotateSprite(controller.grids[1].grid[i, j].boat.orientation);
                             break;
                     }
+                    grid[i, j].Background = sprite.ToBrush();
 
+                    sprite = new Sprite(Properties.Resources.water);
+                    if (controller.grids[0].grid[i, j].boat != null)
+                    {
+                        Boat boat = controller.grids[0].grid[i, j].boat;
+                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[0].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[0].grid[i, j]) - 1, 0);
+                        sprite.RotateSprite(controller.grids[0].grid[i, j].boat.orientation);
+                    }
                     switch (controller.grids[0].grid[i, j].state)
                     {
                         case State.noActivity:
-                            if (controller.grids[0].grid[i, j].boat != null)
-                            {
-                                gridSecond[i, j].Background = Brushes.Aqua;
-                            }
-                            else
-                            {
-                                gridSecond[i, j].Background = Brushes.White;
-                            }
+                            sprite.AddSprite(Properties.Resources.hide);
                             break;
                         case State.noBoat:
-                            gridSecond[i, j].Background = Brushes.Yellow;
+                            sprite.AddSprite(Properties.Resources.miss);
                             break;
                         case State.boat:
-                            gridSecond[i, j].Background = Brushes.Red;
-                            break;
-                        case State.fullBoat:
-                            gridSecond[i, j].Background = Brushes.DarkRed;
+                            sprite.AddSprite(Properties.Resources.touch);
                             break;
                     }
+                    gridSecond[i, j].Background = sprite.ToBrush();
                 }
             }
         }
 
-        // Quand le jeu est fini
         public void Finish(string winnerName)
         {
             Home home = new Home();
@@ -132,21 +129,11 @@ namespace EPSIC_Bataille_Navale.Views
             gridView.Children.Add(history);
         }
 
-        protected void ClearGrid()
-        {
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    grid[i, j].Background = Brushes.White;
-                }
-            }
-        }
-
         protected void CellClick(object sender, EventArgs e)
         {
             CustomButton customButton = (CustomButton)sender;
             controller.Click(customButton.x, customButton.y);
         }
+
     }
 }

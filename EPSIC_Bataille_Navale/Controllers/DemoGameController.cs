@@ -4,19 +4,15 @@ using System.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
-    // Permet de générer un combat entre 2 IA
     public class DemoGameController : GameController
     {
-        // Création de 2 IA
         AI ai, ai2;
 
-        // Initialisation
         public DemoGameController(Game view) : base(view) {
             ai = new AI(this);
             ai2 = new AI(this);
         }
 
-        // Création du combat
         public override void Click(int x, int y)
         {
             while (!finish)
@@ -24,17 +20,16 @@ namespace EPSIC_Bataille_Navale.Controllers
                 if (playerTurn == 0)
                 {
                     view.Refresh();
-                    Thread.Sleep(500);
+                    Thread.Sleep(50);
                     ai2.AIPlay();
                 }
                 if (playerTurn == 1)
                 {
                     view.Refresh();
-                    Thread.Sleep(500);
+                    Thread.Sleep(50);
                     ai.AIPlay();
                 }
             }
-            // Si le combat est fini
             if (finish)
             {
                 view.Finish(playersNames[playerTurn]);

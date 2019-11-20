@@ -6,14 +6,12 @@ namespace EPSIC_Bataille_Navale.Controllers
 {
     public class SoloGameController : GameController
     {
-        //Déclaration de la variable
         AI ai;
 
         public SoloGameController(Game view) : base(view) {
-            ai = new AI(this); // Crée un nouvel IA
+            ai = new AI(this);
         }
 
-        // Méthode qui gère le tout par tour 
         public override void Click(int x, int y)
         {
             if (playerTurn == 0)
@@ -23,7 +21,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (playerTurn == 1)
             {
                 view.Refresh();
-                Thread.Sleep(500);
+                //Thread.Sleep(500);
                 ai.AIPlay();
             }
             if (finish)

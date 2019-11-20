@@ -4,10 +4,8 @@ using System.Collections.Generic;
 
 namespace EPSIC_Bataille_Navale.Models
 {
-    // IA
     class AI
     {
-        // Propriétées de la classe IA
         private GameController controller;
         private int phase = 0;
         private List<int[]> shots = new List<int[]>();
@@ -15,12 +13,10 @@ namespace EPSIC_Bataille_Navale.Models
         private int[] step = new int[6];
         private byte directions = 0b1111; // urdl
 
-        // Initialisation du controller
         public AI(GameController controller) {
             this.controller = controller;
         }
 
-        // Quand l'IA joue
         public void AIPlay()
         {
             if (possibles.Count == 0)
@@ -37,7 +33,6 @@ namespace EPSIC_Bataille_Navale.Models
                 }
                 phase = 0;
             }
-            // Tire aléatoire sur une case
             Random random = new Random();
             int cellSelected = random.Next(0, possibles.Count - 1);
             int x = possibles[cellSelected][0];
@@ -46,7 +41,6 @@ namespace EPSIC_Bataille_Navale.Models
             shots.Add(new int[] { x, y });
             possibles.RemoveAt(cellSelected);
 
-            // Phase 0 = tire aléatoire
             if (phase == 0)
             {
                 if (state == State.boat)
@@ -75,7 +69,6 @@ namespace EPSIC_Bataille_Navale.Models
                     }
                 }
             }
-            // Phase 1 = l'IA a trouvé un bateau et est entrain de le coulé
             else if (phase == 1)
             {
                 if (state == State.noBoat)
@@ -97,7 +90,6 @@ namespace EPSIC_Bataille_Navale.Models
                         directions &= 0b1110;
                     }
                 }
-                // Si il trouve une case d'un bateau
                 else if (state == State.boat)
                 {
                     if (step[5] == y)
@@ -115,10 +107,8 @@ namespace EPSIC_Bataille_Navale.Models
                 }
 
                 possibles.Clear();
-                // Si il a trouver tout le bateau
                 if (state != State.fullBoat)
                 {
-                    // Différentes possibilitées de direction
                     if ((directions & 0b1000) == 0b1000 && step[0] - 1 >= 0 && !IsAldryClicked(step[4], step[0] - 1))
                     {
                         possibles.Add(new int[] { step[4], step[0] - 1 });
@@ -137,7 +127,6 @@ namespace EPSIC_Bataille_Navale.Models
                     }
                 }
 
-                // Si il n'y a plus aucune possibilité
                 if (possibles.Count == 0)
                 {
                     for (int i = 0; i < shots.Count; i++)
@@ -170,7 +159,6 @@ namespace EPSIC_Bataille_Navale.Models
             }
         }
 
-        // Check si la case a déjà était cliqué
         private bool IsAldryClicked(int x, int y)
         {
             for (int i = 0; i < shots.Count; i++)
@@ -182,6 +170,5 @@ namespace EPSIC_Bataille_Navale.Models
             }
             return false;
         }
-
     }
 }

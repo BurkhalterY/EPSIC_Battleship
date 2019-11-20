@@ -13,47 +13,38 @@ namespace EPSIC_Bataille_Navale.Views
     /// </summary>
     public partial class Setup : Page
     {
-        // Propriété de la classe Setup
         public SetupController controller;
         private CustomButton[,] grid;
         public int size = 10;
         public int gameType = 0;
 
-        // Initialisation
         public Setup(int gameType) : base()
         {
             InitializeComponent();
             controller = new SetupController(this, size);
             MakeGrid();
-            ClearGrid();
         }
 
-
-        // Le bouton qui annule le dernier bateau
         private void Btn_cancel_Click(object sender, EventArgs e)
         {
             controller.DeleteLastBoat();
         }
 
-        // Le prochain bouton est valide
         public void EnableNextButton(bool value)
         {
             btn_next.IsEnabled = value;
         }
 
-        // Le bouton cancel est valide
         public void EnableCancelButton(bool value)
         {
             btn_cancel.IsEnabled = value;
         }
 
-        // Bouton pour clique
         private void Btn_next_Click(object sender, EventArgs e)
         {
             Finish();
         }
 
-        // Quand le jeu est fini
         public void Finish()
         {
             if (gameType == 0)
@@ -93,22 +84,13 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
                     grid[i, j].Width = cellSize;
                     grid[i, j].Height = cellSize;
+                    grid[i, j].Background = Brushes.White;
                     grid[i, j].Click += new RoutedEventHandler(CellClick);
                     gridView.Children.Add(grid[i, j]);
                 }
             }
         }
 
-        protected void ClearGrid()
-        {
-            for (int i = 0; i < grid.GetLength(0); i++)
-            {
-                for (int j = 0; j < grid.GetLength(1); j++)
-                {
-                    grid[i, j].Background = Brushes.White;
-                }
-            }
-        }
 
         protected void CellClick(object sender, EventArgs e)
         {
@@ -116,14 +98,13 @@ namespace EPSIC_Bataille_Navale.Views
             controller.Click(customButton.x, customButton.y);
         }
 
-        // Rafraichissement de la grille
         public void RefreshGrid(GridModel gridData, int[] clickedCell, List<int[]> possibleCells)
         {
-            ClearGrid();
             for (int i = 0; i < gridData.grid.GetLength(0); i++)
             {
                 for (int j = 0; j < gridData.grid.GetLength(1); j++)
                 {
+                    grid[i, j].Background = Brushes.White;
                     if (gridData.grid[i, j].boat != null)
                     {
                         grid[i, j].Background = Brushes.DarkBlue;
