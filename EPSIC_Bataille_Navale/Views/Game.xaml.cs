@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using Brushes = System.Windows.Media.Brushes;
+using System.Windows.Documents;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -123,9 +123,10 @@ namespace EPSIC_Bataille_Navale.Views
             history.VerticalAlignment = VerticalAlignment.Top;
             history.Margin = new Thickness(475, size * cellSizeSecond + 25, 0, 0);
             history.Width = 450 / 3;
-            history.Height = 450 / 3 - 50;
+            history.Height = 450 * 2 / 3;
             history.IsReadOnly = true;
             history.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            history.Document.Blocks.Clear();
             gridView.Children.Add(history);
         }
 

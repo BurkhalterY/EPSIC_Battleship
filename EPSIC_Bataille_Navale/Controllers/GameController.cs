@@ -1,6 +1,7 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
 using System;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Controllers
@@ -67,8 +68,11 @@ namespace EPSIC_Bataille_Navale.Controllers
                     state = State.noBoat;
                 }
                 view.RefreshGrid();
-                view.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
-                view.history.AppendText(((char)(x + 65)).ToString() + (y + 1) + Environment.NewLine);
+                Paragraph paragraph = new Paragraph();
+                paragraph.Inlines.Add(playersNames[(playerTurn + 1) % 2] + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
+                paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
+                paragraph.LineHeight = 1;
+                view.history.Document.Blocks.Add(paragraph);
                 view.history.ScrollToEnd();
                 return state;
             }
