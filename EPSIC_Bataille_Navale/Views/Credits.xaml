@@ -8,8 +8,8 @@
       Title="Credits">
 
     <Grid>
-        <Label x:Name="lbl_credits" Content="Jeu de bataille navale&#xa;2019&#xa;Burkhalter Yannis&#xa;Brisset Samuel&#xa;Sidot Antoine" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextBlock.TextAlignment="Center"  Height="455" Width="730"/>
-        <Button x:Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_back_Click"/>
+        <Label Name="lbl_credits" Content="Jeu de bataille navale&#xa;2019&#xa;Burkhalter Yannis&#xa;Brisset Samuel&#xa;Sidot Antoine" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextBlock.TextAlignment="Center"  Height="455" Width="730"/>
+        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_back_Click"/>
 
     </Grid>
 </Page>

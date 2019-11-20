@@ -44,6 +44,11 @@ namespace EPSIC_Bataille_Navale.Views
             Window.GetWindow(this).Content = new Credits();
         }
 
+        private void Btn_settings_Click(object sender, EventArgs e)
+        {
+            Window.GetWindow(this).Content = new Settings();
+        }
+
         private void Btn_demo_Click(object sender, EventArgs e)
         {
             Setup setup = new Setup();

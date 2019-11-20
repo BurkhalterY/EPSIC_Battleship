@@ -12,7 +12,8 @@ namespace EPSIC_Bataille_Navale.Models
         private List<int[]> possibles = new List<int[]>();
         private int[] step = new int[6];
         private byte directions = 0b1111; // urdl
-        private int gridMask = new Random().Next(0, 1);
+        private int gridMask = random.Next(0, 1);
+        private static Random random = new Random();
 
         public AI(GameController controller) {
             this.controller = controller;
@@ -34,7 +35,7 @@ namespace EPSIC_Bataille_Navale.Models
                 }
                 phase = 0;
             }
-            int cellSelected = new Random().Next(0, possibles.Count - 1);
+            int cellSelected = random.Next(possibles.Count);
             int x = possibles[cellSelected][0];
             int y = possibles[cellSelected][1];
             State state = controller.ClickAt(x, y);

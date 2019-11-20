@@ -13,6 +13,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         public int[] clickedCell = new int[0];
         public List<int[]> possibleCells = new List<int[]>();
         public int size;
+        private static Random random = new Random();
 
         public SetupController(Setup view, int size)
         {
@@ -127,16 +128,15 @@ namespace EPSIC_Bataille_Navale.Controllers
 
             while (grid.boatsList.Count > 0)
             {
-                int x = new Random().Next(0, size - 1);
-                int y = new Random().Next(0, size - 1);
-                Click(x, y);
-                if(possibleCells.Count > 0)
+                if (possibleCells.Count > 0)
                 {
-                    int[] cell = possibleCells[new Random().Next(0, possibleCells.Count - 1)];
+                    int[] cell = possibleCells[random.Next(possibleCells.Count)];
                     Click(cell[0], cell[1]);
                 }
                 else
                 {
+                    int x = random.Next(size);
+                    int y = random.Next(size);
                     Click(x, y);
                 }
             }

@@ -46,5 +46,17 @@ namespace EPSIC_Bataille_Navale.Properties {
                 this["boatsList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int nbMines {
+            get {
+                return ((int)(this["nbMines"]));
+            }
+            set {
+                this["nbMines"] = value;
+            }
+        }
     }
 }

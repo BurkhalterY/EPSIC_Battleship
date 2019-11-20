@@ -9,7 +9,7 @@ namespace EPSIC_Bataille_Navale.Models
     {
         public Cell[,] grid;
         public List<Boat> boats = new List<Boat>();
-        public List<int> boatsList = new List<int>(new int[] { 2, 3, 3, 4, 5 });
+        public List<int> boatsList;
 
         public GridModel(int gridSize)
         {
