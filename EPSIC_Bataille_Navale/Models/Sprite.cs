@@ -10,6 +10,7 @@ namespace EPSIC_Bataille_Navale.Models
     public class Sprite
     {
         public Bitmap bitmap;
+        public int angle = 0;
 
         public Sprite(Bitmap bitmap, int x = 0, int y = 0)
         {
@@ -26,17 +27,17 @@ namespace EPSIC_Bataille_Navale.Models
             x *= 32;
             y *= 32;
             Graphics g = Graphics.FromImage(this.bitmap);
+            g.TranslateTransform((float)this.bitmap.Width / 2, (float)this.bitmap.Height / 2);
+            g.RotateTransform(angle);
+            g.TranslateTransform(-(float)this.bitmap.Width / 2, -(float)this.bitmap.Height / 2);
+
             g.DrawImage(bitmap, -x, -y);
             bitmap.Dispose();
         }
 
         public void RotateSprite(Directions direction)
         {
-            Graphics g = Graphics.FromImage(bitmap);
-            g.TranslateTransform((float)bitmap.Width / 2, (float)bitmap.Height / 2);
-            g.RotateTransform((float)direction);
-            g.TranslateTransform(-(float)bitmap.Width / 2, -(float)bitmap.Height / 2);
-            g.DrawImage(bitmap, 0, 0);
+            angle = (int)direction;
         }
 
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]

@@ -10,8 +10,8 @@ namespace EPSIC_Bataille_Navale.Controllers
         private Setup view = null;
         public GridModel grid;
         public string playerName = "";
-        private int[] clickedCell = new int[2];
-        private List<int[]> possibleCells = new List<int[]>();
+        public int[] clickedCell = new int[0];
+        public List<int[]> possibleCells = new List<int[]>();
 
         public SetupController(Setup view, int size)
         {
@@ -136,10 +136,10 @@ namespace EPSIC_Bataille_Navale.Controllers
                     view.EnableCancelButton(true);
                     view.EnableNextButton(grid.boatsList.Count == 0);
                 }
-                clickedCell = new int[] { };
+                clickedCell = new int[0];
                 possibleCells.Clear();
             }
-            view.RefreshGrid(grid, clickedCell, possibleCells);
+            view.RefreshGrid();
         }
 
         public void DeleteLastBoat()
@@ -164,7 +164,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     view.EnableCancelButton(false);
                 }
                 view.EnableNextButton(false);
-                view.RefreshGrid(grid, clickedCell, possibleCells);
+                view.RefreshGrid();
             }
         }
 

@@ -2,6 +2,7 @@
 using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -23,6 +24,7 @@ namespace EPSIC_Bataille_Navale.Views
             InitializeComponent();
             controller = new SetupController(this, size);
             MakeGrid();
+            RefreshGrid();
         }
 
         private void Btn_cancel_Click(object sender, EventArgs e)
@@ -84,7 +86,6 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
                     grid[i, j].Width = cellSize;
                     grid[i, j].Height = cellSize;
-                    grid[i, j].Background = Brushes.White;
                     grid[i, j].Click += new RoutedEventHandler(CellClick);
                     gridView.Children.Add(grid[i, j]);
                 }
@@ -98,26 +99,29 @@ namespace EPSIC_Bataille_Navale.Views
             controller.Click(customButton.x, customButton.y);
         }
 
-        public void RefreshGrid(GridModel gridData, int[] clickedCell, List<int[]> possibleCells)
+        public void RefreshGrid()
         {
-            for (int i = 0; i < gridData.grid.GetLength(0); i++)
+            for (int i = 0; i < controller.grid.grid.GetLength(0); i++)
             {
-                for (int j = 0; j < gridData.grid.GetLength(1); j++)
+                for (int j = 0; j < controller.grid.grid.GetLength(1); j++)
                 {
-                    grid[i, j].Background = Brushes.White;
-                    if (gridData.grid[i, j].boat != null)
+                    Sprite sprite = new Sprite(Properties.Resources.water); ;
+                    Boat boat = controller.grid.grid[i, j].boat;
+                    if (boat != null)
                     {
-                        grid[i, j].Background = Brushes.DarkBlue;
+                        sprite.RotateSprite(boat.orientation);
+                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grid.grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1, 0);
                     }
+                    grid[i, j].Background = sprite.ToBrush();
                 }
             }
-            for (int i = 0; i < possibleCells.Count; i++)
+            for (int i = 0; i < controller.possibleCells.Count; i++)
             {
-                grid[possibleCells[i][0], possibleCells[i][1]].Background = Brushes.LightGreen;
+                grid[controller.possibleCells[i][0], controller.possibleCells[i][1]].Background = System.Windows.Media.Brushes.LightGreen;
             }
-            if (clickedCell.Length == 2)
+            if (controller.clickedCell.Length == 2)
             {
-                grid[clickedCell[0], clickedCell[1]].Background = Brushes.Yellow;
+                grid[controller.clickedCell[0], controller.clickedCell[1]].Background = System.Windows.Media.Brushes.Yellow;
             }
         }
 

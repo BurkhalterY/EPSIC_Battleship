@@ -49,8 +49,8 @@ namespace EPSIC_Bataille_Navale.Views
                             break;
                         case State.fullBoat:
                             Boat boat = controller.grids[1].grid[i, j].boat;
+                            sprite.RotateSprite(boat.orientation);
                             sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[1].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[1].grid[i, j]) - 1, 0);
-                            sprite.RotateSprite(controller.grids[1].grid[i, j].boat.orientation);
                             break;
                     }
                     grid[i, j].Background = sprite.ToBrush();
@@ -59,8 +59,8 @@ namespace EPSIC_Bataille_Navale.Views
                     if (controller.grids[0].grid[i, j].boat != null)
                     {
                         Boat boat = controller.grids[0].grid[i, j].boat;
+                        sprite.RotateSprite(boat.orientation);
                         sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[0].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[0].grid[i, j]) - 1, 0);
-                        sprite.RotateSprite(controller.grids[0].grid[i, j].boat.orientation);
                     }
                     switch (controller.grids[0].grid[i, j].state)
                     {

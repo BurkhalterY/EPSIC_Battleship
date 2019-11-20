@@ -15,6 +15,6 @@
         <Label x:Name="lbl_pseudo" Content="Votre nom :" HorizontalAlignment="Left" Margin="259,260,0,0" VerticalAlignment="Top" Width="74"/>
         <TextBox x:Name="txt_pseudo" HorizontalAlignment="Left" Height="23" Margin="338,264,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="153"/>
 
-        <Button x:Name="btn_demo" Content="Démo (IA vs. IA)" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="74" Click="Btn_demo_Click"/>
+        <Button x:Name="btn_demo" Content="Démo (IA vs. IA)" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="153" Click="Btn_demo_Click"/>
     </Grid>
 </Page>
