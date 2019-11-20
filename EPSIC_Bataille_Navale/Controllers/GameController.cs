@@ -13,10 +13,12 @@ namespace EPSIC_Bataille_Navale.Controllers
         public string[] playersNames = new string[2];
         public int playerTurn = 0;
         public bool finish = false;
+        public int size;
 
         public GameController(Game view)
         {
             this.view = view;
+            size = view.size;
         }
 
         public virtual void Click(int x, int y)
@@ -37,9 +39,9 @@ namespace EPSIC_Bataille_Navale.Controllers
                     if (boat.cells.Count == boat.touchedCell)
                     {
                         grids[playerTurn].grid[x, y].state = State.fullBoat;
-                        for (int i = 0; i < grids[playerTurn].grid.GetLength(0); i++)
+                        for (int i = 0; i < size; i++)
                         {
-                            for (int j = 0; j < grids[playerTurn].grid.GetLength(1); j++)
+                            for (int j = 0; j < size; j++)
                             {
                                 if (grids[playerTurn].grid[i, j].boat == boat)
                                 {

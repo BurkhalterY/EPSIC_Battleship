@@ -1,4 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Security.Principal;
 using System.Windows;
@@ -26,7 +27,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_solo_Click(object sender, EventArgs e)
         {
-            Setup setup = new Setup(0);
+            Setup setup = new Setup();
             setup.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
             Window.GetWindow(this).Content = setup;
         }
@@ -45,13 +46,13 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_demo_Click(object sender, EventArgs e)
         {
-            Setup setup = new Setup(1);
+            Setup setup = new Setup();
             setup.controller.AIChoise();
 
-            Setup setup2 = new Setup(1);
+            Setup setup2 = new Setup();
             setup2.controller.AIChoise();
 
-            Game game = new Game(setup.controller.grid.grid.GetLength(0), 3);
+            Game game = new Game(GameType.Demo, setup.size);
             game.controller.grids = new Models.GridModel[] { setup.controller.grid, setup2.controller.grid };
             game.controller.playersNames = new string[] { "IA1", "IA2" };
             Window.GetWindow(this).Content = game;

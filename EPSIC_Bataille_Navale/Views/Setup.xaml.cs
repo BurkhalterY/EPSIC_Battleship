@@ -1,11 +1,9 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -16,12 +14,12 @@ namespace EPSIC_Bataille_Navale.Views
     {
         public SetupController controller;
         private CustomButton[,] grid;
-        public int size = 10;
-        public int gameType = 0;
+        public int size;
 
-        public Setup(int gameType) : base()
+        public Setup() : base()
         {
             InitializeComponent();
+            size = Properties.Settings.Default.size;
             controller = new SetupController(this, size);
             MakeGrid();
             RefreshGrid();
@@ -49,25 +47,14 @@ namespace EPSIC_Bataille_Navale.Views
 
         public void Finish()
         {
-            if (gameType == 0)
-            {
-                Setup setup = new Setup(1);
-                setup.controller.AIChoise();
+            Setup setup = new Setup();
+            setup.controller.AIChoise();
 
-                Game game = new Game(grid.GetLength(0), 0);
-                game.controller.grids = new Models.GridModel[] { controller.grid, setup.controller.grid };
-                game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
-                Window.GetWindow(this).Content = game;
-                game.RefreshGrid();
-            }
-            else if (gameType == 2 || gameType == 3)
-            {
-                /*Game game = new Game(grid.GetLength(0), gameType);
-                game.controller.grids = new Models.Grid[] { controller.grid, setup.controller.grid };
-                game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
-                game.MakeSecondGrid();
-                Window.GetWindow(this).Content = game;*/
-            }
+            Game game = new Game(GameType.Solo, size);
+            game.controller.grids = new Models.GridModel[] { controller.grid, setup.controller.grid };
+            game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
+            Window.GetWindow(this).Content = game;
+            game.RefreshGrid();
         }
 
         protected void MakeGrid()
@@ -101,16 +88,16 @@ namespace EPSIC_Bataille_Navale.Views
 
         public void RefreshGrid()
         {
-            for (int i = 0; i < controller.grid.grid.GetLength(0); i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < controller.grid.grid.GetLength(1); j++)
+                for (int j = 0; j < size; j++)
                 {
                     Sprite sprite = new Sprite(Properties.Resources.water); ;
                     Boat boat = controller.grid.grid[i, j].boat;
                     if (boat != null)
                     {
                         sprite.RotateSprite(boat.orientation);
-                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grid.grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1, 0);
+                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Direction.Right || boat.orientation == Direction.Down ? boat.cells.IndexOf(controller.grid.grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1, 0);
                     }
                     grid[i, j].Background = sprite.ToBrush();
                 }

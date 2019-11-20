@@ -4,7 +4,6 @@ using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -17,26 +16,27 @@ namespace EPSIC_Bataille_Navale.Views
         private CustomButton[,] grid;
         private CustomButton[,] gridSecond;
         public RichTextBox history;
-        private int size = 10;
-        public int gameType = 0;
+        public int size;
+        public GameType gameType;
 
-        public Game(int size, int code) : base()
+        public Game(GameType gameType, int size) : base()
         {
             InitializeComponent();
+            this.gameType = gameType;
             this.size = size;
-            switch (code)
+            switch (gameType)
             {
-                case 0: controller = new SoloGameController(this); break;
-                case 3: controller = new DemoGameController(this); break;
+                case GameType.Solo: controller = new SoloGameController(this); break;
+                case GameType.Demo: controller = new DemoGameController(this); break;
             }
             MakeGrid();
         }
 
         public void RefreshGrid()
         {
-            for (int i = 0; i < controller.grids[1].grid.GetLength(0); i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < controller.grids[1].grid.GetLength(1); j++)
+                for (int j = 0; j < size; j++)
                 {
                     Sprite sprite = new Sprite(Properties.Resources.water);
                     switch (controller.grids[1].grid[i, j].state)
@@ -50,7 +50,7 @@ namespace EPSIC_Bataille_Navale.Views
                         case State.fullBoat:
                             Boat boat = controller.grids[1].grid[i, j].boat;
                             sprite.RotateSprite(boat.orientation);
-                            sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[1].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[1].grid[i, j]) - 1, 0);
+                            sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Direction.Right || boat.orientation == Direction.Down ? boat.cells.IndexOf(controller.grids[1].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[1].grid[i, j]) - 1, 0);
                             break;
                     }
                     grid[i, j].Background = sprite.ToBrush();
@@ -60,7 +60,7 @@ namespace EPSIC_Bataille_Navale.Views
                     {
                         Boat boat = controller.grids[0].grid[i, j].boat;
                         sprite.RotateSprite(boat.orientation);
-                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Directions.Right || boat.orientation == Directions.Down ? boat.cells.IndexOf(controller.grids[0].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[0].grid[i, j]) - 1, 0);
+                        sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Direction.Right || boat.orientation == Direction.Down ? boat.cells.IndexOf(controller.grids[0].grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grids[0].grid[i, j]) - 1, 0);
                     }
                     switch (controller.grids[0].grid[i, j].state)
                     {
@@ -135,6 +135,5 @@ namespace EPSIC_Bataille_Navale.Views
             CustomButton customButton = (CustomButton)sender;
             controller.Click(customButton.x, customButton.y);
         }
-
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using EPSIC_Bataille_Navale.Properties;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EPSIC_Bataille_Navale.Models
 {
@@ -10,10 +13,11 @@ namespace EPSIC_Bataille_Navale.Models
 
         public GridModel(int gridSize)
         {
+            boatsList = Settings.Default.boatsList.Split(',').Select(Int32.Parse).ToList();
             grid = new Cell[gridSize, gridSize];
-            for(int i = 0; i < grid.GetLength(0); i++)
+            for(int i = 0; i < gridSize; i++)
             {
-                for (int j = 0; j < grid.GetLength(1); j++)
+                for (int j = 0; j < gridSize; j++)
                 {
                     grid[i, j] = new Cell();
                 }

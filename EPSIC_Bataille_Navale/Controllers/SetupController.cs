@@ -12,10 +12,12 @@ namespace EPSIC_Bataille_Navale.Controllers
         public string playerName = "";
         public int[] clickedCell = new int[0];
         public List<int[]> possibleCells = new List<int[]>();
+        public int size;
 
         public SetupController(Setup view, int size)
         {
             this.view = view;
+            this.size = size;
             grid = new GridModel(size);
         }
 
@@ -35,7 +37,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                                 bool possible = true;
                                 for (int j = 0; j < grid.boatsList[i]; j++)
                                 {
-                                    if (x + j * h < 0 || x + j * h >= grid.grid.GetLength(0) || y + j * v < 0 || y + j * v >= grid.grid.GetLength(1))
+                                    if (x + j * h < 0 || x + j * h >= size || y + j * v < 0 || y + j * v >= size)
                                     {
                                         possible = false;
                                         break;
@@ -72,7 +74,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     int minY = Math.Min(y, clickedCell[1]);
                     int maxY = Math.Max(y, clickedCell[1]);
                     Boat boat = new Boat();
-                    boat.orientation = (Directions)(Math.Atan2(y - clickedCell[1], x - clickedCell[0]) * 180.0 / Math.PI);
+                    boat.orientation = (Direction)(Math.Atan2(y - clickedCell[1], x - clickedCell[0]) * 180.0 / Math.PI);
 
                     for (int i = minX; i <= maxX; i++)
                     {
@@ -100,9 +102,9 @@ namespace EPSIC_Bataille_Navale.Controllers
                 Boat boat = grid.boats[grid.boats.Count - 1];
                 grid.boats.RemoveAt(grid.boats.Count - 1);
                 grid.boatsList.Add(boat.cells.Count);
-                for (int i = 0; i < grid.grid.GetLength(0); i++)
+                for (int i = 0; i < size; i++)
                 {
-                    for (int j = 0; j < grid.grid.GetLength(1); j++)
+                    for (int j = 0; j < size ; j++)
                     {
                         if (grid.grid[i, j].boat == boat)
                         {
@@ -125,8 +127,8 @@ namespace EPSIC_Bataille_Navale.Controllers
 
             while (grid.boatsList.Count > 0)
             {
-                int x = new Random().Next(0, grid.grid.GetLength(0) - 1);
-                int y = new Random().Next(0, grid.grid.GetLength(1) - 1);
+                int x = new Random().Next(0, size - 1);
+                int y = new Random().Next(0, size - 1);
                 Click(x, y);
                 if(possibleCells.Count > 0)
                 {

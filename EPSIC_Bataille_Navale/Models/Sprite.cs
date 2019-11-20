@@ -35,7 +35,7 @@ namespace EPSIC_Bataille_Navale.Models
             bitmap.Dispose();
         }
 
-        public void RotateSprite(Directions direction)
+        public void RotateSprite(Direction direction)
         {
             angle = (int)direction;
         }
