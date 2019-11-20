@@ -26,80 +26,31 @@ namespace EPSIC_Bataille_Navale.Controllers
                 clickedCell = new int[] { x, y };
                 for (int i = 0; i < grid.boatsList.Count; i++)
                 {
-                    // --- RIGHT ---
-                    bool possible = true;
-                    for (int j = 0; j < grid.boatsList[i]; j++)
+                    for (int h = -1; h <= 1; h++)
                     {
-                        if (x + j >= grid.grid.GetLength(0))
+                        for (int v = -1; v <= 1; v++)
                         {
-                            possible = false;
-                            break;
+                            if(Math.Abs(h) != Math.Abs(v))
+                            {
+                                bool possible = true;
+                                for (int j = 0; j < grid.boatsList[i]; j++)
+                                {
+                                    if (x + j * h < 0 || x + j * h >= grid.grid.GetLength(0) || y + j * v < 0 || y + j * v >= grid.grid.GetLength(1))
+                                    {
+                                        possible = false;
+                                        break;
+                                    }
+                                    if (grid.grid[x + j * h, y + j * v].boat != null)
+                                    {
+                                        possible = false;
+                                    }
+                                }
+                                if (possible)
+                                {
+                                    possibleCells.Add(new int[] { x + (grid.boatsList[i] - 1) * h, y + (grid.boatsList[i] - 1) * v });
+                                }
+                            }
                         }
-                        if (grid.grid[x + j, y].boat != null)
-                        {
-                            possible = false;
-                        }
-                    }
-                    if (possible)
-                    {
-                        possibleCells.Add(new int[] { x + grid.boatsList[i] - 1, y });
-                    }
-
-                    // --- LEFT ---
-                    possible = true;
-                    for (int j = 0; j < grid.boatsList[i]; j++)
-                    {
-                        if (x - j < 0)
-                        {
-                            possible = false;
-                            break;
-                        }
-                        if (grid.grid[x - j, y].boat != null)
-                        {
-                            possible = false;
-                        }
-                    }
-                    if (possible)
-                    {
-                        possibleCells.Add(new int[] { x - grid.boatsList[i] + 1, y });
-                    }
-
-                    // --- DOWN ---
-                    possible = true;
-                    for (int j = 0; j < grid.boatsList[i]; j++)
-                    {
-                        if (y + j >= grid.grid.GetLength(1))
-                        {
-                            possible = false;
-                            break;
-                        }
-                        if (grid.grid[x, y + j].boat != null)
-                        {
-                            possible = false;
-                        }
-                    }
-                    if (possible)
-                    {
-                        possibleCells.Add(new int[] { x, y + grid.boatsList[i] - 1 });
-                    }
-
-                    // --- UP ---
-                    possible = true;
-                    for (int j = 0; j < grid.boatsList[i]; j++)
-                    {
-                        if (y - j < 0)
-                        {
-                            possible = false;
-                            break;
-                        }
-                        if (grid.grid[x, y - j].boat != null)
-                        {
-                            possible = false;
-                        }
-                    }
-                    if (possible)
-                    {
-                        possibleCells.Add(new int[] { x, y - grid.boatsList[i] + 1 });
                     }
                 }
             }
