@@ -1,7 +1,6 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
 using System;
-using System.Threading;
 using System.Windows.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers

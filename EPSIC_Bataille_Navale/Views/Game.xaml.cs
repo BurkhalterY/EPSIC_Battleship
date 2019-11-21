@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -18,7 +19,7 @@ namespace EPSIC_Bataille_Navale.Views
         public RichTextBox history;
         public int size;
         public GameType gameType;
-        public bool clickable = true;
+        public bool clickable;
 
         public Game(GameType gameType, int size) : base()
         {
@@ -90,7 +91,7 @@ namespace EPSIC_Bataille_Navale.Views
         public void Finish(string winnerName)
         {
             Home home = new Home();
-            Window.GetWindow(this).Content = home;
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = home;
             home.SetTitle(winnerName + " a gagné !");
         }
 

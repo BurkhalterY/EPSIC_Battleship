@@ -8,7 +8,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 {
     public class SetupController
     {
-        private Setup view = null;
+        private Setup view;
         public GridModel grid;
         public string playerName = "";
         public int[] clickedCell = new int[0];

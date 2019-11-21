@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -20,7 +21,7 @@ namespace EPSIC_Bataille_Navale.Views
             txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
         }
 
-        private void Btn_reset_Click(object sender, RoutedEventArgs e)
+        private void Btn_reset_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Reset();
             txt_size.Text = Properties.Settings.Default.size.ToString();
@@ -29,12 +30,12 @@ namespace EPSIC_Bataille_Navale.Views
             txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
         }
 
-        private void Btn_cancel_Click(object sender, RoutedEventArgs e)
+        private void Btn_cancel_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(this).Content = new Home();
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
         }
 
-        private void Btn_save_Click(object sender, RoutedEventArgs e)
+        private void Btn_save_Click(object sender, EventArgs e)
         {
             if (Valid_size() && Valid_boatsList() && Valid_nbMines() && Valid_iaSleepTime())
             {
@@ -43,7 +44,7 @@ namespace EPSIC_Bataille_Navale.Views
                 Properties.Settings.Default.nbMines = int.Parse(txt_nbMines.Text);
                 Properties.Settings.Default.iaSleepTime = double.Parse(txt_iaSleepTime.Text);
                 Properties.Settings.Default.Save();
-                Window.GetWindow(this).Content = new Home();
+                Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
             }
         }
 
@@ -74,7 +75,7 @@ namespace EPSIC_Bataille_Navale.Views
         {
             try
             {
-                List<int> list = txt_boatsList.Text.Split(',').Select(Int32.Parse).ToList();
+                List<int> list = txt_boatsList.Text.Split(',').Select(int.Parse).ToList();
                 /*for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i] < 2 || list[i] > int.Parse(txt_size.Text))

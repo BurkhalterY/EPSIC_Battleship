@@ -1,9 +1,9 @@
-﻿using EPSIC_Bataille_Navale.Controllers;
-using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -12,12 +12,14 @@ namespace EPSIC_Bataille_Navale.Views
     /// </summary>
     public partial class Home : Page
     {
-        private HomeController controller;
+        private Setup setupP1;
+        private Setup setupP2;
+        private GameType gameType;
+
         public Home()
         {
             InitializeComponent();
             txt_pseudo.Text = WindowsIdentity.GetCurrent().Name;
-            controller = new HomeController(this);
         }
 
         public void SetTitle(string title)
@@ -27,43 +29,70 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_solo_Click(object sender, EventArgs e)
         {
-            Setup setup = new Setup();
-            setup.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
-            Window.GetWindow(this).Content = setup;
+            gameType = GameType.Solo;
+
+            setupP1 = new Setup();
+            setupP1.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = setupP1;
+            setupP1.btn_next.Click += new RoutedEventHandler(StartGame);
+
+            setupP2 = new Setup();
+            setupP2.controller.AIChoise();
         }
 
         private void Btn_online_Click(object sender, EventArgs e)
         {
-            OnlineConfig onlineConfig = new OnlineConfig();
+            /*OnlineConfig onlineConfig = new OnlineConfig();
             onlineConfig.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
-            Window.GetWindow(this).Content = onlineConfig;
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = onlineConfig;*/
         }
 
         private void Btn_credits_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(this).Content = new Credits();
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Credits();
         }
 
         private void Btn_settings_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(this).Content = new Settings();
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Settings();
         }
 
         private void Btn_demo_Click(object sender, EventArgs e)
         {
-            Setup setup = new Setup();
-            setup.controller.AIChoise();
+            gameType = GameType.Demo;
+         
+            setupP1 = new Setup();
+            setupP1.controller.AIChoise();
+            setupP1.controller.playerName = "IA1";
 
-            Setup setup2 = new Setup();
-            setup2.controller.AIChoise();
+            setupP2 = new Setup();
+            setupP2.controller.AIChoise();
+            setupP2.controller.playerName = "IA2";
 
-            Game game = new Game(GameType.Demo, setup.size);
-            game.controller.grids = new GridModel[] { setup.controller.grid, setup2.controller.grid };
-            game.controller.playersNames = new string[] { "IA1", "IA2" };
-            game.clickable = false;
-            Window.GetWindow(this).Content = game;
+            StartGame();
+        }
+
+        private void StartGame(object sender, EventArgs e)
+        {
+            StartGame();
+        }
+
+        private void StartGame()
+        {
+            Game game = new Game(gameType, setupP1.size);
+            game.controller.grids = new GridModel[] { setupP1.controller.grid, setupP2.controller.grid };
+            game.controller.playersNames = new string[] { setupP2.controller.playerName, setupP1.controller.playerName };
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = game;
             game.RefreshGrid();
-            game.controller.Click();
+
+            if (gameType == GameType.Solo)
+            {
+                game.clickable = true;
+            }
+            else if (gameType == GameType.Demo)
+            {
+                game.controller.Click();
+            }
         }
     }
 }

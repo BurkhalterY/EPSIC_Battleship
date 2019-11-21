@@ -8,8 +8,8 @@
       Title="Setup">
 
     <Grid>
-        <Button Name="btn_cancel" Content="&lt;--" HorizontalAlignment="Left" Margin="665,10,0,0" VerticalAlignment="Top" Width="75" Click="Btn_cancel_Click"/>
-        <Button Name="btn_next" Content="Suivant" HorizontalAlignment="Left" Margin="665,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_next_Click"/>
+        <Button Name="btn_cancel" Content="&lt;--" HorizontalAlignment="Left" Margin="665,10,0,0" VerticalAlignment="Top" Width="75" Click="Btn_cancel_Click" IsEnabled="False"/>
+        <Button Name="btn_next" Content="Suivant" HorizontalAlignment="Left" Margin="665,470,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False"/>
         <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="585,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_back_Click"/>
 
     </Grid>

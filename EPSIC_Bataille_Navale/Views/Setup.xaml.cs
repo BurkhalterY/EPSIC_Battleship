@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -24,38 +25,6 @@ namespace EPSIC_Bataille_Navale.Views
             controller = new SetupController(this, size);
             MakeGrid();
             RefreshGrid();
-        }
-
-        private void Btn_cancel_Click(object sender, EventArgs e)
-        {
-            controller.DeleteLastBoat();
-        }
-
-        public void EnableNextButton(bool value)
-        {
-            btn_next.IsEnabled = value;
-        }
-
-        public void EnableCancelButton(bool value)
-        {
-            btn_cancel.IsEnabled = value;
-        }
-
-        private void Btn_next_Click(object sender, EventArgs e)
-        {
-            Finish();
-        }
-
-        public void Finish()
-        {
-            Setup setup = new Setup();
-            setup.controller.AIChoise();
-
-            Game game = new Game(GameType.Solo, size);
-            game.controller.grids = new Models.GridModel[] { controller.grid, setup.controller.grid };
-            game.controller.playersNames = new string[] { controller.playerName, setup.controller.playerName };
-            Window.GetWindow(this).Content = game;
-            game.RefreshGrid();
         }
 
         protected void MakeGrid()
@@ -79,18 +48,6 @@ namespace EPSIC_Bataille_Navale.Views
                     gridView.Children.Add(grid[i, j]);
                 }
             }
-        }
-
-        protected void CellClick(object sender, EventArgs e)
-        {
-            CustomButton customButton = (CustomButton)sender;
-            controller.Click(customButton.x, customButton.y);
-        }
-
-        protected void CellRightClick(object sender, MouseButtonEventArgs e)
-        {
-            CustomButton customButton = (CustomButton)sender;
-            controller.RightClick(customButton.x, customButton.y);
         }
 
         public void RefreshGrid()
@@ -125,10 +82,37 @@ namespace EPSIC_Bataille_Navale.Views
                 grid[controller.clickedCell[0], controller.clickedCell[1]].Background = System.Windows.Media.Brushes.Yellow;
             }
         }
-
-        private void Btn_back_Click(object sender, RoutedEventArgs e)
+        
+        protected void CellClick(object sender, EventArgs e)
         {
-            Window.GetWindow(this).Content = new Home();
+            CustomButton customButton = (CustomButton)sender;
+            controller.Click(customButton.x, customButton.y);
+        }
+
+        protected void CellRightClick(object sender, MouseButtonEventArgs e)
+        {
+            CustomButton customButton = (CustomButton)sender;
+            controller.RightClick(customButton.x, customButton.y);
+        }
+
+        private void Btn_cancel_Click(object sender, EventArgs e)
+        {
+            controller.DeleteLastBoat();
+        }
+
+        private void Btn_back_Click(object sender, EventArgs e)
+        {
+            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
+        }
+
+        public void EnableNextButton(bool value)
+        {
+            btn_next.IsEnabled = value;
+        }
+
+        public void EnableCancelButton(bool value)
+        {
+            btn_cancel.IsEnabled = value;
         }
     }
 }

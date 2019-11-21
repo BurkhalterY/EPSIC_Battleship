@@ -8,7 +8,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 {
     public abstract class GameController
     {
-        protected Game view = null;
+        protected Game view;
         public GridModel[] grids;
         public string[] playersNames = new string[2];
         public int playerTurn = 0;
@@ -71,7 +71,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                 }
                 view.RefreshGrid();
                 Paragraph paragraph = new Paragraph();
-                paragraph.Inlines.Add(playersNames[(playerTurn + 1) % 2] + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
+                paragraph.Inlines.Add(playersNames[playerTurn] + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
                 paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
                 paragraph.LineHeight = 1;
                 view.history.Document.Blocks.Add(paragraph);
