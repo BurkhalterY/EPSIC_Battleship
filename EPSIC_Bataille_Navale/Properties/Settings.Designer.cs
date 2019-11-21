@@ -58,5 +58,17 @@ namespace EPSIC_Bataille_Navale.Properties {
                 this["nbMines"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public double iaSleepTime {
+            get {
+                return ((double)(this["iaSleepTime"]));
+            }
+            set {
+                this["iaSleepTime"] = value;
+            }
+        }
     }
 }

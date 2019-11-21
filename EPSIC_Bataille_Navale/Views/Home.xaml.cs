@@ -58,10 +58,12 @@ namespace EPSIC_Bataille_Navale.Views
             setup2.controller.AIChoise();
 
             Game game = new Game(GameType.Demo, setup.size);
-            game.controller.grids = new Models.GridModel[] { setup.controller.grid, setup2.controller.grid };
+            game.controller.grids = new GridModel[] { setup.controller.grid, setup2.controller.grid };
             game.controller.playersNames = new string[] { "IA1", "IA2" };
+            game.clickable = false;
             Window.GetWindow(this).Content = game;
-            game.controller.Click(0, 0);
+            game.RefreshGrid();
+            game.controller.Click();
         }
     }
 }

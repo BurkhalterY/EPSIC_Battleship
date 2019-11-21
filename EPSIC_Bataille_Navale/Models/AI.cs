@@ -35,6 +35,21 @@ namespace EPSIC_Bataille_Navale.Models
                 }
                 phase = 0;
             }
+            if (possibles.Count == 0)
+            {
+                gridMask = (gridMask + 1) % 2;
+                for (int i = 0; i < controller.size; i++)
+                {
+                    for (int j = 0; j < controller.size; j++)
+                    {
+                        if (!IsAldryClicked(i, j) && (i + gridMask) % 2 == j % 2)
+                        {
+                            possibles.Add(new int[] { i, j });
+                        }
+                    }
+                }
+                phase = 0;
+            }
             int cellSelected = random.Next(possibles.Count);
             int x = possibles[cellSelected][0];
             int y = possibles[cellSelected][1];

@@ -1,6 +1,6 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
-using System;
+using System.Media;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -21,7 +21,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             size = view.size;
         }
 
-        public virtual void Click(int x, int y)
+        public virtual void Click(int x = 0, int y = 0)
         {
 
         }
@@ -52,7 +52,6 @@ namespace EPSIC_Bataille_Navale.Controllers
                         grids[playerTurn].boats.Remove(grids[playerTurn].grid[x, y].boat);
                         if (grids[playerTurn].boats.Count == 0)
                         {
-                            playerTurn = (playerTurn + 1) % 2;
                             finish = true;
                         }
                         state = State.fullBoat;
@@ -62,12 +61,13 @@ namespace EPSIC_Bataille_Navale.Controllers
                         grids[playerTurn].grid[x, y].state = State.boat;
                         state = State.boat;
                     }
-
+                    new SoundPlayer(Properties.Resources.explosion).Play();
                 }
                 else
                 {
                     grids[playerTurn].grid[x, y].state = State.noBoat;
                     state = State.noBoat;
+                    new SoundPlayer(Properties.Resources.splash).Play();
                 }
                 view.RefreshGrid();
                 Paragraph paragraph = new Paragraph();

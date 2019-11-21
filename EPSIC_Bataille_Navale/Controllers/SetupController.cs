@@ -2,6 +2,7 @@
 using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -13,6 +14,9 @@ namespace EPSIC_Bataille_Navale.Controllers
         public int[] clickedCell = new int[0];
         public List<int[]> possibleCells = new List<int[]>();
         public int size;
+        public List<Boat> boats = new List<Boat>();
+        public List<int> boatsList;
+        public int nbMines;
         private static Random random = new Random();
 
         public SetupController(Setup view, int size)
@@ -20,6 +24,8 @@ namespace EPSIC_Bataille_Navale.Controllers
             this.view = view;
             this.size = size;
             grid = new GridModel(size);
+            boatsList = Properties.Settings.Default.boatsList.Split(',').Select(Int32.Parse).ToList();
+            nbMines = Properties.Settings.Default.nbMines;
         }
 
         public void Click(int x, int y)
@@ -27,7 +33,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (possibleCells.Count == 0)
             {
                 clickedCell = new int[] { x, y };
-                for (int i = 0; i < grid.boatsList.Count; i++)
+                for (int i = 0; i < boatsList.Count; i++)
                 {
                     for (int h = -1; h <= 1; h++)
                     {
@@ -36,7 +42,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                             if(Math.Abs(h) != Math.Abs(v))
                             {
                                 bool possible = true;
-                                for (int j = 0; j < grid.boatsList[i]; j++)
+                                for (int j = 0; j < boatsList[i]; j++)
                                 {
                                     if (x + j * h < 0 || x + j * h >= size || y + j * v < 0 || y + j * v >= size)
                                     {
@@ -50,7 +56,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                                 }
                                 if (possible)
                                 {
-                                    possibleCells.Add(new int[] { x + (grid.boatsList[i] - 1) * h, y + (grid.boatsList[i] - 1) * v });
+                                    possibleCells.Add(new int[] { x + (boatsList[i] - 1) * h, y + (boatsList[i] - 1) * v });
                                 }
                             }
                         }
@@ -85,10 +91,11 @@ namespace EPSIC_Bataille_Navale.Controllers
                             boat.cells.Add(grid.grid[i, j]);
                         }
                     }
+                    boats.Add(boat);
                     grid.boats.Add(boat);
-                    grid.boatsList.Remove(boat.cells.Count);
+                    boatsList.Remove(boat.cells.Count);
                     view.EnableCancelButton(true);
-                    view.EnableNextButton(grid.boatsList.Count == 0);
+                    view.EnableNextButton(boatsList.Count == 0 && nbMines == 0);
                 }
                 clickedCell = new int[0];
                 possibleCells.Clear();
@@ -96,16 +103,38 @@ namespace EPSIC_Bataille_Navale.Controllers
             view.RefreshGrid();
         }
 
+        public void RightClick(int x, int y)
+        {
+            if(nbMines > 0 && grid.grid[x, y].boat == null)
+            {
+                Boat boat = new Boat() { touchedCell = -1 };
+                grid.grid[x, y].boat = boat;
+                boat.cells.Add(grid.grid[x, y]);
+                boats.Add(boat);
+                nbMines--;
+                view.EnableNextButton(boatsList.Count == 0 && nbMines == 0);
+                view.RefreshGrid();
+            }
+        }
+
         public void DeleteLastBoat()
         {
-            if(grid.boats.Count > 0)
+            if (boats.Count > 0)
             {
-                Boat boat = grid.boats[grid.boats.Count - 1];
-                grid.boats.RemoveAt(grid.boats.Count - 1);
-                grid.boatsList.Add(boat.cells.Count);
+                Boat boat = boats[boats.Count - 1];
+                boats.RemoveAt(boats.Count - 1);
+                if (boat.cells.Count == 1)
+                {
+                    nbMines++;
+                }
+                else
+                {
+                    boatsList.Add(boat.cells.Count);
+                    grid.boats.Remove(boat);
+                }
                 for (int i = 0; i < size; i++)
                 {
-                    for (int j = 0; j < size ; j++)
+                    for (int j = 0; j < size; j++)
                     {
                         if (grid.grid[i, j].boat == boat)
                         {
@@ -113,7 +142,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                         }
                     }
                 }
-                if (grid.boats.Count == 0)
+                if (boats.Count == 0)
                 {
                     view.EnableCancelButton(false);
                 }
@@ -126,7 +155,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             playerName = "L'IA"; 
 
-            while (grid.boatsList.Count > 0)
+            while (boatsList.Count > 0)
             {
                 if (possibleCells.Count > 0)
                 {
@@ -139,6 +168,12 @@ namespace EPSIC_Bataille_Navale.Controllers
                     int y = random.Next(size);
                     Click(x, y);
                 }
+            }
+            while (nbMines > 0)
+            {
+                int x = random.Next(size);
+                int y = random.Next(size);
+                RightClick(x, y);
             }
         }
     }

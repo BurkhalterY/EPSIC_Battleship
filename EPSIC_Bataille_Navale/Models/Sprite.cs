@@ -31,8 +31,15 @@ namespace EPSIC_Bataille_Navale.Models
             g.RotateTransform(angle);
             g.TranslateTransform(-(float)this.bitmap.Width / 2, -(float)this.bitmap.Height / 2);
 
-            g.DrawImage(bitmap, -x, -y);
-            bitmap.Dispose();
+            if (bitmap != null)
+            {
+                g.DrawImage(bitmap, -x, -y);
+                bitmap.Dispose();
+            }
+            else
+            {
+                g.FillRectangle(System.Drawing.Brushes.Red, 0, 0, 32, 32);
+            }
         }
 
         public void RotateSprite(Direction direction)

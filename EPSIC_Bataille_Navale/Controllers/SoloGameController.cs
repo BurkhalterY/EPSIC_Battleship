@@ -1,6 +1,7 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
-using System.Threading;
+using System;
+using System.Windows.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -12,21 +13,34 @@ namespace EPSIC_Bataille_Navale.Controllers
             ai = new AI(this);
         }
 
-        public override void Click(int x, int y)
+        public override void Click(int x = 0, int y = 0)
         {
             if (playerTurn == 0)
             {
                 ClickAt(x, y);
             }
-            if (playerTurn == 1)
-            {
-                view.Refresh();
-                //Thread.Sleep(500);
-                ai.AIPlay();
-            }
             if (finish)
             {
                 view.Finish(playersNames[playerTurn]);
+            }
+            else if (playerTurn == 1)
+            {
+                view.clickable = false;
+                DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(Properties.Settings.Default.iaSleepTime) };
+                timer.Start();
+                timer.Tick += (sender, args) =>
+                {
+                    timer.Stop();
+                    ai.AIPlay();
+                    if (finish)
+                    {
+                        view.Finish(playersNames[playerTurn]);
+                    }
+                    else
+                    {
+                        view.clickable = true;
+                    }
+                };
             }
         }
     }

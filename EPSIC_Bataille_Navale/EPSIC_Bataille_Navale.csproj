@@ -89,7 +89,6 @@
       <DependentUpon>Credits.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CustomButton.cs" />
-    <Compile Include="Views\ExtensionMethods.cs" />
     <Compile Include="Views\Game.xaml.cs">
       <DependentUpon>Game.xaml</DependentUpon>
     </Compile>
@@ -189,6 +188,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\mine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\explosion.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\splash.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

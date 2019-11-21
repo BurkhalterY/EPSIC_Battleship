@@ -17,6 +17,7 @@ namespace EPSIC_Bataille_Navale.Views
             txt_size.Text = Properties.Settings.Default.size.ToString();
             txt_boatsList.Text = Properties.Settings.Default.boatsList;
             txt_nbMines.Text = Properties.Settings.Default.nbMines.ToString();
+            txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
         }
 
         private void Btn_reset_Click(object sender, RoutedEventArgs e)
@@ -25,6 +26,7 @@ namespace EPSIC_Bataille_Navale.Views
             txt_size.Text = Properties.Settings.Default.size.ToString();
             txt_boatsList.Text = Properties.Settings.Default.boatsList;
             txt_nbMines.Text = Properties.Settings.Default.nbMines.ToString();
+            txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
         }
 
         private void Btn_cancel_Click(object sender, RoutedEventArgs e)
@@ -34,11 +36,12 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_save_Click(object sender, RoutedEventArgs e)
         {
-            if (Valid_size() && Valid_boatsList() && Valid_nbMines())
+            if (Valid_size() && Valid_boatsList() && Valid_nbMines() && Valid_iaSleepTime())
             {
                 Properties.Settings.Default.size = int.Parse(txt_size.Text);
                 Properties.Settings.Default.boatsList = txt_boatsList.Text;
                 Properties.Settings.Default.nbMines = int.Parse(txt_nbMines.Text);
+                Properties.Settings.Default.iaSleepTime = double.Parse(txt_iaSleepTime.Text);
                 Properties.Settings.Default.Save();
                 Window.GetWindow(this).Content = new Home();
             }
@@ -108,6 +111,29 @@ namespace EPSIC_Bataille_Navale.Views
             {
                 MessageBox.Show("La valeur doit être un nombre compris entre 0 et 15.");
                 txt_nbMines.Text = Properties.Settings.Default.size.ToString();
+            }
+            return !error;
+        }
+
+        private bool Valid_iaSleepTime()
+        {
+            bool error = false;
+            double value;
+            if (double.TryParse(txt_iaSleepTime.Text, out value))
+            {
+                if (value < 0 || value > 10)
+                {
+                    error = true;
+                }
+            }
+            else
+            {
+                error = true;
+            }
+            if (error)
+            {
+                MessageBox.Show("La valeur doit être un nombre à virgule compris entre 0 et 10.");
+                txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
             }
             return !error;
         }
