@@ -32,7 +32,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_cancel_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
+            Window.GetWindow(this).Content = new Home();
         }
 
         private void Btn_save_Click(object sender, EventArgs e)
@@ -44,7 +44,7 @@ namespace EPSIC_Bataille_Navale.Views
                 Properties.Settings.Default.nbMines = int.Parse(txt_nbMines.Text);
                 Properties.Settings.Default.iaSleepTime = double.Parse(txt_iaSleepTime.Text);
                 Properties.Settings.Default.Save();
-                Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
+                Window.GetWindow(this).Content = new Home();
             }
         }
 
@@ -71,18 +71,24 @@ namespace EPSIC_Bataille_Navale.Views
             return !error;
         }
 
+        /// <summary>
+        /// Validation du paramètre boatsList
+        /// </summary>
+        /// <returns>isValid</returns>
         private bool Valid_boatsList()
         {
             try
             {
                 List<int> list = txt_boatsList.Text.Split(',').Select(int.Parse).ToList();
-                /*for (int i = 0; i < list.Count; i++)
+                for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i] < 2 || list[i] > int.Parse(txt_size.Text))
                     {
-                        break;
+                        MessageBox.Show("Aucune taille de bateau ne peut être plus grande que la grille.");
+                        txt_boatsList.Text = Properties.Settings.Default.boatsList.ToString();
+                        return false;
                     }
-                }*/
+                }
                 return true;
             }
             catch (FormatException)
@@ -93,6 +99,10 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
+        /// <summary>
+        /// Validation du paramètre nbMines
+        /// </summary>
+        /// <returns>isValid</returns>
         private bool Valid_nbMines()
         {
             bool error = false;
@@ -116,6 +126,10 @@ namespace EPSIC_Bataille_Navale.Views
             return !error;
         }
 
+        /// <summary>
+        /// Validation du paramètre iaSleepTime
+        /// </summary>
+        /// <returns>isValid</returns>
         private bool Valid_iaSleepTime()
         {
             bool error = false;

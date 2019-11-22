@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -27,6 +26,9 @@ namespace EPSIC_Bataille_Navale.Views
             RefreshGrid();
         }
 
+        /// <summary>
+        /// Génère dynamiquement la grille
+        /// </summary>
         protected void MakeGrid()
         {
             grid = new CustomButton[size, size];
@@ -50,6 +52,9 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
+        /// <summary>
+        /// Actualise le sprite des cases de la grille
+        /// </summary>
         public void RefreshGrid()
         {
             for (int i = 0; i < size; i++)
@@ -67,7 +72,13 @@ namespace EPSIC_Bataille_Navale.Views
                         else
                         {
                             sprite.RotateSprite(boat.orientation);
-                            sprite.AddSprite((Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count), boat.orientation == Direction.Right || boat.orientation == Direction.Down ? boat.cells.IndexOf(controller.grid.grid[i, j]) : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1, 0);
+                            Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
+                            sprite.AddSprite(
+                                bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
+                                boat.orientation == Direction.Right || boat.orientation == Direction.Down
+                                    ? boat.cells.IndexOf(controller.grid.grid[i, j])
+                                    : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1
+                            );
                         }
                     }
                     grid[i, j].Background = sprite.ToBrush();
@@ -100,19 +111,14 @@ namespace EPSIC_Bataille_Navale.Views
             controller.DeleteLastBoat();
         }
 
+        private void Btn_random_Click(object sender, EventArgs e)
+        {
+            controller.AIChoise();
+        }
+
         private void Btn_back_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
-        }
-
-        public void EnableNextButton(bool value)
-        {
-            btn_next.IsEnabled = value;
-        }
-
-        public void EnableCancelButton(bool value)
-        {
-            btn_cancel.IsEnabled = value;
+            Window.GetWindow(this).Content = new Home();
         }
     }
 }

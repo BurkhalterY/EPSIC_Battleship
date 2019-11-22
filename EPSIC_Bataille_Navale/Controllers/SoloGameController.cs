@@ -13,6 +13,11 @@ namespace EPSIC_Bataille_Navale.Controllers
             ai = new AI(this);
         }
 
+        /// <summary>
+        /// Gère le tour par tour
+        /// </summary>
+        /// <param name="x">Coordonnée X</param>
+        /// <param name="y">Coordonnée Y</param>
         public override void Click(int x = 0, int y = 0)
         {
             if (playerTurn == 0)

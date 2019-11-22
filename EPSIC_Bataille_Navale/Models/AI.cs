@@ -19,10 +19,14 @@ namespace EPSIC_Bataille_Navale.Models
             this.controller = controller;
         }
 
+        /// <summary>
+        /// Appeler cette fonction pour faire jouer l'IA
+        /// </summary>
         public void AIPlay()
         {
-            if (possibles.Count == 0)
+            while (possibles.Count == 0)
             {
+                //Si la liste des cases possibles est vide, je rajoute toutes celles dans lesquels nous n'avons pas encore tiré
                 for (int i = 0; i < controller.size; i++)
                 {
                     for (int j = 0; j < controller.size; j++)
@@ -34,30 +38,21 @@ namespace EPSIC_Bataille_Navale.Models
                     }
                 }
                 phase = 0;
-            }
-            if (possibles.Count == 0)
-            {
-                gridMask = (gridMask + 1) % 2;
-                for (int i = 0; i < controller.size; i++)
+                if(possibles.Count == 0) // Si toujours vide, je change le masque de la grille
                 {
-                    for (int j = 0; j < controller.size; j++)
-                    {
-                        if (!IsAldryClicked(i, j) && (i + gridMask) % 2 == j % 2)
-                        {
-                            possibles.Add(new int[] { i, j });
-                        }
-                    }
+                    gridMask = (gridMask + 1) % 2;
                 }
-                phase = 0;
             }
+
+            // Tir sur une case aléatoire parmis les possibles
             int cellSelected = random.Next(possibles.Count);
             int x = possibles[cellSelected][0];
             int y = possibles[cellSelected][1];
             State state = controller.ClickAt(x, y);
-            shots.Add(new int[] { x, y });
-            possibles.RemoveAt(cellSelected);
+            shots.Add(new int[] { x, y }); //On l'ajoute à la liste des shots
+            possibles.RemoveAt(cellSelected); //Et on supprime la case de la liste de possibilité
 
-            if (phase == 0)
+            if (phase == 0) // phase 0 = tirs aléatoires
             {
                 if (state == State.boat)
                 {
@@ -66,6 +61,7 @@ namespace EPSIC_Bataille_Navale.Models
                     step[1] = step[3] = step[4] = x;
                     step[0] = step[2] = step[5] = y;
 
+                    // On vide les possibles puis on ajoute chaqu'une des cases adjacentes
                     possibles.Clear();
                     if (y - 1 >= 0 && !IsAldryClicked(x, y - 1))
                     {
@@ -84,11 +80,13 @@ namespace EPSIC_Bataille_Navale.Models
                         possibles.Add(new int[] { x - 1, y });
                     }
                 }
+                //Si state != State.boat, rester en phase 0
             }
-            else if (phase == 1)
+            else if (phase == 1) // phase 1 = tirs cases adjacentes
             {
                 if (state == State.noBoat)
                 {
+                    //Si il n'y a pas de bateau sur la case adjacente, on peut supprimer la direction des directions possibles
                     if (step[0] > y)
                     {
                         directions &= 0b0111;
@@ -108,6 +106,7 @@ namespace EPSIC_Bataille_Navale.Models
                 }
                 else if (state == State.boat)
                 {
+                    //Si 2 bateaux sur la même ligne, on peut supprimer les directions qui ne partagent pas la meme direction
                     if (step[5] == y)
                     {
                         step[1] = Math.Min(step[1], x);
@@ -125,6 +124,7 @@ namespace EPSIC_Bataille_Navale.Models
                 possibles.Clear();
                 if (state != State.fullBoat)
                 {
+                    //On check s'il est possible d'utiliser les direction restantes, si oui : on ajoute la case correspondante
                     if ((directions & 0b1000) == 0b1000 && step[0] - 1 >= 0 && !IsAldryClicked(step[4], step[0] - 1))
                     {
                         possibles.Add(new int[] { step[4], step[0] - 1 });
@@ -143,10 +143,13 @@ namespace EPSIC_Bataille_Navale.Models
                     }
                 }
 
+                //Si possibles est toujours vide, alors c'est que nous avont touché plusieurs bateaux
                 if (possibles.Count == 0)
                 {
+                    //On repasse alors en revu tous les shots,
                     for (int i = 0; i < shots.Count; i++)
                     {
+                        //...et si l'un contient encore un bateau non coulé
                         if (controller.grids[controller.playerTurn].grid[shots[i][0], shots[i][1]].state == State.boat)
                         {
                             directions = 0b1111;
@@ -175,6 +178,12 @@ namespace EPSIC_Bataille_Navale.Models
             }
         }
 
+        /// <summary>
+        /// Vérifie si la case (x;y) à déjà été visée
+        /// </summary>
+        /// <param name="x">X</param>
+        /// <param name="y">Y</param>
+        /// <returns>Case déjà visée</returns>
         private bool IsAldryClicked(int x, int y)
         {
             for (int i = 0; i < shots.Count; i++)

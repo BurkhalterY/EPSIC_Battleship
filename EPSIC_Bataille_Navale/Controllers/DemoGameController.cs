@@ -15,6 +15,11 @@ namespace EPSIC_Bataille_Navale.Controllers
             ai2 = new AI(this);
         }
 
+        /// <summary>
+        /// Methode qui gère le tour par tour entre les IA
+        /// </summary>
+        /// <param name="x">Coordonnée X</param>
+        /// <param name="y">Coordonnée Y</param>
         public override void Click(int x = 0, int y = 0)
         {
             if (!finish)

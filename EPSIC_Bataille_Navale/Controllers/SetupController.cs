@@ -10,7 +10,7 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         private Setup view;
         public GridModel grid;
-        public string playerName = "";
+        public string playerName;
         public int[] clickedCell = new int[0];
         public List<int[]> possibleCells = new List<int[]>();
         public int size;
@@ -28,6 +28,12 @@ namespace EPSIC_Bataille_Navale.Controllers
             nbMines = Properties.Settings.Default.nbMines;
         }
 
+        /// <summary>
+        /// Méthode appelée par les views lors d'un clic sur un bouton
+        /// Sert à poser les bateaux
+        /// </summary>
+        /// <param name="x">Coordonnée X du button</param>
+        /// <param name="y">Coordonnée Y du button</param>
         public void Click(int x, int y)
         {
             if (possibleCells.Count == 0)
@@ -94,8 +100,8 @@ namespace EPSIC_Bataille_Navale.Controllers
                     boats.Add(boat);
                     grid.boats.Add(boat);
                     boatsList.Remove(boat.cells.Count);
-                    view.EnableCancelButton(true);
-                    view.EnableNextButton(boatsList.Count == 0 && nbMines == 0);
+                    view.btn_cancel.IsEnabled = true;
+                    view.btn_next.IsEnabled = boatsList.Count == 0 && nbMines == 0;
                 }
                 clickedCell = new int[0];
                 possibleCells.Clear();
@@ -103,20 +109,30 @@ namespace EPSIC_Bataille_Navale.Controllers
             view.RefreshGrid();
         }
 
+        /// <summary>
+        /// Méthode appelée par les views lors d'un clic droit sur un bouton
+        /// Sert à poser une mine
+        /// </summary>
+        /// <param name="x">Coordonnée X du button</param>
+        /// <param name="y">Coordonnée Y du button</param>
         public void RightClick(int x, int y)
         {
             if(nbMines > 0 && grid.grid[x, y].boat == null)
             {
+                possibleCells.Clear();
                 Boat boat = new Boat() { touchedCell = -1 };
                 grid.grid[x, y].boat = boat;
                 boat.cells.Add(grid.grid[x, y]);
                 boats.Add(boat);
                 nbMines--;
-                view.EnableNextButton(boatsList.Count == 0 && nbMines == 0);
+                view.btn_next.IsEnabled = boatsList.Count == 0 && nbMines == 0;
                 view.RefreshGrid();
             }
         }
 
+        /// <summary>
+        /// Supprime le dernier bateau ou la dernière mine posé
+        /// </summary>
         public void DeleteLastBoat()
         {
             if (boats.Count > 0)
@@ -144,17 +160,23 @@ namespace EPSIC_Bataille_Navale.Controllers
                 }
                 if (boats.Count == 0)
                 {
-                    view.EnableCancelButton(false);
+                    view.btn_cancel.IsEnabled = false;
                 }
-                view.EnableNextButton(false);
+                view.btn_next.IsEnabled = false;
                 view.RefreshGrid();
             }
         }
 
+        /// <summary>
+        /// Choix aléatoire de la position des bateaux
+        /// </summary>
         public void AIChoise()
         {
-            playerName = "L'IA"; 
-
+            possibleCells.Clear();
+            while (boats.Count > 0)
+            {
+                DeleteLastBoat();
+            }
             while (boatsList.Count > 0)
             {
                 if (possibleCells.Count > 0)

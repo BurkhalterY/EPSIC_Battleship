@@ -21,11 +21,19 @@ namespace EPSIC_Bataille_Navale.Controllers
             size = view.size;
         }
 
-        public virtual void Click(int x = 0, int y = 0)
-        {
+        /// <summary>
+        /// Méthode appelée par les views lors d'un clic sur un bouton
+        /// </summary>
+        /// <param name="x">Coordonnée X du button</param>
+        /// <param name="y">Coordonnée Y du button</param>
+        public abstract void Click(int x = 0, int y = 0);
 
-        }
-
+        /// <summary>
+        /// Tire sur une case et en change l'état
+        /// </summary>
+        /// <param name="x">Coordonnée X de la case</param>
+        /// <param name="y">Coordonnée Y de la case</param>
+        /// <returns>Le nouvel état de la case visée</returns>
         public State ClickAt(int x, int y)
         {
             playerTurn = (playerTurn + 1) % 2;

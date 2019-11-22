@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace EPSIC_Bataille_Navale.Views
 {
+    /// <summary>
+    /// Classe héritée de Button qui permet le stockage des positions X et Y des boutons
+    /// </summary>
     public class CustomButton : Button
     {
         public int x, y;

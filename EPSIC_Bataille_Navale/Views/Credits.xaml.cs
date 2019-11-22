@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -17,7 +16,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_back_Click(object sender, EventArgs e)
         {
-            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = new Home();
+            Window.GetWindow(this).Content = new Home();
         }
     }
 }

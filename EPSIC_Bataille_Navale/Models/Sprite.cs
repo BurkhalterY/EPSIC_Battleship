@@ -12,9 +12,15 @@ namespace EPSIC_Bataille_Navale.Models
         public Bitmap bitmap;
         public int angle = 0;
 
+        /// <summary>
+        /// Crée une nouvelle sprite et y ajoute un bitmap
+        /// </summary>
+        /// <param name="bitmap">Image de base</param>
+        /// <param name="x">Découpe de 32x32 de l'image, pos X</param>
+        /// <param name="y">Découpe de 32x32 de l'image, pos Y</param>
         public Sprite(Bitmap bitmap, int x = 0, int y = 0)
         {
-            x *= 32;
+            x *= 32; //Une sprite mesure forcément 32 x 32
             y *= 32;
             this.bitmap = new Bitmap(32, 32);
             Graphics g = Graphics.FromImage(this.bitmap);
@@ -22,6 +28,12 @@ namespace EPSIC_Bataille_Navale.Models
             bitmap.Dispose();
         }
 
+        /// <summary>
+        /// Ajoute un bitmap au sprite
+        /// </summary>
+        /// <param name="bitmap">Image à ajouter</param>
+        /// <param name="x">Découpe de 32x32 de l'image, pos X</param>
+        /// <param name="y">Découpe de 32x32 de l'image, pos Y</param>
         public void AddSprite(Bitmap bitmap, int x = 0, int y = 0)
         {
             x *= 32;
@@ -31,17 +43,23 @@ namespace EPSIC_Bataille_Navale.Models
             g.RotateTransform(angle);
             g.TranslateTransform(-(float)this.bitmap.Width / 2, -(float)this.bitmap.Height / 2);
 
-            if (bitmap != null)
+            if (bitmap.Tag == null) //Si le Tag n'a pas été défini
             {
                 g.DrawImage(bitmap, -x, -y);
-                bitmap.Dispose();
             }
             else
             {
-                g.FillRectangle(System.Drawing.Brushes.Red, 0, 0, 32, 32);
+                //Tracer un morceau d'ovale
+                g.FillEllipse(System.Drawing.Brushes.DarkGray, -x, -y, bitmap.Width * 32, bitmap.Height * 32);
             }
+            bitmap.Dispose();
         }
 
+        /// <summary>
+        /// Change la rotation du sprite
+        /// Les prochains bitmap auront cette valeur
+        /// </summary>
+        /// <param name="direction"></param>
         public void RotateSprite(Direction direction)
         {
             angle = (int)direction;
@@ -60,6 +78,10 @@ namespace EPSIC_Bataille_Navale.Models
             finally { DeleteObject(handle); }
         }
 
+        /// <summary>
+        /// Finalisation de l'image
+        /// </summary>
+        /// <returns>Objet de type ImageBrush directement applicable</returns>
         public ImageBrush ToBrush()
         {
             return new ImageBrush(ToImageSource());
