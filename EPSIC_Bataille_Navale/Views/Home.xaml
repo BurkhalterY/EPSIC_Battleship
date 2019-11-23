@@ -10,7 +10,7 @@
     <Grid>
         <Label Name="lbl_title" Content="Battleship !" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="730" Height="224" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontSize="36" TextBlock.FontFamily="pack://application:,,,/Assets/#Space Cruiser"/>
         <Button Name="btn_solo" Content="Solo" HorizontalAlignment="Left" Margin="259,239,0,0" VerticalAlignment="Top" Width="74" Click="Btn_solo_Click"/>
-        <Button Name="btn_online" Content="Online" HorizontalAlignment="Left" Margin="338,239,0,0" VerticalAlignment="Top" Width="74" Click="Btn_online_Click"/>
+        <Button Name="btn_online" Content="Online" HorizontalAlignment="Left" Margin="338,239,0,0" VerticalAlignment="Top" Width="74" Click="Btn_online_Click" IsEnabled="False"/>
         <Button Name="btn_credits" Content="Crédits" HorizontalAlignment="Left" Margin="417,239,0,0" VerticalAlignment="Top" Width="74" Click="Btn_credits_Click"/>
         <Button Name="btn_settings" Content="Options" HorizontalAlignment="Left" Margin="496,239,0,0" VerticalAlignment="Top" Width="74" Click="Btn_settings_Click"/>
         <Label Name="lbl_pseudo" Content="Votre nom :" HorizontalAlignment="Left" Margin="259,260,0,0" VerticalAlignment="Top" Width="74"/>

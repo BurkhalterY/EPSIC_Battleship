@@ -11,7 +11,7 @@ namespace EPSIC_Bataille_Navale.Models
         private List<int[]> shots = new List<int[]>();
         private List<int[]> possibles = new List<int[]>();
         private int[] step = new int[6];
-        private byte directions = 0b1111; // urdl
+        private byte directions = 0b1111; //urdl
         private int gridMask = random.Next(0, 1);
         private static Random random = new Random();
 
@@ -38,13 +38,13 @@ namespace EPSIC_Bataille_Navale.Models
                     }
                 }
                 phase = 0;
-                if(possibles.Count == 0) // Si toujours vide, je change le masque de la grille
+                if(possibles.Count == 0) //Si toujours vide, je change le masque de la grille
                 {
                     gridMask = (gridMask + 1) % 2;
                 }
             }
 
-            // Tir sur une case aléatoire parmis les possibles
+            //Tir sur une case aléatoire parmis les possibles
             int cellSelected = random.Next(possibles.Count);
             int x = possibles[cellSelected][0];
             int y = possibles[cellSelected][1];
@@ -52,7 +52,7 @@ namespace EPSIC_Bataille_Navale.Models
             shots.Add(new int[] { x, y }); //On l'ajoute à la liste des shots
             possibles.RemoveAt(cellSelected); //Et on supprime la case de la liste de possibilité
 
-            if (phase == 0) // phase 0 = tirs aléatoires
+            if (phase == 0) //phase 0 = tirs aléatoires
             {
                 if (state == State.boat)
                 {
@@ -61,7 +61,7 @@ namespace EPSIC_Bataille_Navale.Models
                     step[1] = step[3] = step[4] = x;
                     step[0] = step[2] = step[5] = y;
 
-                    // On vide les possibles puis on ajoute chaqu'une des cases adjacentes
+                    //On vide les possibles puis on ajoute chaqu'une des cases adjacentes
                     possibles.Clear();
                     if (y - 1 >= 0 && !IsAldryClicked(x, y - 1))
                     {
@@ -82,7 +82,7 @@ namespace EPSIC_Bataille_Navale.Models
                 }
                 //Si state != State.boat, rester en phase 0
             }
-            else if (phase == 1) // phase 1 = tirs cases adjacentes
+            else if (phase == 1) //phase 1 = tirs cases adjacentes
             {
                 if (state == State.noBoat)
                 {

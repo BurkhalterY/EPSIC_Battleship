@@ -1,6 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using System;
-using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +17,7 @@ namespace EPSIC_Bataille_Navale.Views
         public Home()
         {
             InitializeComponent();
-            txt_pseudo.Text = WindowsIdentity.GetCurrent().Name;
+            txt_pseudo.Text = Environment.UserName;
         }
 
         private void Btn_solo_Click(object sender, EventArgs e)
@@ -32,7 +31,7 @@ namespace EPSIC_Bataille_Navale.Views
 
             setupP2 = new Setup();
             setupP2.controller.AIChoise();
-            setupP1.controller.playerName = "L'IA";
+            setupP2.controller.playerName = "L'IA";
         }
 
         private void Btn_online_Click(object sender, EventArgs e)
