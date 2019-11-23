@@ -197,7 +197,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             view.RefreshGrid();
             
             Paragraph paragraph = new Paragraph();
-            paragraph.Inlines.Add(players[playerTurn].playerName + " lance une mombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1));
+            paragraph.Inlines.Add(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1));
             paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
             paragraph.LineHeight = 1;
             view.history.Document.Blocks.Add(paragraph);
