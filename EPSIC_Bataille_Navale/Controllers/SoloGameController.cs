@@ -18,15 +18,21 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         /// <param name="x">Coordonnée X</param>
         /// <param name="y">Coordonnée Y</param>
-        public override void Click(int x = 0, int y = 0)
+        public override void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot)
         {
             if (playerTurn == 0)
             {
-                ClickAt(x, y);
+                switch (action)
+                {
+                    case ActionType.NormalShot: ClickAt(x, y); break;
+                    case ActionType.Sonar: Sonar(); break;
+                    case ActionType.NuclearBomb: NuclearAttack(x, y); break;
+                }
+                
             }
             if (finish)
             {
-                view.Finish(playersNames[playerTurn]);
+                view.Finish(players[playerTurn].playerName);
             }
             else if (playerTurn == 1)
             {
@@ -39,7 +45,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     ai.AIPlay();
                     if (finish)
                     {
-                        view.Finish(playersNames[playerTurn]);
+                        view.Finish(players[playerTurn].playerName);
                     }
                     else
                     {

@@ -70,5 +70,41 @@ namespace EPSIC_Bataille_Navale.Properties {
                 this["iaSleepTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int nbSonars {
+            get {
+                return ((int)(this["nbSonars"]));
+            }
+            set {
+                this["nbSonars"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int nbNuclearBombs {
+            get {
+                return ((int)(this["nbNuclearBombs"]));
+            }
+            set {
+                this["nbNuclearBombs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double nuclearBombRange {
+            get {
+                return ((double)(this["nuclearBombRange"]));
+            }
+            set {
+                this["nuclearBombRange"] = value;
+            }
+        }
     }
 }

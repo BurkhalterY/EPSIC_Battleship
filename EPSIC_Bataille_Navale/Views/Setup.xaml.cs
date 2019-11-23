@@ -14,7 +14,7 @@ namespace EPSIC_Bataille_Navale.Views
     public partial class Setup : Page
     {
         public SetupController controller;
-        private CustomButton[,] grid;
+        private Button[,] grid;
         public int size;
 
         public Setup() : base()
@@ -31,7 +31,7 @@ namespace EPSIC_Bataille_Navale.Views
         /// </summary>
         protected void MakeGrid()
         {
-            grid = new CustomButton[size, size];
+            grid = new Button[size, size];
             Grid gridView = Content as Grid;
             int cellSize = 450 / size;
 
@@ -39,7 +39,8 @@ namespace EPSIC_Bataille_Navale.Views
             {
                 for (int j = 0; j < size; j++)
                 {
-                    grid[i, j] = new CustomButton(i, j);
+                    grid[i, j] = new Button();
+                    grid[i, j].Tag = new int[] { i, j };
                     grid[i, j].HorizontalAlignment = HorizontalAlignment.Left;
                     grid[i, j].VerticalAlignment = VerticalAlignment.Top;
                     grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
@@ -94,29 +95,31 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
         
-        protected void CellClick(object sender, EventArgs e)
+        protected void CellClick(object sender, RoutedEventArgs e)
         {
-            CustomButton customButton = (CustomButton)sender;
-            controller.Click(customButton.x, customButton.y);
+            Button button = (Button)sender;
+            int[] coord = (int[])button.Tag;
+            controller.Click(coord[0], coord[1]);
         }
 
         protected void CellRightClick(object sender, MouseButtonEventArgs e)
         {
-            CustomButton customButton = (CustomButton)sender;
-            controller.RightClick(customButton.x, customButton.y);
+            Button button = (Button)sender;
+            int[] coord = (int[])button.Tag;
+            controller.RightClick(coord[0], coord[1]);
         }
 
-        private void Btn_cancel_Click(object sender, EventArgs e)
+        private void Btn_cancel_Click(object sender, RoutedEventArgs e)
         {
             controller.DeleteLastBoat();
         }
 
-        private void Btn_random_Click(object sender, EventArgs e)
+        private void Btn_random_Click(object sender, RoutedEventArgs e)
         {
             controller.AIChoise();
         }
 
-        private void Btn_back_Click(object sender, EventArgs e)
+        private void Btn_back_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Content = new Home();
         }

@@ -1,16 +1,23 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Views;
+using System;
+using System.Collections.Generic;
 using System.Media;
 using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
+    public enum ActionType {
+        NormalShot,
+        Sonar,
+        NuclearBomb
+    }
+
     public abstract class GameController
     {
         protected Game view;
-        public GridModel[] grids;
-        public string[] playersNames = new string[2];
+        public Player[] players = new Player[2];
         public int playerTurn = 0;
         public bool finish = false;
         public int size;
@@ -26,10 +33,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         /// <param name="x">Coordonnée X du button</param>
         /// <param name="y">Coordonnée Y du button</param>
-        public abstract void Click(int x = 0, int y = 0);
+        public abstract void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot);
 
         /// <summary>
-        /// Tire sur une case et en change l'état
+        /// Tire standart sur une case
         /// </summary>
         /// <param name="x">Coordonnée X de la case</param>
         /// <param name="y">Coordonnée Y de la case</param>
@@ -37,28 +44,62 @@ namespace EPSIC_Bataille_Navale.Controllers
         public State ClickAt(int x, int y)
         {
             playerTurn = (playerTurn + 1) % 2;
-            if (grids[playerTurn].grid[x, y].state == State.noActivity)
+            State state = Shot(x, y);
+            if(state != State.invalid)
+            {
+                if(state == State.noBoat)
+                {
+                    new SoundPlayer(Properties.Resources.splash).Play();
+                }
+                else if (state == State.boat || state == State.fullBoat)
+                {
+                    new SoundPlayer(Properties.Resources.explosion).Play();
+                }
+                view.RefreshGrid();
+                Paragraph paragraph = new Paragraph();
+                paragraph.Inlines.Add(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
+                paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
+                paragraph.LineHeight = 1;
+                view.history.Document.Blocks.Add(paragraph);
+                view.history.ScrollToEnd();
+            }
+            else
+            {
+                playerTurn = (playerTurn + 1) % 2;
+            }
+            return state;
+        }
+
+        /// <summary>
+        /// Tir sur une seule case
+        /// </summary>
+        /// <param name="x">Coordonnée X de la case</param>
+        /// <param name="y">Coordonnée Y de la case</param>
+        /// <returns>Le nouvel état de la case visée</returns>
+        private State Shot(int x, int y)
+        {
+            if (players[playerTurn].grid.grid[x, y].state == State.noActivity || players[playerTurn].grid.grid[x, y].state == State.revealed)
             {
                 State state;
-                if (grids[playerTurn].grid[x, y].boat != null)
+                if (players[playerTurn].grid.grid[x, y].boat != null)
                 {
-                    Boat boat = grids[playerTurn].grid[x, y].boat;
+                    Boat boat = players[playerTurn].grid.grid[x, y].boat;
                     boat.touchedCell++;
                     if (boat.cells.Count == boat.touchedCell)
                     {
-                        grids[playerTurn].grid[x, y].state = State.fullBoat;
+                        players[playerTurn].grid.grid[x, y].state = State.fullBoat;
                         for (int i = 0; i < size; i++)
                         {
                             for (int j = 0; j < size; j++)
                             {
-                                if (grids[playerTurn].grid[i, j].boat == boat)
+                                if (players[playerTurn].grid.grid[i, j].boat == boat)
                                 {
-                                    grids[playerTurn].grid[i, j].state = State.fullBoat;
+                                    players[playerTurn].grid.grid[i, j].state = State.fullBoat;
                                 }
                             }
                         }
-                        grids[playerTurn].boats.Remove(grids[playerTurn].grid[x, y].boat);
-                        if (grids[playerTurn].boats.Count == 0)
+                        players[playerTurn].grid.boats.Remove(players[playerTurn].grid.grid[x, y].boat);
+                        if (players[playerTurn].grid.boats.Count == 0)
                         {
                             finish = true;
                         }
@@ -66,31 +107,101 @@ namespace EPSIC_Bataille_Navale.Controllers
                     }
                     else
                     {
-                        grids[playerTurn].grid[x, y].state = State.boat;
+                        players[playerTurn].grid.grid[x, y].state = State.boat;
                         state = State.boat;
                     }
-                    new SoundPlayer(Properties.Resources.explosion).Play();
                 }
                 else
                 {
-                    grids[playerTurn].grid[x, y].state = State.noBoat;
+                    players[playerTurn].grid.grid[x, y].state = State.noBoat;
                     state = State.noBoat;
-                    new SoundPlayer(Properties.Resources.splash).Play();
                 }
+                return state;
+            }
+            return State.invalid;
+        }
+
+        /// <summary>
+        /// Révèle l'emplacement d'un bateau
+        /// </summary>
+        public void Sonar()
+        {
+            playerTurn = (playerTurn + 1) % 2;
+            Random random = new Random();
+            List<Cell> cells = new List<Cell>();
+            foreach (Boat boat in players[playerTurn].grid.boats)
+            {
+                bool intact = true;
+                foreach (Cell cell in boat.cells)
+                {
+                    if (cell.state != State.noActivity)
+                    {
+                        intact = false;
+                        break;
+                    }
+                }
+                if (intact)
+                {
+                    cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateau de différente taille aient le même risque d'être trouvé
+                }
+            }
+            if (cells.Count > 0)
+            {
+                cells[random.Next(cells.Count)].state = State.revealed;
+                players[playerTurn].sonars--;
+                if(playerTurn == 1 && players[playerTurn].sonars == 0)
+                {
+                    view.sonar.IsEnabled = false;
+                }
+                new SoundPlayer(Properties.Resources.sonar).Play();
                 view.RefreshGrid();
+
                 Paragraph paragraph = new Paragraph();
-                paragraph.Inlines.Add(playersNames[playerTurn] + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
+                paragraph.Inlines.Add(players[playerTurn].playerName + " utilise sonar");
                 paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
                 paragraph.LineHeight = 1;
                 view.history.Document.Blocks.Add(paragraph);
                 view.history.ScrollToEnd();
-                return state;
             }
             else
             {
                 playerTurn = (playerTurn + 1) % 2;
             }
-            return State.invalid;
+        }
+
+        /// <summary>
+        /// Lance une bombe nucléaire en (x;y)
+        /// </summary>
+        /// <param name="x">Centre X de l'attaque</param>
+        /// <param name="y">Centre Y de l'attaque</param>
+        public void NuclearAttack(int x, int y)
+        {
+            playerTurn = (playerTurn + 1) % 2;
+            for(int i = 0; i < players[playerTurn].grid.grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < players[playerTurn].grid.grid.GetLength(1); j++)
+                {
+                    if (Math.Sqrt(Math.Pow(x - i, 2) + Math.Pow(y - j, 2)) <= Properties.Settings.Default.nuclearBombRange)
+                    {
+                        Shot(i, j);
+                    }
+                }
+            }
+
+            players[playerTurn].nuclearBombs--;
+            if (playerTurn == 1 && players[playerTurn].nuclearBombs == 0)
+            {
+                view.nuclearBomb.IsEnabled = false;
+            }
+            new SoundPlayer(Properties.Resources.explosion).Play();
+            view.RefreshGrid();
+            
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(players[playerTurn].playerName + " lance une mombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1));
+            paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
+            paragraph.LineHeight = 1;
+            view.history.Document.Blocks.Add(paragraph);
+            view.history.ScrollToEnd();
         }
     }
 }

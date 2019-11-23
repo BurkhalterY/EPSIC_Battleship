@@ -6,6 +6,7 @@
         noBoat,
         boat,
         fullBoat,
+        revealed,
         invalid
     }
 

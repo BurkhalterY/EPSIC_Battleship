@@ -20,7 +20,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         /// <param name="x">Coordonnée X</param>
         /// <param name="y">Coordonnée Y</param>
-        public override void Click(int x = 0, int y = 0)
+        public override void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot)
         {
             if (!finish)
             {
@@ -49,7 +49,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             else
             {
-                view.Finish(playersNames[playerTurn]);
+                view.Finish(players[playerTurn].playerName);
             }
         }
     }

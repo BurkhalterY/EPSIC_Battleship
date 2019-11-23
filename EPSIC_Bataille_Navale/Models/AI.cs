@@ -150,7 +150,7 @@ namespace EPSIC_Bataille_Navale.Models
                     for (int i = 0; i < shots.Count; i++)
                     {
                         //...et si l'un contient encore un bateau non coulé
-                        if (controller.grids[controller.playerTurn].grid[shots[i][0], shots[i][1]].state == State.boat)
+                        if (controller.players[controller.playerTurn].grid.grid[shots[i][0], shots[i][1]].state == State.boat)
                         {
                             directions = 0b1111;
                             step[1] = step[3] = step[4] = shots[i][0];

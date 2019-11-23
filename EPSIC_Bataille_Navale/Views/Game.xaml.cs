@@ -1,6 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
-using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,12 +12,14 @@ namespace EPSIC_Bataille_Navale.Views
     public partial class Game : Page
     {
         public GameController controller;
-        private CustomButton[,] grid;
-        private CustomButton[,] gridSecond;
+        private Button[,] grid;
+        private Button[,] gridSecond;
         public RichTextBox history;
         public int size;
         public GameType gameType;
         public bool clickable;
+        public MenuItem sonar;
+        public MenuItem nuclearBomb;
 
         public Game(GameType gameType, int size) : base()
         {
@@ -39,27 +40,41 @@ namespace EPSIC_Bataille_Navale.Views
         /// </summary>
         private void MakeGrid()
         {
-            grid = new CustomButton[size, size];
+            grid = new Button[size, size];
             Grid gridView = Content as Grid; //Objet graphique auquel on va greffer les boutons
             double cellSize = 450.0 / size; //Taille d'une seule cellule
 
-            gridSecond = new CustomButton[size, size];
+            gridSecond = new Button[size, size];
             double cellSizeSecond = 225.0 / size;
+
+            ContextMenu menu = new ContextMenu();
+            sonar = new MenuItem();
+            sonar.Header = "Sonar";
+            sonar.IsEnabled = Properties.Settings.Default.nbSonars > 0;
+            sonar.Click += Sonar_Click;
+            menu.Items.Add(sonar);
+            nuclearBomb = new MenuItem();
+            nuclearBomb.Header = "Bombe nucléraire";
+            nuclearBomb.IsEnabled = Properties.Settings.Default.nbNuclearBombs > 0;
+            nuclearBomb.Click += NuclearBomb_Click; ;
+            menu.Items.Add(nuclearBomb);
 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    grid[i, j] = new CustomButton(i, j);
+                    grid[i, j] = new Button();
+                    grid[i, j].Tag = new int[] { i, j };
                     grid[i, j].HorizontalAlignment = HorizontalAlignment.Left;
                     grid[i, j].VerticalAlignment = VerticalAlignment.Top;
                     grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
                     grid[i, j].Width = cellSize;
                     grid[i, j].Height = cellSize;
                     grid[i, j].Click += new RoutedEventHandler(CellClick); //Ajout de l'évenement Click (seulement sur la grille 1)
+                    grid[i, j].ContextMenu = menu;
                     gridView.Children.Add(grid[i, j]);
 
-                    gridSecond[i, j] = new CustomButton(i, j);
+                    gridSecond[i, j] = new Button();
                     gridSecond[i, j].HorizontalAlignment = HorizontalAlignment.Left;
                     gridSecond[i, j].VerticalAlignment = VerticalAlignment.Top;
                     gridSecond[i, j].Margin = new Thickness(i * cellSizeSecond + 475, j * cellSizeSecond + 25, 0, 0);
@@ -92,7 +107,7 @@ namespace EPSIC_Bataille_Navale.Views
                 for (int j = 0; j < size; j++)
                 {
                     Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
-                    switch (controller.grids[1].grid[i, j].state)
+                    switch (controller.players[1].grid.grid[i, j].state)
                     {
                         case State.noBoat:
                             sprite.AddSprite(Properties.Resources.miss);
@@ -100,24 +115,24 @@ namespace EPSIC_Bataille_Navale.Views
                         case State.boat:
                             sprite.AddSprite(Properties.Resources.touch);
                             break;
-                        case State.fullBoat:
-                            Boat boat = controller.grids[1].grid[i, j].boat;
+                        case State.fullBoat: case State.revealed:
+                            Boat boat = controller.players[1].grid.grid[i, j].boat;
                             sprite.RotateSprite(boat.orientation);
                             Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
                             sprite.AddSprite(
                                 bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
                                 boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
-                                    ? boat.cells.IndexOf(controller.grids[1].grid[i, j])
-                                    : boat.cells.Count - boat.cells.IndexOf(controller.grids[1].grid[i, j]) - 1
+                                    ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
+                                    : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
                             );
                             break;
                     }
                     grid[i, j].Background = sprite.ToBrush();
 
                     sprite = new Sprite(Properties.Resources.water);
-                    if (controller.grids[0].grid[i, j].boat != null)
+                    if (controller.players[0].grid.grid[i, j].boat != null)
                     {
-                        Boat boat = controller.grids[0].grid[i, j].boat;
+                        Boat boat = controller.players[0].grid.grid[i, j].boat;
                         if (boat.cells.Count == 1)
                         {
                             sprite.AddSprite(Properties.Resources.mine);
@@ -129,12 +144,12 @@ namespace EPSIC_Bataille_Navale.Views
                             sprite.AddSprite(
                                 bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
                                 boat.orientation == Direction.Right || boat.orientation == Direction.Down
-                                    ? boat.cells.IndexOf(controller.grids[0].grid[i, j])
-                                    : boat.cells.Count - boat.cells.IndexOf(controller.grids[0].grid[i, j]) - 1
+                                    ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
+                                    : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
                             );
                         }
                     }
-                    switch (controller.grids[0].grid[i, j].state)
+                    switch (controller.players[0].grid.grid[i, j].state)
                     {
                         case State.noActivity:
                             sprite.AddSprite(Properties.Resources.hide);
@@ -151,12 +166,31 @@ namespace EPSIC_Bataille_Navale.Views
             }
         }
 
-        private void CellClick(object sender, EventArgs e)
+        private void CellClick(object sender, RoutedEventArgs e)
         {
             if (clickable) //Variable définissant à qui est-ce le tour de jouer
             {
-                CustomButton customButton = (CustomButton)sender;
-                controller.Click(customButton.x, customButton.y);
+                Button button = (Button)sender;
+                int[] coord = (int[])button.Tag;
+                controller.Click(coord[0], coord[1]);
+            }
+        }
+
+        private void Sonar_Click(object sender, RoutedEventArgs e)
+        {
+            if (clickable)
+            {
+                controller.Click(0, 0, ActionType.Sonar);
+            }
+        }
+
+        private void NuclearBomb_Click(object sender, RoutedEventArgs e)
+        {
+            if (clickable)
+            {
+                MenuItem item = sender as MenuItem;
+                int[] coord = (int[])(((ContextMenu)item.Parent).PlacementTarget as Button).Tag;
+                controller.Click(coord[0], coord[1], ActionType.NuclearBomb);
             }
         }
 

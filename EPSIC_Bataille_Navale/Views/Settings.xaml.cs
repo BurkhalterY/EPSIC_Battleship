@@ -19,56 +19,48 @@ namespace EPSIC_Bataille_Navale.Views
             txt_boatsList.Text = Properties.Settings.Default.boatsList;
             txt_nbMines.Text = Properties.Settings.Default.nbMines.ToString();
             txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
+            txt_nbSonars.Text = Properties.Settings.Default.nbSonars.ToString();
+            txt_nbNuclearBombs.Text = Properties.Settings.Default.nbNuclearBombs.ToString();
+            txt_nuclearBombRange.Text = Properties.Settings.Default.nuclearBombRange.ToString();
         }
 
-        private void Btn_reset_Click(object sender, EventArgs e)
+        private void Btn_reset_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.Reset();
             txt_size.Text = Properties.Settings.Default.size.ToString();
             txt_boatsList.Text = Properties.Settings.Default.boatsList;
             txt_nbMines.Text = Properties.Settings.Default.nbMines.ToString();
             txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
+            txt_nbSonars.Text = Properties.Settings.Default.nbSonars.ToString();
+            txt_nbNuclearBombs.Text = Properties.Settings.Default.nbNuclearBombs.ToString();
+            txt_nuclearBombRange.Text = Properties.Settings.Default.nuclearBombRange.ToString();
         }
 
-        private void Btn_cancel_Click(object sender, EventArgs e)
+        private void Btn_cancel_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Content = new Home();
         }
 
-        private void Btn_save_Click(object sender, EventArgs e)
+        private void Btn_save_Click(object sender, RoutedEventArgs e)
         {
-            if (Valid_size() && Valid_boatsList() && Valid_nbMines() && Valid_iaSleepTime())
+            if (ValidInt(txt_size, 2, 50, lbl_size)
+             && Valid_boatsList()
+             && ValidInt(txt_nbMines, 0, 50, lbl_nbMines)
+             && ValidDouble(txt_iaSleepTime, 0, 5, lbl_iaSleepTime)
+             && ValidInt(txt_nbSonars, 0, 50, lbl_nbSonars)
+             && ValidInt(txt_nbNuclearBombs, 0, 50, lbl_nbNuclearBombs)
+             && ValidDouble(txt_nuclearBombRange, 1, 10, lbl_nuclearBombRange))
             {
                 Properties.Settings.Default.size = int.Parse(txt_size.Text);
                 Properties.Settings.Default.boatsList = txt_boatsList.Text;
                 Properties.Settings.Default.nbMines = int.Parse(txt_nbMines.Text);
                 Properties.Settings.Default.iaSleepTime = double.Parse(txt_iaSleepTime.Text);
+                Properties.Settings.Default.nbSonars = int.Parse(txt_nbSonars.Text);
+                Properties.Settings.Default.nbNuclearBombs = int.Parse(txt_nbNuclearBombs.Text);
+                Properties.Settings.Default.nuclearBombRange = double.Parse(txt_nuclearBombRange.Text);
                 Properties.Settings.Default.Save();
                 Window.GetWindow(this).Content = new Home();
             }
-        }
-
-        private bool Valid_size()
-        {
-            bool error = false;
-            int value;
-            if (int.TryParse(txt_size.Text, out value))
-            {
-                if (value < 2 || value > 30)
-                {
-                    error = true;
-                }
-            }
-            else
-            {
-                error = true;
-            }
-            if (error)
-            {
-                MessageBox.Show("La valeur doit être un nombre compris entre 2 et 30.");
-                txt_size.Text = Properties.Settings.Default.size.ToString();
-            }
-            return !error;
         }
 
         /// <summary>
@@ -85,7 +77,6 @@ namespace EPSIC_Bataille_Navale.Views
                     if (list[i] < 2 || list[i] > int.Parse(txt_size.Text))
                     {
                         MessageBox.Show("Aucune taille de bateau ne peut être plus grande que la grille.");
-                        txt_boatsList.Text = Properties.Settings.Default.boatsList.ToString();
                         return false;
                     }
                 }
@@ -94,22 +85,25 @@ namespace EPSIC_Bataille_Navale.Views
             catch (FormatException)
             {
                 MessageBox.Show("Chaque valeur doit être séparée par une virgule.");
-                txt_boatsList.Text = Properties.Settings.Default.boatsList.ToString();
                 return false;
             }
         }
 
         /// <summary>
-        /// Validation du paramètre nbMines
+        /// Validation d'un paramètre de type int
         /// </summary>
-        /// <returns>isValid</returns>
-        private bool Valid_nbMines()
+        /// <param name="textbox">TextBox</param>
+        /// <param name="min">Valeur minimum</param>
+        /// <param name="max">Valeur maximum</param>
+        /// <param name="label">Label</param>
+        /// <returns></returns>
+        private bool ValidInt(TextBox textbox, int min, int max, Label label)
         {
             bool error = false;
             int value;
-            if (int.TryParse(txt_nbMines.Text, out value))
+            if (int.TryParse(textbox.Text, out value))
             {
-                if (value < 0 || value > 15)
+                if (value < min || value > max)
                 {
                     error = true;
                 }
@@ -120,23 +114,26 @@ namespace EPSIC_Bataille_Navale.Views
             }
             if (error)
             {
-                MessageBox.Show("La valeur doit être un nombre compris entre 0 et 15.");
-                txt_nbMines.Text = Properties.Settings.Default.size.ToString();
+                MessageBox.Show("La valeur de \""+ label.Content+"\" doit être un nombre compris entre "+min+" et "+max+".");
             }
             return !error;
         }
 
         /// <summary>
-        /// Validation du paramètre iaSleepTime
+        /// Validation d'un paramètre de type double
         /// </summary>
-        /// <returns>isValid</returns>
-        private bool Valid_iaSleepTime()
+        /// <param name="textbox">TextBox</param>
+        /// <param name="min">Valeur minimum</param>
+        /// <param name="max">Valeur maximum</param>
+        /// <param name="label">Label</param>
+        /// <returns></returns>
+        private bool ValidDouble(TextBox textbox, double min, double max, Label label)
         {
             bool error = false;
             double value;
-            if (double.TryParse(txt_iaSleepTime.Text, out value))
+            if (double.TryParse(textbox.Text, out value))
             {
-                if (value < 0 || value > 10)
+                if (value < min || value > max)
                 {
                     error = true;
                 }
@@ -147,8 +144,7 @@ namespace EPSIC_Bataille_Navale.Views
             }
             if (error)
             {
-                MessageBox.Show("La valeur doit être un nombre à virgule compris entre 0 et 10.");
-                txt_iaSleepTime.Text = Properties.Settings.Default.iaSleepTime.ToString();
+                MessageBox.Show("La valeur de \"" + label.Content + "\" doit être un nombre compris entre " + min + " et " + max + ".");
             }
             return !error;
         }

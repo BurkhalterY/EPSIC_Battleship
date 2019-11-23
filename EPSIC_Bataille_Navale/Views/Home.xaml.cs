@@ -20,7 +20,7 @@ namespace EPSIC_Bataille_Navale.Views
             txt_pseudo.Text = Environment.UserName;
         }
 
-        private void Btn_solo_Click(object sender, EventArgs e)
+        private void Btn_solo_Click(object sender, RoutedEventArgs e)
         {
             gameType = GameType.Solo;
 
@@ -34,7 +34,7 @@ namespace EPSIC_Bataille_Navale.Views
             setupP2.controller.playerName = "L'IA";
         }
 
-        private void Btn_online_Click(object sender, EventArgs e)
+        private void Btn_online_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Hihi !");
             /*OnlineConfig onlineConfig = new OnlineConfig();
@@ -42,17 +42,17 @@ namespace EPSIC_Bataille_Navale.Views
             Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = onlineConfig;*/
         }
 
-        private void Btn_credits_Click(object sender, EventArgs e)
+        private void Btn_credits_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Content = new Credits();
         }
 
-        private void Btn_settings_Click(object sender, EventArgs e)
+        private void Btn_settings_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Content = new Settings();
         }
 
-        private void Btn_demo_Click(object sender, EventArgs e)
+        private void Btn_demo_Click(object sender, RoutedEventArgs e)
         {
             gameType = GameType.Demo;
          
@@ -67,7 +67,7 @@ namespace EPSIC_Bataille_Navale.Views
             StartGame(this);
         }
 
-        private void StartGame(object sender, EventArgs e)
+        private void StartGame(object sender, RoutedEventArgs e)
         {
             StartGame((DependencyObject)sender);
         }
@@ -79,8 +79,10 @@ namespace EPSIC_Bataille_Navale.Views
         private void StartGame(DependencyObject dependencyObject)
         {
             Game game = new Game(gameType, setupP1.size);
-            game.controller.grids = new GridModel[] { setupP1.controller.grid, setupP2.controller.grid };
-            game.controller.playersNames = new string[] { setupP2.controller.playerName, setupP1.controller.playerName };
+            Player[] players = new Player[2];
+            players[0] = new Player(setupP1.controller.grid, setupP2.controller.playerName);
+            players[1] = new Player(setupP2.controller.grid, setupP1.controller.playerName);
+            game.controller.players = players;
             Window.GetWindow(dependencyObject).Content = game;
             game.RefreshGrid();
 

@@ -142,6 +142,15 @@ namespace EPSIC_Bataille_Navale.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
         /// </summary>
+        internal static System.IO.UnmanagedMemoryStream sonar {
+            get {
+                return ResourceManager.GetStream("sonar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.IO.UnmanagedMemoryStream semblable à System.IO.MemoryStream.
+        /// </summary>
         internal static System.IO.UnmanagedMemoryStream splash {
             get {
                 return ResourceManager.GetStream("splash", resourceCulture);

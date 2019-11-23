@@ -14,7 +14,7 @@ namespace EPSIC_Bataille_Navale.Views
             InitializeComponent();
         }
 
-        private void Btn_back_Click(object sender, EventArgs e)
+        private void Btn_back_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Content = new Home();
         }
