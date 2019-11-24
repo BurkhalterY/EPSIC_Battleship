@@ -122,6 +122,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             {
                 possibleCells.Clear();
                 Boat boat = new Boat() { touchedCell = -1 };
+                boat.startCell = new int[] { x, y };
                 grid.grid[x, y].boat = boat;
                 boat.cells.Add(grid.grid[x, y]);
                 boats.Add(boat);
