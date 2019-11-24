@@ -55,11 +55,18 @@ namespace EPSIC_Bataille_Navale.Controllers
             backgroundSender.DoWork += SendBackground;
         }
 
+        /// <summary>
+        /// Démarre le serveur
+        /// </summary>
         public void Host()
         {
             backgroundWaitClient.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Rejoint une partie à l'IP indiquée
+        /// </summary>
+        /// <param name="ip"></param>
         public void Join(string ip)
         {
             try
@@ -139,7 +146,6 @@ namespace EPSIC_Bataille_Navale.Controllers
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("L'adversaire s'est déconnecté.");
                     break;
                 }
             }
@@ -148,7 +154,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         private void UpdateFromReceive(object sender, ProgressChangedEventArgs e)
         {
             Action message = (Action)e.ProgressPercentage;
-            if (message != Action.none)
+            if (message != Action.none && receivedString != null)
             {
                 switch (message)
                 {
@@ -189,19 +195,23 @@ namespace EPSIC_Bataille_Navale.Controllers
 
         private void SendBackground(object sender, DoWorkEventArgs e)
         {
-            if (client.Connected)
-            {
-                if (objectToSend != null)
-                {
-                    writer.WriteLine((int)message);
-                    writer.WriteLine(new JavaScriptSerializer().Serialize(objectToSend));
-                    writer.Flush();
-                }
+            try {
+                writer.WriteLine((int)message);
+                writer.WriteLine(new JavaScriptSerializer().Serialize(objectToSend));
+                writer.Flush();
+
                 message = Action.none;
                 objectToSend = null;
             }
+            catch (Exception)
+            {
+
+            }
         }
 
+        /// <summary>
+        /// Fonction à appeller pour fermer le serveur et autres objets réseaux
+        /// </summary>
         public void Terminate()
         {
             backgroundWaitClient.CancelAsync();
@@ -222,6 +232,9 @@ namespace EPSIC_Bataille_Navale.Controllers
             StartGame();
         }
 
+        /// <summary>
+        /// Lance une partie si les 2 joueurs ont placé leurs bateaux
+        /// </summary>
         private void StartGame()
         {
             setupsOk++;
@@ -231,6 +244,10 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
         }
 
+        /// <summary>
+        /// Retourne l'adresse IP locale
+        /// </summary>
+        /// <returns></returns>
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

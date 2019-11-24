@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using EPSIC_Bataille_Navale.Controllers;
@@ -41,6 +42,9 @@ namespace EPSIC_Bataille_Navale.Views
             gameType = GameType.Client;
         }
 
+        /// <summary>
+        /// Crée et affiche la view de setup
+        /// </summary>
         public void SetupGame()
         {
             setupP1 = new Setup();
@@ -51,6 +55,9 @@ namespace EPSIC_Bataille_Navale.Views
             currentPage = setupP1;
         }
 
+        /// <summary>
+        /// Crée et affiche la game view
+        /// </summary>
         public void StartGame()
         {
             Game game = new Game(gameType, setupP1.size);
@@ -61,6 +68,7 @@ namespace EPSIC_Bataille_Navale.Views
             players[1] = new Player(player2.grid, setupP1.controller.playerName);
             game.controller.players = players;
             Window.GetWindow(currentPage).Content = game;
+            currentPage = game;
             game.RefreshGrid();
 
             if (gameType == GameType.Host)
@@ -68,11 +76,15 @@ namespace EPSIC_Bataille_Navale.Views
                 game.clickable = true;
             }
         }
-
+    
+        /// <summary>
+        /// Écran d'attente
+        /// </summary>
         public void Wait()
         {
-            lbl_status.Content = "L'adversaire est encore en train de placer ces bateaux...";
+            lbl_status.Content = "L'adversaire est encore en train de\nplacer ses bateaux...";
             currentPage = this;
+            btn_back.IsEnabled = false;
             Window.GetWindow(setupP1).Content = this;
         }
 

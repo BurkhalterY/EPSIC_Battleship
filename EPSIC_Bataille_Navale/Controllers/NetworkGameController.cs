@@ -55,6 +55,9 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
         }
 
+        /// <summary>
+        /// Pour checker le win de l'adversaire
+        /// </summary>
         public void CheckWinAndTurn()
         {
             if (finish)

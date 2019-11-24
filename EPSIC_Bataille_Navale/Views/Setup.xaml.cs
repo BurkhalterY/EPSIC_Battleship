@@ -118,10 +118,5 @@ namespace EPSIC_Bataille_Navale.Views
         {
             controller.AIChoise();
         }
-
-        private void Btn_back_Click(object sender, RoutedEventArgs e)
-        {
-            Window.GetWindow(this).Content = new Home();
-        }
     }
 }

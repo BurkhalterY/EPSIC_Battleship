@@ -28,7 +28,7 @@ namespace EPSIC_Bataille_Navale.Views
             setupP1.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
             Window.GetWindow(this).Content = setupP1;
             setupP1.btn_next.Click += new RoutedEventHandler(StartGame);
-            setupP1.btn_back.Click += new RoutedEventHandler(StartGame);
+            setupP1.btn_back.Click += new RoutedEventHandler(Back);
 
             setupP2 = new Setup();
             setupP2.controller.AIChoise();

@@ -2,6 +2,9 @@
 
 namespace EPSIC_Bataille_Navale.Models
 {
+    /// <summary>
+    /// Classe servant au passage des données d'un Player par le réseau
+    /// </summary>
     public class SendablePlayer
     {
         public string playerName;
@@ -21,6 +24,10 @@ namespace EPSIC_Bataille_Navale.Models
             }
         }
 
+        /// <summary>
+        /// Reconstruit le player original
+        /// </summary>
+        /// <returns>Le player</returns>
         public Player ToPlayer()
         {
             GridModel grid = new GridModel(Properties.Settings.Default.size);
