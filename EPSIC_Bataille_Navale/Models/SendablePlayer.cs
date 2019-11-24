@@ -36,17 +36,27 @@ namespace EPSIC_Bataille_Navale.Models
             {
                 Boat boat = new Boat();
                 boat.startCell = new int[] { array[0], array[1] };
-                boat.orientation = (Direction)array[2];
-
-                for (int i = array[0]; i < array[0] + (boat.orientation == Direction.Left || boat.orientation == Direction.Right ? array[3] : 1); i++)
+                
+                if (array[3] != 1)
                 {
-                    for (int j = array[1]; j < array[1] + (boat.orientation == Direction.Up || boat.orientation == Direction.Down ? array[3] : 1); j++)
+                    boat.orientation = (Direction)array[2];
+
+                    for (int i = array[0]; i < array[0] + (boat.orientation == Direction.Left || boat.orientation == Direction.Right ? array[3] : 1); i++)
                     {
-                        grid.grid[i, j].boat = boat;
-                        boat.cells.Add(grid.grid[i, j]);
+                        for (int j = array[1]; j < array[1] + (boat.orientation == Direction.Up || boat.orientation == Direction.Down ? array[3] : 1); j++)
+                        {
+                            grid.grid[i, j].boat = boat;
+                            boat.cells.Add(grid.grid[i, j]);
+                        }
                     }
+                    grid.boats.Add(boat);
                 }
-                grid.boats.Add(boat);
+                else
+                {
+                    boat.touchedCell = -1;
+                    grid.grid[array[0], array[1]].boat = boat;
+                    boat.cells.Add(grid.grid[array[0], array[1]]);
+                }
             }
             
             return new Player(grid, playerName);
