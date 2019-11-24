@@ -28,6 +28,7 @@ namespace EPSIC_Bataille_Navale.Views
             setupP1.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
             Window.GetWindow(this).Content = setupP1;
             setupP1.btn_next.Click += new RoutedEventHandler(StartGame);
+            setupP1.btn_back.Click += new RoutedEventHandler(StartGame);
 
             setupP2 = new Setup();
             setupP2.controller.AIChoise();
@@ -36,10 +37,9 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_online_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Hihi !");
-            /*OnlineConfig onlineConfig = new OnlineConfig();
-            onlineConfig.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
-            Window.GetWindow(VisualTreeHelper.GetParent(this)).Content = onlineConfig;*/
+            Online online = new Online();
+            online.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
+            Window.GetWindow(this).Content = online;
         }
 
         private void Btn_credits_Click(object sender, RoutedEventArgs e)
@@ -70,6 +70,11 @@ namespace EPSIC_Bataille_Navale.Views
         private void StartGame(object sender, RoutedEventArgs e)
         {
             StartGame((DependencyObject)sender);
+        }
+
+        private void Back(object sender, RoutedEventArgs e)
+        {
+            Window.GetWindow(setupP1).Content = new Home();
         }
 
         /// <summary>

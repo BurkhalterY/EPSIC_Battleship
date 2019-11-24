@@ -82,6 +82,8 @@
     </ApplicationDefinition>
     <Compile Include="Controllers\DemoGameController.cs" />
     <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\NetworkGameController.cs" />
+    <Compile Include="Controllers\OnlineController.cs" />
     <Compile Include="Controllers\SetupController.cs" />
     <Compile Include="Controllers\SoloGameController.cs" />
     <Compile Include="Models\AI.cs" />
@@ -91,11 +93,15 @@
     <Compile Include="Models\GameType.cs" />
     <Compile Include="Models\GridModel.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\SendablePlayer.cs" />
     <Compile Include="Models\Sprite.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Online.xaml.cs">
+      <DependentUpon>Online.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -124,6 +130,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Online.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Settings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

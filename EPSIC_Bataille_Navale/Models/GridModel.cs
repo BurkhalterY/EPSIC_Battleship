@@ -15,6 +15,8 @@ namespace EPSIC_Bataille_Navale.Models
                 for (int j = 0; j < gridSize; j++)
                 {
                     grid[i, j] = new Cell();
+                    grid[i, j].x = i;
+                    grid[i, j].y = j;
                 }
             }
         }

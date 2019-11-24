@@ -6,6 +6,7 @@ namespace EPSIC_Bataille_Navale.Models
     {
         public int touchedCell = 0;
         public List<Cell> cells = new List<Cell>();
+        public int[] startCell;
         public Direction orientation;
     }
 }

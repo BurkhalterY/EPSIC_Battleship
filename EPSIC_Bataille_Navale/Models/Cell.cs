@@ -14,5 +14,6 @@
     {
         public State state = State.noActivity;
         public Boat boat = null;
+        public int x, y;
     }
 }

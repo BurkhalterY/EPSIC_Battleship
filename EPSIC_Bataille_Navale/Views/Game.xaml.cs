@@ -30,6 +30,7 @@ namespace EPSIC_Bataille_Navale.Views
             {
                 case GameType.Solo: controller = new SoloGameController(this); break;
                 case GameType.Demo: controller = new DemoGameController(this); break;
+                case GameType.Host: case GameType.Client: controller = new NetworkGameController(this, gameType); break;
             }
             MakeGrid(); //On ne génère les grilles qu'une seule fois
         }

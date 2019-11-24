@@ -16,7 +16,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 
     public abstract class GameController
     {
-        protected Game view;
+        public Game view;
         public Player[] players = new Player[2];
         public int playerTurn = 0;
         public bool finish = false;
@@ -124,7 +124,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// <summary>
         /// Révèle l'emplacement d'un bateau
         /// </summary>
-        public void Sonar()
+        public int[] Sonar()
         {
             playerTurn = (playerTurn + 1) % 2;
             Random random = new Random();
@@ -142,12 +142,13 @@ namespace EPSIC_Bataille_Navale.Controllers
                 }
                 if (intact)
                 {
-                    cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateau de différente taille aient le même risque d'être trouvé
+                    cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateaux de différente taille aient le même risque d'être trouvé
                 }
             }
             if (cells.Count > 0)
             {
-                cells[random.Next(cells.Count)].state = State.revealed;
+                Cell cell = cells[random.Next(cells.Count)];
+                cell.state = State.revealed;
                 players[playerTurn].sonars--;
                 if(playerTurn == 1 && players[playerTurn].sonars == 0)
                 {
@@ -162,11 +163,34 @@ namespace EPSIC_Bataille_Navale.Controllers
                 paragraph.LineHeight = 1;
                 view.history.Document.Blocks.Add(paragraph);
                 view.history.ScrollToEnd();
+                
+                return new int[] { cell.x, cell.y };
             }
             else
             {
                 playerTurn = (playerTurn + 1) % 2;
+                return new int[0];
             }
+        }
+
+        public void Sonar(int x, int y)
+        {
+            playerTurn = (playerTurn + 1) % 2;
+            players[playerTurn].grid.grid[x, y].state = State.revealed;
+            players[playerTurn].sonars--;
+            if (playerTurn == 1 && players[playerTurn].sonars == 0)
+            {
+                view.sonar.IsEnabled = false;
+            }
+            new SoundPlayer(Properties.Resources.sonar).Play();
+            view.RefreshGrid();
+
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(players[playerTurn].playerName + " utilise sonar");
+            paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
+            paragraph.LineHeight = 1;
+            view.history.Document.Blocks.Add(paragraph);
+            view.history.ScrollToEnd();
         }
 
         /// <summary>

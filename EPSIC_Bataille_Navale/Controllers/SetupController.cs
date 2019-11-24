@@ -87,6 +87,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     int minY = Math.Min(y, clickedCell[1]);
                     int maxY = Math.Max(y, clickedCell[1]);
                     Boat boat = new Boat();
+                    boat.startCell = new int[] { minX, minY };
                     boat.orientation = (Direction)(Math.Atan2(y - clickedCell[1], x - clickedCell[0]) * 180.0 / Math.PI);
 
                     for (int i = minX; i <= maxX; i++)
