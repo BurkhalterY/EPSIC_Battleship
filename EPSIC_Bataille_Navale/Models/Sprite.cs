@@ -84,7 +84,9 @@ namespace EPSIC_Bataille_Navale.Models
         /// <returns>Objet de type ImageBrush directement applicable</returns>
         public ImageBrush ToBrush()
         {
-            return new ImageBrush(ToImageSource());
+            ImageBrush brush = new ImageBrush(ToImageSource());
+            brush.Stretch = Stretch.Fill;
+            return brush;
         }
     }
 }
