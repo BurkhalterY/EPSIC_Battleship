@@ -82,6 +82,7 @@
     </ApplicationDefinition>
     <Compile Include="Controllers\DemoGameController.cs" />
     <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NetworkGameController.cs" />
     <Compile Include="Controllers\OnlineController.cs" />
     <Compile Include="Controllers\SetupController.cs" />

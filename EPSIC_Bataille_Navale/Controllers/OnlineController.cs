@@ -1,5 +1,4 @@
 ﻿using EPSIC_Bataille_Navale.Models;
-using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,11 +22,23 @@ namespace EPSIC_Bataille_Navale.Controllers
 
     public class OnlineController
     {
+        public delegate void EnableButtons(bool active);
+        public delegate void UpdateMessage(string message);
+        public delegate void SetupGame();
+        public delegate void StartGame();
+        public delegate void Wait();
+
+        public event EnableButtons OnEnableButtons;
+        public event UpdateMessage OnUpdateMessage;
+        public event SetupGame OnSetupGame;
+        public event StartGame OnStartGame;
+        public event Wait OnWait;
+
+
         private readonly BackgroundWorker backgroundWaitClient = new BackgroundWorker();
         private readonly BackgroundWorker backgroundReceiver = new BackgroundWorker();
         public readonly BackgroundWorker backgroundSender = new BackgroundWorker(); 
-        
-        private Online view;
+
         public NetworkGameController gameController;
         private TcpListener server;
         private TcpClient client;
@@ -36,12 +47,13 @@ namespace EPSIC_Bataille_Navale.Controllers
         public Action message;
         public object objectToSend;
         public string receivedString;
+        public Player player1;
+        public Player player2;
+        public GameType gameType;
         private int setupsOk = 0;
 
-        public OnlineController(Online view)
+        public OnlineController()
         {
-            this.view = view;
-
             backgroundWaitClient.DoWork += WaitClient;
             backgroundWaitClient.WorkerReportsProgress = true;
             backgroundWaitClient.ProgressChanged += StopWaitClient;
@@ -60,7 +72,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         public void Host()
         {
+            OnEnableButtons(false);
+            gameType = GameType.Host;
             backgroundWaitClient.RunWorkerAsync();
+            OnUpdateMessage("IP : " + GetLocalIPAddress() + Environment.NewLine + "En attente d'un adversaire.");
         }
 
         /// <summary>
@@ -71,20 +86,20 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             try
             {
+                OnEnableButtons(false);
+                gameType = GameType.Client;
                 client = new TcpClient();
                 IPEndPoint server = new IPEndPoint(IPAddress.Parse(ip), 5001);
                 client.Connect(server);
 
                 reader = new StreamReader(client.GetStream());
                 writer = new StreamWriter(client.GetStream());
-                writer.AutoFlush = true;
                 backgroundReceiver.RunWorkerAsync();
             }
             catch (Exception)
             {
                 MessageBox.Show("Hôte introuvable.");
-                view.btn_host.IsEnabled = true;
-                view.btn_join.IsEnabled = true;
+                OnEnableButtons(true);
             }
         }
 
@@ -123,14 +138,13 @@ namespace EPSIC_Bataille_Navale.Controllers
                     { "nuclearBombRange", Properties.Settings.Default.nuclearBombRange.ToString() }
                 };
                 backgroundSender.RunWorkerAsync();
-                view.SetupGame();
+                OnSetupGame();
             }
             else
             {
-                view.lbl_status.Content = "";
+                OnUpdateMessage("");
                 MessageBox.Show("Impossible de créer la partie.");
-                view.btn_host.IsEnabled = true;
-                view.btn_join.IsEnabled = true;
+                OnEnableButtons(true);
             }
         }
         
@@ -168,11 +182,11 @@ namespace EPSIC_Bataille_Navale.Controllers
                         Properties.Settings.Default.nbNuclearBombs = int.Parse(settings["nbNuclearBombs"]);
                         Properties.Settings.Default.nuclearBombRange = double.Parse(settings["nuclearBombRange"]);
                         Properties.Settings.Default.Save();
-                        view.SetupGame();
+                        OnSetupGame();
                         break;
                     case Action.init:
-                        view.player2 = new JavaScriptSerializer().Deserialize<SendablePlayer>(receivedString).ToPlayer();
-                        StartGame();
+                        player2 = new JavaScriptSerializer().Deserialize<SendablePlayer>(receivedString).ToPlayer();
+                        TryStartGame();
                         break;
                     case Action.clic:
                         int[] coord = new JavaScriptSerializer().Deserialize<int[]>(receivedString);
@@ -222,25 +236,24 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (server != null) server.Stop();
         }
 
-        public void SendSetup(object sender, RoutedEventArgs e)
+        public void SendSetup()
         {
-            Player player = new Player(view.setupP1.controller.grid, view.setupP1.controller.playerName);
             message = Action.init;
-            objectToSend = new SendablePlayer(player);
+            objectToSend = new SendablePlayer(player1);
             backgroundSender.RunWorkerAsync();
-            view.Wait();
-            StartGame();
+            OnWait();
+            TryStartGame();
         }
 
         /// <summary>
         /// Lance une partie si les 2 joueurs ont placé leurs bateaux
         /// </summary>
-        private void StartGame()
+        private void TryStartGame()
         {
             setupsOk++;
             if(setupsOk == 2)
             {
-                view.StartGame();
+                OnStartGame();
             }
         }
 

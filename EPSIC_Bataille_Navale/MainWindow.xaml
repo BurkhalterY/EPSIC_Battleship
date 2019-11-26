@@ -15,7 +15,4 @@
             <Setter Property="Foreground" Value="White" />
         </Style>
     </Window.Resources>
-    <Window.Content>
-        <views:Home />
-    </Window.Content>
 </Window>

@@ -1,5 +1,4 @@
 ﻿using EPSIC_Bataille_Navale.Models;
-using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Windows.Threading;
 
@@ -9,7 +8,7 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         AI ai, ai2;
 
-        public DemoGameController(Game view) : base(view)
+        public DemoGameController(Player[] players) : base( players)
         {
             ai = new AI(this);
             ai2 = new AI(this);
@@ -49,7 +48,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             else
             {
-                view.Finish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerTurn].playerName);
             }
         }
     }

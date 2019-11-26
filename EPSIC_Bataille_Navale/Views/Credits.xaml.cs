@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace EPSIC_Bataille_Navale.Views
@@ -16,7 +15,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_back_Click(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Content = new Home();
+            MainWindow.LoadPage(new Home());
         }
     }
 }

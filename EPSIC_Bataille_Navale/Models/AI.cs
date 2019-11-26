@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EPSIC_Bataille_Navale.Models
 {
-    class AI
+    public class AI
     {
         private GameController controller;
         private int phase = 0;
@@ -14,9 +14,12 @@ namespace EPSIC_Bataille_Navale.Models
         private byte directions = 0b1111; //urdl
         private int gridMask = random.Next(0, 1);
         private static Random random = new Random();
+        private int size;
 
-        public AI(GameController controller) {
+        public AI(GameController controller)
+        {
             this.controller = controller;
+            this.size = controller.players[0].grid.grid.GetLength(0);
         }
 
         /// <summary>
@@ -27,9 +30,9 @@ namespace EPSIC_Bataille_Navale.Models
             while (possibles.Count == 0)
             {
                 //Si la liste des cases possibles est vide, je rajoute toutes celles dans lesquels nous n'avons pas encore tiré
-                for (int i = 0; i < controller.size; i++)
+                for (int i = 0; i < size; i++)
                 {
-                    for (int j = 0; j < controller.size; j++)
+                    for (int j = 0; j < size; j++)
                     {
                         if (!IsAldryClicked(i, j) && (i + gridMask) % 2 == j % 2)
                         {
@@ -67,11 +70,11 @@ namespace EPSIC_Bataille_Navale.Models
                     {
                         possibles.Add(new int[] { x, y - 1 });
                     }
-                    if (x + 1 < controller.size && !IsAldryClicked(x + 1, y))
+                    if (x + 1 < size && !IsAldryClicked(x + 1, y))
                     {
                         possibles.Add(new int[] { x + 1, y });
                     }
-                    if (y + 1 < controller.size && !IsAldryClicked(x, y + 1))
+                    if (y + 1 < size && !IsAldryClicked(x, y + 1))
                     {
                         possibles.Add(new int[] { x, y + 1 });
                     }
@@ -129,11 +132,11 @@ namespace EPSIC_Bataille_Navale.Models
                     {
                         possibles.Add(new int[] { step[4], step[0] - 1 });
                     }
-                    if ((directions & 0b0100) == 0b0100 && step[3] + 1 < controller.size && !IsAldryClicked(step[3] + 1, step[5]))
+                    if ((directions & 0b0100) == 0b0100 && step[3] + 1 < size && !IsAldryClicked(step[3] + 1, step[5]))
                     {
                         possibles.Add(new int[] { step[3] + 1, step[5] });
                     }
-                    if ((directions & 0b0010) == 0b0010 && step[2] + 1 < controller.size && !IsAldryClicked(step[4], step[2] + 1))
+                    if ((directions & 0b0010) == 0b0010 && step[2] + 1 < size && !IsAldryClicked(step[4], step[2] + 1))
                     {
                         possibles.Add(new int[] { step[4], step[2] + 1 });
                     }
@@ -160,11 +163,11 @@ namespace EPSIC_Bataille_Navale.Models
                             {
                                 possibles.Add(new int[] { shots[i][0], shots[i][1] - 1 });
                             }
-                            if (shots[i][0] + 1 < controller.size && !IsAldryClicked(shots[i][0] + 1, shots[i][1]))
+                            if (shots[i][0] + 1 < size && !IsAldryClicked(shots[i][0] + 1, shots[i][1]))
                             {
                                 possibles.Add(new int[] { shots[i][0] + 1, shots[i][1] });
                             }
-                            if (shots[i][1] + 1 < controller.size && !IsAldryClicked(shots[i][0], shots[i][1] + 1))
+                            if (shots[i][1] + 1 < size && !IsAldryClicked(shots[i][0], shots[i][1] + 1))
                             {
                                 possibles.Add(new int[] { shots[i][0], shots[i][1] + 1 });
                             }

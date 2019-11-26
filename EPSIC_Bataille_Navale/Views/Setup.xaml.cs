@@ -1,10 +1,10 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
-using System;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using static EPSIC_Bataille_Navale.Controllers.SetupController;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -17,13 +17,15 @@ namespace EPSIC_Bataille_Navale.Views
         private Button[,] grid;
         public int size;
 
-        public Setup() : base()
+        public Setup(int size) : base()
         {
             InitializeComponent();
-            size = Properties.Settings.Default.size;
-            controller = new SetupController(this, size);
+            this.size = size;
+            controller = new SetupController(size);
+            controller.OnRefresh += new Refresh(OnRefresh);
+            controller.OnEnableBtnCancel += new EnableBtnCancel(OnEnableBtnCancel);
+            controller.OnEnableBtnNext += new EnableBtnNext(OnEnableBtnNext);
             MakeGrid();
-            RefreshGrid();
         }
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Click += new RoutedEventHandler(CellClick);
                     grid[i, j].PreviewMouseRightButtonDown += CellRightClick;
                     gridView.Children.Add(grid[i, j]);
+                    OnRefresh(i, j);
                 }
             }
         }
@@ -56,50 +59,47 @@ namespace EPSIC_Bataille_Navale.Views
         /// <summary>
         /// Actualise le sprite des cases de la grille
         /// </summary>
-        public void RefreshGrid()
+        public void OnRefresh(int i, int j)
         {
-            for (int i = 0; i < size; i++)
+            Sprite sprite = new Sprite(Properties.Resources.water);
+            Boat boat = controller.grid.grid[i, j].boat;
+            if (boat != null)
             {
-                for (int j = 0; j < size; j++)
+                if (boat.cells.Count == 1)
                 {
-                    Sprite sprite = new Sprite(Properties.Resources.water);
-                    Boat boat = controller.grid.grid[i, j].boat;
-                    if (boat != null)
-                    {
-                        if (boat.cells.Count == 1)
-                        {
-                            sprite.AddSprite(Properties.Resources.mine);
-                        }
-                        else
-                        {
-                            sprite.RotateSprite(boat.orientation);
-                            Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
-                            sprite.AddSprite(
-                                bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
-                                boat.orientation == Direction.Right || boat.orientation == Direction.Down
-                                    ? boat.cells.IndexOf(controller.grid.grid[i, j])
-                                    : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1
-                            );
-                        }
-                    }
-                    grid[i, j].Background = sprite.ToBrush();
+                    sprite.AddSprite(Properties.Resources.mine);
+                }
+                else
+                {
+                    sprite.RotateSprite(boat.orientation);
+                    Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
+                    sprite.AddSprite(
+                        bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
+                        boat.orientation == Direction.Right || boat.orientation == Direction.Down
+                            ? boat.cells.IndexOf(controller.grid.grid[i, j])
+                            : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1
+                    );
                 }
             }
-            for (int i = 0; i < controller.possibleCells.Count; i++)
+            else
             {
-                grid[controller.possibleCells[i][0], controller.possibleCells[i][1]].Background = System.Windows.Media.Brushes.LightGreen;
+                if (controller.possibleCells.Contains(controller.grid.grid[i, j]))
+                {
+                    sprite.AddSprite(Properties.Resources.hide); //Green
+                }
+                else if (controller.clickedCell == controller.grid.grid[i, j])
+                {
+                    sprite.AddSprite(Properties.Resources.hide); //Yellow
+                }
             }
-            if (controller.clickedCell.Length == 2)
-            {
-                grid[controller.clickedCell[0], controller.clickedCell[1]].Background = System.Windows.Media.Brushes.Yellow;
-            }
+            grid[i, j].Background = sprite.ToBrush();
         }
         
         protected void CellClick(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             int[] coord = (int[])button.Tag;
-            controller.Click(coord[0], coord[1]);
+            controller.Click(controller.grid.grid[coord[0], coord[1]]);
         }
 
         protected void CellRightClick(object sender, MouseButtonEventArgs e)
@@ -117,6 +117,16 @@ namespace EPSIC_Bataille_Navale.Views
         private void Btn_random_Click(object sender, RoutedEventArgs e)
         {
             controller.AIChoise();
+        }
+
+        public void OnEnableBtnCancel(bool active)
+        {
+            btn_cancel.IsEnabled = active;
+        }
+
+        public void OnEnableBtnNext(bool active)
+        {
+            btn_next.IsEnabled = active;
         }
     }
 }

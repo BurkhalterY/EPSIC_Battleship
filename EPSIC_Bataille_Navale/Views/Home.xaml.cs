@@ -1,4 +1,5 @@
-﻿using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,9 +11,8 @@ namespace EPSIC_Bataille_Navale.Views
     /// </summary>
     public partial class Home : Page
     {
-        private Setup setupP1;
-        private Setup setupP2;
-        private GameType gameType;
+        private HomeController controller = new HomeController();
+        private Setup setup;
 
         public Home()
         {
@@ -22,83 +22,74 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_solo_Click(object sender, RoutedEventArgs e)
         {
-            gameType = GameType.Solo;
-
-            setupP1 = new Setup();
-            setupP1.controller.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
-            Window.GetWindow(this).Content = setupP1;
-            setupP1.btn_next.Click += new RoutedEventHandler(StartGame);
-            setupP1.btn_back.Click += new RoutedEventHandler(Back);
-
-            setupP2 = new Setup();
-            setupP2.controller.AIChoise();
-            setupP2.controller.playerName = "L'IA";
+            CheckPlayerName();
+            controller.PlaySolo();
+            setup = new Setup(controller.setupP1.size);
+            MainWindow.LoadPage(setup);
+            setup.btn_next.Click += new RoutedEventHandler(StartGame);
+            setup.btn_back.Click += new RoutedEventHandler(Back);
         }
 
         private void Btn_online_Click(object sender, RoutedEventArgs e)
         {
+            CheckPlayerName();
             Online online = new Online();
-            online.playerName = txt_pseudo.Text == "" ? "Player" : txt_pseudo.Text;
-            Window.GetWindow(this).Content = online;
+            MainWindow.LoadPage(online);
         }
 
         private void Btn_credits_Click(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Content = new Credits();
+            CheckPlayerName();
+            MainWindow.LoadPage(new Credits());
         }
 
         private void Btn_settings_Click(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Content = new Settings();
+            CheckPlayerName();
+            MainWindow.LoadPage(new Settings());
         }
 
         private void Btn_demo_Click(object sender, RoutedEventArgs e)
         {
-            gameType = GameType.Demo;
-         
-            setupP1 = new Setup();
-            setupP1.controller.AIChoise();
-            setupP1.controller.playerName = "IA1";
-
-            setupP2 = new Setup();
-            setupP2.controller.AIChoise();
-            setupP2.controller.playerName = "IA2";
-
-            StartGame(this);
+            CheckPlayerName();
+            controller.PlayDemo();
+            StartGame();
         }
 
         private void StartGame(object sender, RoutedEventArgs e)
         {
-            StartGame((DependencyObject)sender);
+            StartGame();
         }
 
         private void Back(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(setupP1).Content = new Home();
+            MainWindow.LoadPage(new Home());
         }
 
         /// <summary>
         /// Démarre une partie
         /// </summary>
         /// <param name="dependencyObject"></param>
-        private void StartGame(DependencyObject dependencyObject)
+        public void StartGame()
         {
-            Game game = new Game(gameType, setupP1.size);
+            controller.setupP1.grid = setup.controller.grid;
             Player[] players = new Player[2];
-            players[0] = new Player(setupP1.controller.grid, setupP2.controller.playerName);
-            players[1] = new Player(setupP2.controller.grid, setupP1.controller.playerName);
-            game.controller.players = players;
-            Window.GetWindow(dependencyObject).Content = game;
-            game.RefreshGrid();
+            players[0] = new Player(controller.setupP1.grid, controller.setupP2.playerName);
+            players[1] = new Player(controller.setupP2.grid, controller.setupP1.playerName);
+            MainWindow.LoadPage(new Game(controller.gameType, controller.setupP1.size, players));
+        }
 
-            if (gameType == GameType.Solo)
+        private void CheckPlayerName()
+        {
+            if (txt_pseudo.Text.Length == 0)
             {
-                game.clickable = true;
+                Properties.Settings.Default.playerName = Environment.UserName;
             }
-            else if (gameType == GameType.Demo)
+            else
             {
-                game.controller.Click();
+                Properties.Settings.Default.playerName = txt_pseudo.Text;
             }
+            Properties.Settings.Default.Save();
         }
     }
 }

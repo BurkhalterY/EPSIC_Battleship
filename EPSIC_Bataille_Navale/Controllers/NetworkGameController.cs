@@ -1,5 +1,4 @@
 ﻿using EPSIC_Bataille_Navale.Models;
-using EPSIC_Bataille_Navale.Views;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -7,7 +6,7 @@ namespace EPSIC_Bataille_Navale.Controllers
     {
         public OnlineController onlineController;
 
-        public NetworkGameController(Game view, GameType gameType) : base(view)
+        public NetworkGameController(Player[] players, GameType gameType) : base(players)
         {
             if(gameType == GameType.Client)
             {
@@ -47,11 +46,11 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (finish)
             {
                 onlineController.Terminate();
-                view.Finish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerTurn].playerName);
             }
             else if (playerTurn == 1)
             {
-                view.clickable = false;
+                RaiseOnActiveGrid(false);
             }
         }
 
@@ -63,11 +62,11 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (finish)
             {
                 onlineController.Terminate();
-                view.Finish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerTurn].playerName);
             }
             else if (playerTurn == 0)
             {
-                view.clickable = true;
+                RaiseOnActiveGrid(true);
             }
         }
     }

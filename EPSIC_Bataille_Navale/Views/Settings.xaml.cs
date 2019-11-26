@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -38,7 +37,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_cancel_Click(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Content = new Home();
+            MainWindow.LoadPage(new Home());
         }
 
         private void Btn_save_Click(object sender, RoutedEventArgs e)
@@ -59,7 +58,7 @@ namespace EPSIC_Bataille_Navale.Views
                 Properties.Settings.Default.nbNuclearBombs = int.Parse(txt_nbNuclearBombs.Text);
                 Properties.Settings.Default.nuclearBombRange = double.Parse(txt_nuclearBombRange.Text);
                 Properties.Settings.Default.Save();
-                Window.GetWindow(this).Content = new Home();
+                MainWindow.LoadPage(new Home());
             }
         }
 

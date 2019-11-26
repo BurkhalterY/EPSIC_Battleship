@@ -1,10 +1,7 @@
 ﻿using EPSIC_Bataille_Navale.Models;
-using EPSIC_Bataille_Navale.Views;
 using System;
 using System.Collections.Generic;
 using System.Media;
-using System.Windows.Documents;
-using System.Windows.Media;
 
 namespace EPSIC_Bataille_Navale.Controllers
 {
@@ -16,16 +13,24 @@ namespace EPSIC_Bataille_Navale.Controllers
 
     public abstract class GameController
     {
-        public Game view;
+        public delegate void Refresh(int x, int y);
+        public delegate void HistoryUpdate(string message, int playerTurn);
+        public delegate void ActiveGrid(bool active);
+        public delegate void Finish(string winnerName);
+
+        public event Refresh OnRefresh;
+        public event HistoryUpdate OnHistoryUpdate;
+        public event ActiveGrid OnActiveGrid;
+        public event Finish OnFinish;
+
+
         public Player[] players = new Player[2];
         public int playerTurn = 0;
         public bool finish = false;
-        public int size;
 
-        public GameController(Game view)
+        public GameController(Player[] players)
         {
-            this.view = view;
-            size = view.size;
+            this.players = players;
         }
 
         /// <summary>
@@ -47,7 +52,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             State state = Shot(x, y);
             if(state != State.invalid)
             {
-                if(state == State.noBoat)
+                if (state == State.noBoat)
                 {
                     new SoundPlayer(Properties.Resources.splash).Play();
                 }
@@ -55,13 +60,6 @@ namespace EPSIC_Bataille_Navale.Controllers
                 {
                     new SoundPlayer(Properties.Resources.explosion).Play();
                 }
-                view.RefreshGrid();
-                Paragraph paragraph = new Paragraph();
-                paragraph.Inlines.Add(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1));
-                paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
-                paragraph.LineHeight = 1;
-                view.history.Document.Blocks.Add(paragraph);
-                view.history.ScrollToEnd();
             }
             else
             {
@@ -88,15 +86,10 @@ namespace EPSIC_Bataille_Navale.Controllers
                     if (boat.cells.Count == boat.touchedCell)
                     {
                         players[playerTurn].grid.grid[x, y].state = State.fullBoat;
-                        for (int i = 0; i < size; i++)
+                        foreach (Cell cell in boat.cells)
                         {
-                            for (int j = 0; j < size; j++)
-                            {
-                                if (players[playerTurn].grid.grid[i, j].boat == boat)
-                                {
-                                    players[playerTurn].grid.grid[i, j].state = State.fullBoat;
-                                }
-                            }
+                            cell.state = State.fullBoat;
+                            OnRefresh(cell.x, cell.y);
                         }
                         players[playerTurn].grid.boats.Remove(players[playerTurn].grid.grid[x, y].boat);
                         if (players[playerTurn].grid.boats.Count == 0)
@@ -109,13 +102,16 @@ namespace EPSIC_Bataille_Navale.Controllers
                     {
                         players[playerTurn].grid.grid[x, y].state = State.boat;
                         state = State.boat;
+                        OnRefresh(x, y);
                     }
                 }
                 else
                 {
                     players[playerTurn].grid.grid[x, y].state = State.noBoat;
                     state = State.noBoat;
+                    OnRefresh(x, y);
                 }
+                OnHistoryUpdate(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
                 return state;
             }
             return State.invalid;
@@ -150,20 +146,11 @@ namespace EPSIC_Bataille_Navale.Controllers
                 Cell cell = cells[random.Next(cells.Count)];
                 cell.state = State.revealed;
                 players[playerTurn].sonars--;
-                if(playerTurn == 1 && players[playerTurn].sonars == 0)
-                {
-                    view.sonar.IsEnabled = false;
-                }
-                new SoundPlayer(Properties.Resources.sonar).Play();
-                view.RefreshGrid();
 
-                Paragraph paragraph = new Paragraph();
-                paragraph.Inlines.Add(players[playerTurn].playerName + " utilise sonar");
-                paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
-                paragraph.LineHeight = 1;
-                view.history.Document.Blocks.Add(paragraph);
-                view.history.ScrollToEnd();
-                
+                new SoundPlayer(Properties.Resources.sonar).Play();
+
+                OnRefresh(cell.x, cell.y);
+                OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
                 return new int[] { cell.x, cell.y };
             }
             else
@@ -175,7 +162,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 
         public void Sonar(int x, int y)
         {
-            playerTurn = (playerTurn + 1) % 2;
+            /*playerTurn = (playerTurn + 1) % 2;
             players[playerTurn].grid.grid[x, y].state = State.revealed;
             players[playerTurn].sonars--;
             if (playerTurn == 1 && players[playerTurn].sonars == 0)
@@ -190,7 +177,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
             paragraph.LineHeight = 1;
             view.history.Document.Blocks.Add(paragraph);
-            view.history.ScrollToEnd();
+            view.history.ScrollToEnd();*/
         }
 
         /// <summary>
@@ -200,6 +187,8 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// <param name="y">Centre Y de l'attaque</param>
         public void NuclearAttack(int x, int y)
         {
+            new SoundPlayer(Properties.Resources.explosion).Play();
+           
             playerTurn = (playerTurn + 1) % 2;
             for(int i = 0; i < players[playerTurn].grid.grid.GetLength(0); i++)
             {
@@ -208,24 +197,33 @@ namespace EPSIC_Bataille_Navale.Controllers
                     if (Math.Sqrt(Math.Pow(x - i, 2) + Math.Pow(y - j, 2)) <= Properties.Settings.Default.nuclearBombRange)
                     {
                         Shot(i, j);
+                        OnRefresh(i, j);
                     }
                 }
             }
-
             players[playerTurn].nuclearBombs--;
-            if (playerTurn == 1 && players[playerTurn].nuclearBombs == 0)
-            {
-                view.nuclearBomb.IsEnabled = false;
-            }
-            new SoundPlayer(Properties.Resources.explosion).Play();
-            view.RefreshGrid();
-            
-            Paragraph paragraph = new Paragraph();
-            paragraph.Inlines.Add(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1));
-            paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
-            paragraph.LineHeight = 1;
-            view.history.Document.Blocks.Add(paragraph);
-            view.history.ScrollToEnd();
+
+            OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
+        }
+
+        protected void RaiseOnRefresh(int x, int y)
+        {
+            OnRefresh(x, y);
+        }
+
+        protected void RaiseOnHistoryUpdate(string message, int playerTurn)
+        {
+            OnHistoryUpdate(message, playerTurn);
+        }
+
+        protected void RaiseOnActiveGrid(bool active)
+        {
+            OnActiveGrid(active);
+        }
+
+        protected void RaiseOnFinish(string winnerName)
+        {
+            OnFinish(winnerName);
         }
     }
 }

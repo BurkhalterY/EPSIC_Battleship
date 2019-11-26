@@ -1,5 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Models;
-using EPSIC_Bataille_Navale.Views;
+using EPSIC_Bataille_Navale.Properties;
 using System;
 using System.Windows.Threading;
 
@@ -7,9 +7,10 @@ namespace EPSIC_Bataille_Navale.Controllers
 {
     public class SoloGameController : GameController
     {
-        AI ai;
+        private AI ai;
 
-        public SoloGameController(Game view) : base(view) {
+        public SoloGameController(Player[] players) : base(players)
+        {
             ai = new AI(this);
         }
 
@@ -28,16 +29,15 @@ namespace EPSIC_Bataille_Navale.Controllers
                     case ActionType.Sonar: Sonar(); break;
                     case ActionType.NuclearBomb: NuclearAttack(x, y); break;
                 }
-                
             }
             if (finish)
             {
-                view.Finish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerTurn].playerName);
             }
             else if (playerTurn == 1)
             {
-                view.clickable = false;
-                DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(Properties.Settings.Default.iaSleepTime) };
+                RaiseOnActiveGrid(false);
+                DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(Settings.Default.iaSleepTime) };
                 timer.Start();
                 timer.Tick += (sender, args) =>
                 {
@@ -45,11 +45,11 @@ namespace EPSIC_Bataille_Navale.Controllers
                     ai.AIPlay();
                     if (finish)
                     {
-                        view.Finish(players[playerTurn].playerName);
+                        RaiseOnFinish(players[playerTurn].playerName);
                     }
                     else
                     {
-                        view.clickable = true;
+                        RaiseOnActiveGrid(true);
                     }
                 };
             }

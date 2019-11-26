@@ -106,5 +106,17 @@ namespace EPSIC_Bataille_Navale.Properties {
                 this["nuclearBombRange"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string playerName {
+            get {
+                return ((string)(this["playerName"]));
+            }
+            set {
+                this["playerName"] = value;
+            }
+        }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using EPSIC_Bataille_Navale.Controllers;
 using EPSIC_Bataille_Navale.Models;
+using static EPSIC_Bataille_Navale.Controllers.OnlineController;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -13,85 +12,75 @@ namespace EPSIC_Bataille_Navale.Views
     public partial class Online : Page
     {
         private OnlineController controller;
-        public string playerName;
-        public Setup setupP1;
-        public Player player2;
-        private GameType gameType;
-        private Page currentPage;
+        private Setup setup;
 
         public Online()
         {
             InitializeComponent();
-            controller = new OnlineController(this);
+            controller = new OnlineController();
+            controller.OnEnableButtons += new EnableButtons(OnEnableButtons);
+            controller.OnUpdateMessage += new UpdateMessage(OnUpdateMessage);
+            controller.OnSetupGame += new SetupGame(OnSetupGame);
+            controller.OnStartGame += new StartGame(OnStartGame);
+            controller.OnWait += new Wait(OnWait);
         }
 
         private void Btn_host_Click(object sender, RoutedEventArgs e)
         {
-            btn_host.IsEnabled = false;
-            btn_join.IsEnabled = false;
-            lbl_status.Content = "IP : " + OnlineController.GetLocalIPAddress() + Environment.NewLine + "En attente d'un adversaire.";
             controller.Host();
-            gameType = GameType.Host;
         }
 
         private void Btn_join_Click(object sender, RoutedEventArgs e)
         {
-            btn_host.IsEnabled = false;
-            btn_join.IsEnabled = false;
             controller.Join(txt_ip.Text);
-            gameType = GameType.Client;
         }
 
         /// <summary>
         /// Crée et affiche la view de setup
         /// </summary>
-        public void SetupGame()
+        public void OnSetupGame()
         {
-            setupP1 = new Setup();
-            setupP1.controller.playerName = playerName;
-            Window.GetWindow(this).Content = setupP1;
-            setupP1.btn_next.Click += new RoutedEventHandler(controller.SendSetup);
-            setupP1.btn_back.Click += new RoutedEventHandler(Back);
-            currentPage = setupP1;
+            setup = new Setup(Properties.Settings.Default.size);
+            MainWindow.LoadPage(setup);
+            setup.btn_next.Click += new RoutedEventHandler(Wait);
+            setup.btn_back.Click += new RoutedEventHandler(Back);
         }
 
         /// <summary>
         /// Crée et affiche la game view
         /// </summary>
-        public void StartGame()
+        public void OnStartGame()
         {
-            Game game = new Game(gameType, setupP1.size);
+            Player[] players = new Player[2];
+            players[0] = new Player(controller.player1.grid, controller.player2.playerName);
+            players[1] = new Player(controller.player2.grid, controller.player1.playerName);
+            Game game = new Game(controller.gameType, controller.player1.grid.grid.GetLength(0), players);
             controller.gameController = (NetworkGameController)game.controller;
             ((NetworkGameController)game.controller).onlineController = controller;
-            Player[] players = new Player[2];
-            players[0] = new Player(setupP1.controller.grid, player2.playerName);
-            players[1] = new Player(player2.grid, setupP1.controller.playerName);
-            game.controller.players = players;
-            Window.GetWindow(currentPage).Content = game;
-            currentPage = game;
-            game.RefreshGrid();
-
-            if (gameType == GameType.Host)
-            {
-                game.clickable = true;
-            }
+            MainWindow.LoadPage(game);
         }
     
         /// <summary>
         /// Écran d'attente
         /// </summary>
-        public void Wait()
+        public void OnWait()
         {
+            controller.player1 = new Player(setup.controller.grid, controller.player1.playerName);
             lbl_status.Content = "L'adversaire est encore en train de\nplacer ses bateaux...";
-            currentPage = this;
             btn_back.IsEnabled = false;
-            Window.GetWindow(setupP1).Content = this;
+            MainWindow.LoadPage(this);
         }
-
+        
         private void Btn_back_Click(object sender, RoutedEventArgs e)
         {
             controller.Terminate();
-            Window.GetWindow(this).Content = new Home();
+            MainWindow.LoadPage(new Home());
+        }
+
+        private void Wait(object sender, RoutedEventArgs e)
+        {
+            controller.player1 = new Player(setup.controller.grid, controller.player1.playerName);
+            controller.SendSetup();
         }
 
         private void Back(object sender, RoutedEventArgs e)
@@ -99,8 +88,19 @@ namespace EPSIC_Bataille_Navale.Views
             if (MessageBox.Show("Voulez-vous vraiment quitter ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 controller.Terminate();
-                Window.GetWindow(setupP1).Content = new Home();
+                MainWindow.LoadPage(new Home());
             }
+        }
+
+        public void OnUpdateMessage(string message)
+        {
+            lbl_status.Content = message;
+        }
+
+        public void OnEnableButtons(bool active)
+        {
+            btn_host.IsEnabled = active;
+            btn_join.IsEnabled = active;
         }
     }
 }

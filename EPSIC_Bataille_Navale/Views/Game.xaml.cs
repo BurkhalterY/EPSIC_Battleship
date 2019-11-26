@@ -3,6 +3,8 @@ using EPSIC_Bataille_Navale.Models;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using static EPSIC_Bataille_Navale.Controllers.GameController;
 
 namespace EPSIC_Bataille_Navale.Views
 {
@@ -17,22 +19,36 @@ namespace EPSIC_Bataille_Navale.Views
         public RichTextBox history;
         public int size;
         public GameType gameType;
-        public bool clickable;
         public MenuItem sonar;
         public MenuItem nuclearBomb;
+        public bool gridActive;
 
-        public Game(GameType gameType, int size) : base()
+        public Game(GameType gameType, int size, Player[] players) : base()
         {
             InitializeComponent();
             this.gameType = gameType;
             this.size = size;
             switch (gameType) //Le controller dépend du type de partie
             {
-                case GameType.Solo: controller = new SoloGameController(this); break;
-                case GameType.Demo: controller = new DemoGameController(this); break;
-                case GameType.Host: case GameType.Client: controller = new NetworkGameController(this, gameType); break;
+                case GameType.Solo: controller = new SoloGameController(players); break;
+                case GameType.Demo: controller = new DemoGameController(players); break;
+                case GameType.Host: case GameType.Client: controller = new NetworkGameController(players, gameType); break;
             }
+
+            controller.OnRefresh += new Refresh(OnRefresh);
+            controller.OnHistoryUpdate += new HistoryUpdate(OnHistoryUpdate);
+            controller.OnActiveGrid += new ActiveGrid(OnActiveGrid);
+            controller.OnFinish += new Finish(OnFinish);
             MakeGrid(); //On ne génère les grilles qu'une seule fois
+
+            if (gameType == GameType.Solo || gameType == GameType.Host)
+            {
+                gridActive = true;
+            }
+            else if(gameType == GameType.Demo)
+            {
+                controller.Click();
+            }
         }
 
         /// <summary>
@@ -82,6 +98,7 @@ namespace EPSIC_Bataille_Navale.Views
                     gridSecond[i, j].Width = cellSizeSecond;
                     gridSecond[i, j].Height = cellSizeSecond;
                     gridView.Children.Add(gridSecond[i, j]);
+                    RefreshCell(i, j);
                 }
             }
 
@@ -99,77 +116,87 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Actualise le sprite des cases des grilles
+        /// Actualise le sprite d'une case de la grille
         /// </summary>
-        public void RefreshGrid()
+        public void RefreshCell(int i, int j)
         {
-            for (int i = 0; i < size; i++)
+            Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
+            switch (controller.players[1].grid.grid[i, j].state)
             {
-                for (int j = 0; j < size; j++)
-                {
-                    Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
-                    switch (controller.players[1].grid.grid[i, j].state)
-                    {
-                        case State.noBoat:
-                            sprite.AddSprite(Properties.Resources.miss);
-                            break;
-                        case State.boat:
-                            sprite.AddSprite(Properties.Resources.touch);
-                            break;
-                        case State.fullBoat: case State.revealed:
-                            Boat boat = controller.players[1].grid.grid[i, j].boat;
-                            sprite.RotateSprite(boat.orientation);
-                            Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
-                            sprite.AddSprite(
-                                bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
-                                boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
-                                    ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
-                                    : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
-                            );
-                            break;
-                    }
-                    grid[i, j].Background = sprite.ToBrush();
+                case State.noBoat:
+                    sprite.AddSprite(Properties.Resources.miss);
+                    break;
+                case State.boat:
+                    sprite.AddSprite(Properties.Resources.touch);
+                    break;
+                case State.fullBoat:
+                case State.revealed:
+                    Boat boat = controller.players[1].grid.grid[i, j].boat;
+                    sprite.RotateSprite(boat.orientation);
+                    Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
+                    sprite.AddSprite(
+                        bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
+                        boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
+                            ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
+                            : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
+                    );
+                    break;
+            }
+            grid[i, j].Background = sprite.ToBrush();
 
-                    sprite = new Sprite(Properties.Resources.water);
-                    if (controller.players[0].grid.grid[i, j].boat != null)
-                    {
-                        Boat boat = controller.players[0].grid.grid[i, j].boat;
-                        if (boat.cells.Count == 1)
-                        {
-                            sprite.AddSprite(Properties.Resources.mine);
-                        }
-                        else
-                        {
-                            sprite.RotateSprite(boat.orientation);
-                            Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
-                            sprite.AddSprite(
-                                bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
-                                boat.orientation == Direction.Right || boat.orientation == Direction.Down
-                                    ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
-                                    : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
-                            );
-                        }
-                    }
-                    switch (controller.players[0].grid.grid[i, j].state)
-                    {
-                        case State.noActivity:
-                            sprite.AddSprite(Properties.Resources.hide);
-                            break;
-                        case State.noBoat:
-                            sprite.AddSprite(Properties.Resources.miss);
-                            break;
-                        case State.boat:
-                            sprite.AddSprite(Properties.Resources.touch);
-                            break;
-                    }
-                    gridSecond[i, j].Background = sprite.ToBrush();
+            sprite = new Sprite(Properties.Resources.water);
+            if (controller.players[0].grid.grid[i, j].boat != null)
+            {
+                Boat boat = controller.players[0].grid.grid[i, j].boat;
+                if (boat.cells.Count == 1)
+                {
+                    sprite.AddSprite(Properties.Resources.mine);
+                }
+                else
+                {
+                    sprite.RotateSprite(boat.orientation);
+                    Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
+                    sprite.AddSprite(
+                        bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
+                        boat.orientation == Direction.Right || boat.orientation == Direction.Down
+                            ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
+                            : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
+                    );
                 }
             }
+            switch (controller.players[0].grid.grid[i, j].state)
+            {
+                case State.noActivity:
+                    sprite.AddSprite(Properties.Resources.hide);
+                    break;
+                case State.noBoat:
+                    sprite.AddSprite(Properties.Resources.miss);
+                    break;
+                case State.boat:
+                    sprite.AddSprite(Properties.Resources.touch);
+                    break;
+            }
+            gridSecond[i, j].Background = sprite.ToBrush();
+        }
+
+        public void OnRefresh(int x, int y)
+        {
+            RefreshCell(x, y);
+        }
+
+        public void OnHistoryUpdate(string message, int playerTurn)
+        {
+            Paragraph paragraph = new Paragraph();
+            paragraph.Inlines.Add(message);
+            paragraph.Foreground = playerTurn == 0 ? System.Windows.Media.Brushes.Red : System.Windows.Media.Brushes.Blue;
+            paragraph.LineHeight = 1;
+            history.Document.Blocks.Add(paragraph);
+            history.ScrollToEnd();
         }
 
         private void CellClick(object sender, RoutedEventArgs e)
         {
-            if (clickable) //Variable définissant à qui est-ce le tour de jouer
+            if (gridActive) //Variable définissant à qui est-ce le tour de jouer
             {
                 Button button = (Button)sender;
                 int[] coord = (int[])button.Tag;
@@ -179,19 +206,28 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Sonar_Click(object sender, RoutedEventArgs e)
         {
-            if (clickable)
+            if (gridActive)
             {
                 controller.Click(0, 0, ActionType.Sonar);
+                if (controller.playerTurn == 1 && controller.players[controller.playerTurn].sonars == 0)
+                {
+                    sonar.IsEnabled = false;
+                }
             }
         }
 
         private void NuclearBomb_Click(object sender, RoutedEventArgs e)
         {
-            if (clickable)
+            if (gridActive)
             {
                 MenuItem item = sender as MenuItem;
                 int[] coord = (int[])(((ContextMenu)item.Parent).PlacementTarget as Button).Tag;
                 controller.Click(coord[0], coord[1], ActionType.NuclearBomb);
+
+                if (controller.playerTurn == 1 && controller.players[controller.playerTurn].sonars == 0)
+                {
+                    nuclearBomb.IsEnabled = false;
+                }
             }
         }
 
@@ -199,12 +235,17 @@ namespace EPSIC_Bataille_Navale.Views
         /// Termine la partie
         /// </summary>
         /// <param name="winnerName">Nom du gagnant</param>
-        public void Finish(string winnerName)
+        public void OnFinish(string winnerName)
         {
             MessageBox.Show(winnerName + " a gagné !");
             Home home = new Home();
-            Window.GetWindow(this).Content = home;
+            MainWindow.LoadPage(home);
             home.lbl_title.Content = winnerName + " a gagné !";
+        }
+
+        public void OnActiveGrid(bool active)
+        {
+            gridActive = active;
         }
     }
 }
