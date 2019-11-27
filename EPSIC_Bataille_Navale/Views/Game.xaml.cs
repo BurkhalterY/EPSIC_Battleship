@@ -236,7 +236,7 @@ namespace EPSIC_Bataille_Navale.Views
             if (gridActive)
             {
                 controller.Click(0, 0, ActionType.Sonar);
-                if (controller.playerTurn == 1 && controller.players[controller.playerTurn].sonars == 0)
+                if (controller.players[0].sonars == 0)
                 {
                     sonar.IsEnabled = false;
                 }
@@ -251,7 +251,7 @@ namespace EPSIC_Bataille_Navale.Views
                 int[] coord = (int[])(((ContextMenu)item.Parent).PlacementTarget as Button).Tag;
                 controller.Click(coord[0], coord[1], ActionType.NuclearBomb);
 
-                if (controller.playerTurn == 1 && controller.players[controller.playerTurn].sonars == 0)
+                if (controller.players[0].nuclearBombs == 0)
                 {
                     nuclearBomb.IsEnabled = false;
                 }

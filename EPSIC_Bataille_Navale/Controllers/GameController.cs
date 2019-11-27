@@ -51,6 +51,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             State state = Shot(x, y);
             if(state != State.invalid)
             {
+                OnHistoryUpdate(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
                 InvertPlayer();
                 if (state == State.noBoat)
                 {
@@ -107,7 +108,6 @@ namespace EPSIC_Bataille_Navale.Controllers
                     state = State.noBoat;
                     OnRefresh(x, y, playerTurn);
                 }
-                OnHistoryUpdate(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
                 return state;
             }
             return State.invalid;
@@ -161,8 +161,8 @@ namespace EPSIC_Bataille_Navale.Controllers
             players[playerTurn].sonars--;
             new SoundPlayer(Properties.Resources.sonar).Play();
             OnRefresh(x, y, playerTurn);
-
             OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+            InvertPlayer();
         }
 
         /// <summary>
@@ -186,8 +186,8 @@ namespace EPSIC_Bataille_Navale.Controllers
                 }
             }
             players[playerTurn].nuclearBombs--;
-            InvertPlayer();
             OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
+            InvertPlayer();
         }
 
         public virtual bool SendMessage(string message, int player)
