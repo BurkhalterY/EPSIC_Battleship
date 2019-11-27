@@ -58,6 +58,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void StartGame(object sender, RoutedEventArgs e)
         {
+            controller.setupP1.grid = setup.controller.grid;
             StartGame();
         }
 
@@ -72,7 +73,6 @@ namespace EPSIC_Bataille_Navale.Views
         /// <param name="dependencyObject"></param>
         public void StartGame()
         {
-            controller.setupP1.grid = setup.controller.grid;
             Player[] players = new Player[2];
             players[0] = new Player(controller.setupP1.grid, controller.setupP1.playerName);
             players[1] = new Player(controller.setupP2.grid, controller.setupP2.playerName);
