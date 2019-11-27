@@ -117,12 +117,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                 Cell provCell = clickedCell;
                 clickedCell = null;
                 OnRefresh?.Invoke(provCell.x, provCell.y);
-                while (possibleCells.Count > 0)
-                {
-                    Cell removedCell = possibleCells[0];
-                    possibleCells.RemoveAt(0);
-                    OnRefresh?.Invoke(removedCell.x, removedCell.y);
-                }
+                ClearPossibles();
             }
         }
 
@@ -136,12 +131,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             if(nbMines > 0 && grid.grid[x, y].boat == null)
             {
-                while (possibleCells.Count > 0)
-                {
-                    Cell removedCell = possibleCells[0];
-                    possibleCells.RemoveAt(0);
-                    OnRefresh?.Invoke(removedCell.x, removedCell.y);
-                }
+                ClearPossibles();
                 Boat boat = new Boat() { touchedCell = -1 };
                 boat.startCell = new int[] { x, y };
                 grid.grid[x, y].boat = boat;
@@ -149,7 +139,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                 boats.Add(boat);
                 nbMines--;
                 OnEnableBtnNext?.Invoke(boatsList.Count == 0 && nbMines == 0);
-                OnRefresh(x, y);
+                OnRefresh?.Invoke(x, y);
             }
         }
 
@@ -191,12 +181,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         public void AIChoise()
         {
-            while (possibleCells.Count > 0)
-            {
-                Cell removedCell = possibleCells[0];
-                possibleCells.RemoveAt(0);
-                OnRefresh?.Invoke(removedCell.x, removedCell.y);
-            }
+            ClearPossibles();
             while (boats.Count > 0)
             {
                 DeleteLastBoat();
@@ -219,6 +204,16 @@ namespace EPSIC_Bataille_Navale.Controllers
                 int x = random.Next(size);
                 int y = random.Next(size);
                 RightClick(x, y);
+            }
+        }
+
+        private void ClearPossibles()
+        {
+            while (possibleCells.Count > 0)
+            {
+                Cell removedCell = possibleCells[0];
+                possibleCells.RemoveAt(0);
+                OnRefresh?.Invoke(removedCell.x, removedCell.y);
             }
         }
     }

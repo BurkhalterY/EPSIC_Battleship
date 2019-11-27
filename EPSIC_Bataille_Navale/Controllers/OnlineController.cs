@@ -17,7 +17,8 @@ namespace EPSIC_Bataille_Navale.Controllers
         init,
         clic,
         sonar,
-        nuclearBomb
+        nuclearBomb,
+        message
     }
 
     public class OnlineController
@@ -202,6 +203,9 @@ namespace EPSIC_Bataille_Navale.Controllers
                         int[] coord2 = new JavaScriptSerializer().Deserialize<int[]>(receivedString);
                         gameController.NuclearAttack(coord2[0], coord2[1]);
                         gameController.CheckWinAndTurn();
+                        break;
+                    case Action.message:
+                        gameController.SendMessage(new JavaScriptSerializer().Deserialize<string>(receivedString), 1);
                         break;
                 }
             }   

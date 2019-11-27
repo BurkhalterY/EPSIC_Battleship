@@ -13,7 +13,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 
     public abstract class GameController
     {
-        public delegate void Refresh(int x, int y);
+        public delegate void Refresh(int x, int y, int gridToRefresh);
         public delegate void HistoryUpdate(string message, int playerTurn);
         public delegate void ActiveGrid(bool active);
         public delegate void Finish(string winnerName);
@@ -25,7 +25,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 
 
         public Player[] players = new Player[2];
-        public int playerTurn = 0;
+        public int playerTurn = 0, playerNotTurn = 1;
         public bool finish = false;
 
         public GameController(Player[] players)
@@ -48,10 +48,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// <returns>Le nouvel état de la case visée</returns>
         public State ClickAt(int x, int y)
         {
-            playerTurn = (playerTurn + 1) % 2;
             State state = Shot(x, y);
             if(state != State.invalid)
             {
+                InvertPlayer();
                 if (state == State.noBoat)
                 {
                     new SoundPlayer(Properties.Resources.splash).Play();
@@ -60,10 +60,6 @@ namespace EPSIC_Bataille_Navale.Controllers
                 {
                     new SoundPlayer(Properties.Resources.explosion).Play();
                 }
-            }
-            else
-            {
-                playerTurn = (playerTurn + 1) % 2;
             }
             return state;
         }
@@ -76,23 +72,23 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// <returns>Le nouvel état de la case visée</returns>
         private State Shot(int x, int y)
         {
-            if (players[playerTurn].grid.grid[x, y].state == State.noActivity || players[playerTurn].grid.grid[x, y].state == State.revealed)
+            if (players[playerNotTurn].grid.grid[x, y].state == State.noActivity || players[playerNotTurn].grid.grid[x, y].state == State.revealed)
             {
                 State state;
-                if (players[playerTurn].grid.grid[x, y].boat != null)
+                if (players[playerNotTurn].grid.grid[x, y].boat != null)
                 {
-                    Boat boat = players[playerTurn].grid.grid[x, y].boat;
+                    Boat boat = players[playerNotTurn].grid.grid[x, y].boat;
                     boat.touchedCell++;
                     if (boat.cells.Count == boat.touchedCell)
                     {
-                        players[playerTurn].grid.grid[x, y].state = State.fullBoat;
+                        players[playerNotTurn].grid.grid[x, y].state = State.fullBoat;
                         foreach (Cell cell in boat.cells)
                         {
                             cell.state = State.fullBoat;
-                            OnRefresh(cell.x, cell.y);
+                            OnRefresh(cell.x, cell.y, playerTurn);
                         }
-                        players[playerTurn].grid.boats.Remove(players[playerTurn].grid.grid[x, y].boat);
-                        if (players[playerTurn].grid.boats.Count == 0)
+                        players[playerNotTurn].grid.boats.Remove(players[playerNotTurn].grid.grid[x, y].boat);
+                        if (players[playerNotTurn].grid.boats.Count == 0)
                         {
                             finish = true;
                         }
@@ -100,16 +96,16 @@ namespace EPSIC_Bataille_Navale.Controllers
                     }
                     else
                     {
-                        players[playerTurn].grid.grid[x, y].state = State.boat;
+                        players[playerNotTurn].grid.grid[x, y].state = State.boat;
                         state = State.boat;
-                        OnRefresh(x, y);
+                        OnRefresh(x, y, playerTurn);
                     }
                 }
                 else
                 {
-                    players[playerTurn].grid.grid[x, y].state = State.noBoat;
+                    players[playerNotTurn].grid.grid[x, y].state = State.noBoat;
                     state = State.noBoat;
-                    OnRefresh(x, y);
+                    OnRefresh(x, y, playerTurn);
                 }
                 OnHistoryUpdate(players[playerTurn].playerName + "\t: " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
                 return state;
@@ -122,10 +118,9 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         public int[] Sonar()
         {
-            playerTurn = (playerTurn + 1) % 2;
             Random random = new Random();
             List<Cell> cells = new List<Cell>();
-            foreach (Boat boat in players[playerTurn].grid.boats)
+            foreach (Boat boat in players[playerNotTurn].grid.boats)
             {
                 bool intact = true;
                 foreach (Cell cell in boat.cells)
@@ -149,35 +144,25 @@ namespace EPSIC_Bataille_Navale.Controllers
 
                 new SoundPlayer(Properties.Resources.sonar).Play();
 
-                OnRefresh(cell.x, cell.y);
+                OnRefresh(cell.x, cell.y, playerTurn);
                 OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+                InvertPlayer();
                 return new int[] { cell.x, cell.y };
             }
             else
             {
-                playerTurn = (playerTurn + 1) % 2;
                 return new int[0];
             }
         }
 
         public void Sonar(int x, int y)
         {
-            /*playerTurn = (playerTurn + 1) % 2;
-            players[playerTurn].grid.grid[x, y].state = State.revealed;
+            players[playerNotTurn].grid.grid[x, y].state = State.revealed;
             players[playerTurn].sonars--;
-            if (playerTurn == 1 && players[playerTurn].sonars == 0)
-            {
-                view.sonar.IsEnabled = false;
-            }
             new SoundPlayer(Properties.Resources.sonar).Play();
-            view.RefreshGrid();
+            OnRefresh(x, y, playerTurn);
 
-            Paragraph paragraph = new Paragraph();
-            paragraph.Inlines.Add(players[playerTurn].playerName + " utilise sonar");
-            paragraph.Foreground = playerTurn == 0 ? Brushes.Red : Brushes.Blue;
-            paragraph.LineHeight = 1;
-            view.history.Document.Blocks.Add(paragraph);
-            view.history.ScrollToEnd();*/
+            OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
         }
 
         /// <summary>
@@ -189,26 +174,42 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             new SoundPlayer(Properties.Resources.explosion).Play();
            
-            playerTurn = (playerTurn + 1) % 2;
-            for(int i = 0; i < players[playerTurn].grid.grid.GetLength(0); i++)
+            for(int i = 0; i < players[playerNotTurn].grid.grid.GetLength(0); i++)
             {
-                for (int j = 0; j < players[playerTurn].grid.grid.GetLength(1); j++)
+                for (int j = 0; j < players[playerNotTurn].grid.grid.GetLength(1); j++)
                 {
                     if (Math.Sqrt(Math.Pow(x - i, 2) + Math.Pow(y - j, 2)) <= Properties.Settings.Default.nuclearBombRange)
                     {
                         Shot(i, j);
-                        OnRefresh(i, j);
+                        OnRefresh(i, j, playerTurn);
                     }
                 }
             }
             players[playerTurn].nuclearBombs--;
-
+            InvertPlayer();
             OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
         }
 
-        protected void RaiseOnRefresh(int x, int y)
+        public virtual bool SendMessage(string message, int player)
         {
-            OnRefresh(x, y);
+            if(message != "")
+            {
+                OnHistoryUpdate(players[player].playerName + " : " + message, player);
+                return true;
+            }
+            return false;
+        }
+
+        protected void InvertPlayer()
+        {
+            int prov = playerTurn;
+            playerTurn = playerNotTurn;
+            playerNotTurn = prov;
+        }
+
+        protected void RaiseOnRefresh(int x, int y, int gridToRefresh)
+        {
+            OnRefresh(x, y, gridToRefresh);
         }
 
         protected void RaiseOnHistoryUpdate(string message, int playerTurn)

@@ -74,8 +74,8 @@ namespace EPSIC_Bataille_Navale.Views
         {
             controller.setupP1.grid = setup.controller.grid;
             Player[] players = new Player[2];
-            players[0] = new Player(controller.setupP1.grid, controller.setupP2.playerName);
-            players[1] = new Player(controller.setupP2.grid, controller.setupP1.playerName);
+            players[0] = new Player(controller.setupP1.grid, controller.setupP1.playerName);
+            players[1] = new Player(controller.setupP2.grid, controller.setupP2.playerName);
             MainWindow.LoadPage(new Game(controller.gameType, controller.setupP1.size, players));
         }
 

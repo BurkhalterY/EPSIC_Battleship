@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using static EPSIC_Bataille_Navale.Controllers.GameController;
 
 namespace EPSIC_Bataille_Navale.Views
@@ -16,7 +17,8 @@ namespace EPSIC_Bataille_Navale.Views
         public GameController controller;
         private Button[,] grid;
         private Button[,] gridSecond;
-        public RichTextBox history;
+        public RichTextBox rtb_history;
+        public TextBox txt_message;
         public int size;
         public GameType gameType;
         public MenuItem sonar;
@@ -87,9 +89,10 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
                     grid[i, j].Width = cellSize;
                     grid[i, j].Height = cellSize;
-                    grid[i, j].Click += new RoutedEventHandler(CellClick); //Ajout de l'évenement Click (seulement sur la grille 1)
+                    grid[i, j].Click += new RoutedEventHandler(Cell_Click); //Ajout de l'évenement Click (seulement sur la grille 1)
                     grid[i, j].ContextMenu = menu;
                     gridView.Children.Add(grid[i, j]);
+                    RefreshCell(i, j, 0);
 
                     gridSecond[i, j] = new Button();
                     gridSecond[i, j].HorizontalAlignment = HorizontalAlignment.Left;
@@ -98,90 +101,105 @@ namespace EPSIC_Bataille_Navale.Views
                     gridSecond[i, j].Width = cellSizeSecond;
                     gridSecond[i, j].Height = cellSizeSecond;
                     gridView.Children.Add(gridSecond[i, j]);
-                    RefreshCell(i, j);
+                    RefreshCell(i, j, 1);
                 }
             }
 
             //Création de la zone de texte contenant l'historique des tirs
-            history = new RichTextBox();
-            history.HorizontalAlignment = HorizontalAlignment.Left;
-            history.VerticalAlignment = VerticalAlignment.Top;
-            history.Margin = new Thickness(475, size * cellSizeSecond + 25, 0, 0);
-            history.Width = 225;
-            history.Height = 225;
-            history.IsReadOnly = true;
-            history.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            history.Document.Blocks.Clear();
-            gridView.Children.Add(history);
+            rtb_history = new RichTextBox();
+            rtb_history.HorizontalAlignment = HorizontalAlignment.Left;
+            rtb_history.VerticalAlignment = VerticalAlignment.Top;
+            rtb_history.Margin = new Thickness(475, size * cellSizeSecond + 25, 0, 0);
+            rtb_history.Width = 225;
+            rtb_history.Height = 200;
+            rtb_history.IsReadOnly = true;
+            rtb_history.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            rtb_history.Document.Blocks.Clear();
+            gridView.Children.Add(rtb_history);
+
+            txt_message = new TextBox();
+            txt_message.HorizontalAlignment = HorizontalAlignment.Left;
+            txt_message.VerticalAlignment = VerticalAlignment.Top;
+            txt_message.Margin = new Thickness(475, size * cellSizeSecond + 25 + rtb_history.Height, 0, 0);
+            txt_message.Width = 225;
+            txt_message.Height = 25;
+            txt_message.KeyDown += Txt_message_KeyDown;
+            gridView.Children.Add(txt_message);
         }
 
         /// <summary>
         /// Actualise le sprite d'une case de la grille
         /// </summary>
-        public void RefreshCell(int i, int j)
+        public void RefreshCell(int i, int j, int gridToRefresh)
         {
-            Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
-            switch (controller.players[1].grid.grid[i, j].state)
+            if(gridToRefresh == 0)
             {
-                case State.noBoat:
-                    sprite.AddSprite(Properties.Resources.miss);
-                    break;
-                case State.boat:
-                    sprite.AddSprite(Properties.Resources.touch);
-                    break;
-                case State.fullBoat:
-                case State.revealed:
-                    Boat boat = controller.players[1].grid.grid[i, j].boat;
-                    sprite.RotateSprite(boat.orientation);
-                    Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
-                    sprite.AddSprite(
-                        bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
-                        boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
-                            ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
-                            : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
-                    );
-                    break;
+                Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
+                switch (controller.players[1].grid.grid[i, j].state)
+                {
+                    case State.noBoat:
+                        sprite.AddSprite(Properties.Resources.miss);
+                        break;
+                    case State.boat:
+                        sprite.AddSprite(Properties.Resources.touch);
+                        break;
+                    case State.fullBoat:
+                    case State.revealed:
+                        Boat boat = controller.players[1].grid.grid[i, j].boat;
+                        sprite.RotateSprite(boat.orientation);
+                        Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
+                        sprite.AddSprite(
+                            bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
+                            boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
+                                ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
+                                : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
+                        );
+                        break;
+                }
+                grid[i, j].Background = sprite.ToBrush();
             }
-            grid[i, j].Background = sprite.ToBrush();
+            else if(gridToRefresh == 1)
+            {
 
-            sprite = new Sprite(Properties.Resources.water);
-            if (controller.players[0].grid.grid[i, j].boat != null)
-            {
-                Boat boat = controller.players[0].grid.grid[i, j].boat;
-                if (boat.cells.Count == 1)
+                Sprite sprite = new Sprite(Properties.Resources.water);
+                if (controller.players[0].grid.grid[i, j].boat != null)
                 {
-                    sprite.AddSprite(Properties.Resources.mine);
+                    Boat boat = controller.players[0].grid.grid[i, j].boat;
+                    if (boat.cells.Count == 1)
+                    {
+                        sprite.AddSprite(Properties.Resources.mine);
+                    }
+                    else
+                    {
+                        sprite.RotateSprite(boat.orientation);
+                        Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
+                        sprite.AddSprite(
+                            bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
+                            boat.orientation == Direction.Right || boat.orientation == Direction.Down
+                                ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
+                                : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
+                        );
+                    }
                 }
-                else
+                switch (controller.players[0].grid.grid[i, j].state)
                 {
-                    sprite.RotateSprite(boat.orientation);
-                    Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count);
-                    sprite.AddSprite(
-                        bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() },
-                        boat.orientation == Direction.Right || boat.orientation == Direction.Down
-                            ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
-                            : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
-                    );
+                    case State.noActivity:
+                        sprite.AddSprite(Properties.Resources.hide);
+                        break;
+                    case State.noBoat:
+                        sprite.AddSprite(Properties.Resources.miss);
+                        break;
+                    case State.boat:
+                        sprite.AddSprite(Properties.Resources.touch);
+                        break;
                 }
+                gridSecond[i, j].Background = sprite.ToBrush();
             }
-            switch (controller.players[0].grid.grid[i, j].state)
-            {
-                case State.noActivity:
-                    sprite.AddSprite(Properties.Resources.hide);
-                    break;
-                case State.noBoat:
-                    sprite.AddSprite(Properties.Resources.miss);
-                    break;
-                case State.boat:
-                    sprite.AddSprite(Properties.Resources.touch);
-                    break;
-            }
-            gridSecond[i, j].Background = sprite.ToBrush();
         }
 
-        public void OnRefresh(int x, int y)
+        public void OnRefresh(int x, int y, int gridToRefresh)
         {
-            RefreshCell(x, y);
+            RefreshCell(x, y, gridToRefresh);
         }
 
         public void OnHistoryUpdate(string message, int playerTurn)
@@ -190,11 +208,20 @@ namespace EPSIC_Bataille_Navale.Views
             paragraph.Inlines.Add(message);
             paragraph.Foreground = playerTurn == 0 ? System.Windows.Media.Brushes.Red : System.Windows.Media.Brushes.Blue;
             paragraph.LineHeight = 1;
-            history.Document.Blocks.Add(paragraph);
-            history.ScrollToEnd();
+            rtb_history.Document.Blocks.Add(paragraph);
+            rtb_history.ScrollToEnd();
         }
 
-        private void CellClick(object sender, RoutedEventArgs e)
+        private void Txt_message_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                controller.SendMessage(txt_message.Text, 0);
+                txt_message.Clear();
+            }
+        }
+
+        private void Cell_Click(object sender, RoutedEventArgs e)
         {
             if (gridActive) //Variable définissant à qui est-ce le tour de jouer
             {

@@ -10,7 +10,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             if(gameType == GameType.Client)
             {
-                playerTurn = (playerTurn + 1) % 2;
+                InvertPlayer();
             }
         }
 
@@ -52,6 +52,21 @@ namespace EPSIC_Bataille_Navale.Controllers
             {
                 RaiseOnActiveGrid(false);
             }
+        }
+
+        public override bool SendMessage(string message, int player)
+        {
+            if(base.SendMessage(message, player))
+            {
+                if(player == 0)
+                {
+                    onlineController.message = Action.message;
+                    onlineController.objectToSend = message;
+                    onlineController.backgroundSender.RunWorkerAsync();
+                }
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

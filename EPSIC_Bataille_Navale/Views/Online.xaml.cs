@@ -51,10 +51,7 @@ namespace EPSIC_Bataille_Navale.Views
         /// </summary>
         public void OnStartGame()
         {
-            Player[] players = new Player[2];
-            players[0] = new Player(controller.player1.grid, controller.player2.playerName);
-            players[1] = new Player(controller.player2.grid, controller.player1.playerName);
-            Game game = new Game(controller.gameType, controller.player1.grid.grid.GetLength(0), players);
+            Game game = new Game(controller.gameType, controller.player1.grid.grid.GetLength(0), new Player[] { controller.player1, controller.player2 });
             controller.gameController = (NetworkGameController)game.controller;
             ((NetworkGameController)game.controller).onlineController = controller;
             MainWindow.LoadPage(game);
@@ -65,7 +62,7 @@ namespace EPSIC_Bataille_Navale.Views
         /// </summary>
         public void OnWait()
         {
-            controller.player1 = new Player(setup.controller.grid, controller.player1.playerName);
+            controller.player1 = new Player(setup.controller.grid, Properties.Settings.Default.playerName);
             lbl_status.Content = "L'adversaire est encore en train de\nplacer ses bateaux...";
             btn_back.IsEnabled = false;
             MainWindow.LoadPage(this);
@@ -79,7 +76,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Wait(object sender, RoutedEventArgs e)
         {
-            controller.player1 = new Player(setup.controller.grid, controller.player1.playerName);
+            controller.player1 = new Player(setup.controller.grid, Properties.Settings.Default.playerName);
             controller.SendSetup();
         }
 
