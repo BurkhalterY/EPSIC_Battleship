@@ -46,7 +46,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (finish)
             {
                 onlineController.Terminate();
-                RaiseOnFinish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerNotTurn].playerName);
             }
             else if (playerTurn == 1)
             {
@@ -77,7 +77,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             if (finish)
             {
                 onlineController.Terminate();
-                RaiseOnFinish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerNotTurn].playerName);
             }
             else if (playerTurn == 0)
             {

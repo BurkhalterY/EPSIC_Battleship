@@ -48,7 +48,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             else
             {
-                RaiseOnFinish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerNotTurn].playerName);
             }
         }
     }

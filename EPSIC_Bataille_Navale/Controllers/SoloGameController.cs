@@ -32,7 +32,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             if (finish)
             {
-                RaiseOnFinish(players[playerTurn].playerName);
+                RaiseOnFinish(players[playerNotTurn].playerName);
             }
             else if (playerTurn == 1)
             {
@@ -45,7 +45,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     ai.AIPlay();
                     if (finish)
                     {
-                        RaiseOnFinish(players[playerTurn].playerName);
+                        RaiseOnFinish(players[playerNotTurn].playerName);
                     }
                     else
                     {
