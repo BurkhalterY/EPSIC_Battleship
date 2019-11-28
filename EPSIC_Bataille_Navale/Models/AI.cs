@@ -7,7 +7,7 @@ namespace EPSIC_Bataille_Navale.Models
     public class AI
     {
         private GameController controller;
-        private int phase = 0;
+        private int phase;
         private List<int[]> shots = new List<int[]>();
         private List<int[]> possibles = new List<int[]>();
         private int[] step = new int[6];
@@ -15,11 +15,12 @@ namespace EPSIC_Bataille_Navale.Models
         private int gridMask = random.Next(0, 1);
         private static Random random = new Random();
         private int size;
+        private int missSince;
 
         public AI(GameController controller)
         {
             this.controller = controller;
-            this.size = controller.players[0].grid.grid.GetLength(0);
+            size = controller.players[0].grid.grid.GetLength(0);
         }
 
         /// <summary>
@@ -27,34 +28,66 @@ namespace EPSIC_Bataille_Navale.Models
         /// </summary>
         public void AIPlay()
         {
-            while (possibles.Count == 0)
+            if (missSince < 5 || controller.players[controller.playerTurn].sonars == 0 || controller.players[controller.playerTurn].nuclearBombs == 0)
             {
-                //Si la liste des cases possibles est vide, je rajoute toutes celles dans lesquels nous n'avons pas encore tiré
-                for (int i = 0; i < size; i++)
+                while (possibles.Count == 0)
                 {
-                    for (int j = 0; j < size; j++)
+                    //Si la liste des cases possibles est vide, je rajoute toutes celles dans lesquels nous n'avons pas encore tiré
+                    for (int i = 0; i < size; i++)
                     {
-                        if (!IsAldryClicked(i, j) && (i + gridMask) % 2 == j % 2)
+                        for (int j = 0; j < size; j++)
                         {
-                            possibles.Add(new int[] { i, j });
+                            if (!IsAldryClicked(i, j) && (i + gridMask) % 2 == j % 2)
+                            {
+                                possibles.Add(new int[] { i, j });
+                            }
                         }
                     }
+                    phase = 0;
+                    if (possibles.Count == 0) //Si toujours vide, je change le masque de la grille
+                    {
+                        gridMask = (gridMask + 1) % 2;
+                    }
                 }
-                phase = 0;
-                if(possibles.Count == 0) //Si toujours vide, je change le masque de la grille
+
+                //Tir sur une case aléatoire parmis les possibles
+                int cellSelected = random.Next(possibles.Count);
+                int x = possibles[cellSelected][0];
+                int y = possibles[cellSelected][1];
+                State state = controller.ClickAt(x, y);
+                shots.Add(new int[] { x, y }); //On l'ajoute à la liste des shots
+                possibles.RemoveAt(cellSelected); //Et on supprime la case de la liste de possibilité
+
+                if (state == State.noBoat)
                 {
-                    gridMask = (gridMask + 1) % 2;
+                    missSince++;
+                }
+
+                DeterminePossibles(x, y, state);
+            }
+            else
+            {
+                if (possibles.Count == 1)
+                {
+                    List<int[]> cells = controller.NuclearAttack(possibles[0][0], possibles[0][1]);
+                    possibles.Clear();
+                    foreach (int[] cell in cells)
+                    {
+                        shots.Add(new int[] { cell[0], cell[1] });
+                        DeterminePossibles(cell[0], cell[1], (State)cell[2]);
+                    }
+                    missSince = 0;
+                }
+                else
+                {
+                    possibles.Clear();
+                    possibles.Add(controller.Sonar());
                 }
             }
+        }
 
-            //Tir sur une case aléatoire parmis les possibles
-            int cellSelected = random.Next(possibles.Count);
-            int x = possibles[cellSelected][0];
-            int y = possibles[cellSelected][1];
-            State state = controller.ClickAt(x, y);
-            shots.Add(new int[] { x, y }); //On l'ajoute à la liste des shots
-            possibles.RemoveAt(cellSelected); //Et on supprime la case de la liste de possibilité
-
+        private void DeterminePossibles(int x, int y, State state)
+        {
             if (phase == 0) //phase 0 = tirs aléatoires
             {
                 if (state == State.boat)

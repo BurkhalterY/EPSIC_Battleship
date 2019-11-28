@@ -118,51 +118,56 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         public int[] Sonar()
         {
-            Random random = new Random();
-            List<Cell> cells = new List<Cell>();
-            foreach (Boat boat in players[playerNotTurn].grid.boats)
+            if (players[playerTurn].sonars > 0)
             {
-                bool intact = true;
-                foreach (Cell cell in boat.cells)
+                Random random = new Random();
+                List<Cell> cells = new List<Cell>();
+                foreach (Boat boat in players[playerNotTurn].grid.boats)
                 {
-                    if (cell.state != State.noActivity)
+                    bool intact = true;
+                    foreach (Cell cell in boat.cells)
                     {
-                        intact = false;
-                        break;
+                        if (cell.state != State.noActivity)
+                        {
+                            intact = false;
+                            break;
+                        }
+                    }
+                    if (intact)
+                    {
+                        cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateaux de différente taille aient le même risque d'être trouvé
                     }
                 }
-                if (intact)
+                if (cells.Count > 0)
                 {
-                    cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateaux de différente taille aient le même risque d'être trouvé
+                    Cell cell = cells[random.Next(cells.Count)];
+                    cell.state = State.revealed;
+                    players[playerTurn].sonars--;
+
+                    new SoundPlayer(Properties.Resources.sonar).Play();
+
+                    OnRefresh(cell.x, cell.y, playerTurn);
+                    OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+                    InvertPlayer();
+                    return new int[] { cell.x, cell.y };
                 }
             }
-            if (cells.Count > 0)
-            {
-                Cell cell = cells[random.Next(cells.Count)];
-                cell.state = State.revealed;
-                players[playerTurn].sonars--;
-
-                new SoundPlayer(Properties.Resources.sonar).Play();
-
-                OnRefresh(cell.x, cell.y, playerTurn);
-                OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
-                InvertPlayer();
-                return new int[] { cell.x, cell.y };
-            }
-            else
-            {
-                return new int[0];
-            }
+            return new int[0];
         }
 
-        public void Sonar(int x, int y)
+        public bool Sonar(int x, int y)
         {
-            players[playerNotTurn].grid.grid[x, y].state = State.revealed;
-            players[playerTurn].sonars--;
-            new SoundPlayer(Properties.Resources.sonar).Play();
-            OnRefresh(x, y, playerTurn);
-            OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
-            InvertPlayer();
+            if (players[playerTurn].sonars > 0)
+            {
+                players[playerNotTurn].grid.grid[x, y].state = State.revealed;
+                players[playerTurn].sonars--;
+                new SoundPlayer(Properties.Resources.sonar).Play();
+                OnRefresh(x, y, playerTurn);
+                OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+                InvertPlayer();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -170,24 +175,29 @@ namespace EPSIC_Bataille_Navale.Controllers
         /// </summary>
         /// <param name="x">Centre X de l'attaque</param>
         /// <param name="y">Centre Y de l'attaque</param>
-        public void NuclearAttack(int x, int y)
+        public List<int[]> NuclearAttack(int x, int y)
         {
-            new SoundPlayer(Properties.Resources.explosion).Play();
-           
-            for(int i = 0; i < players[playerNotTurn].grid.grid.GetLength(0); i++)
+            List<int[]> shots = new List<int[]>();
+            if (players[playerTurn].nuclearBombs > 0)
             {
-                for (int j = 0; j < players[playerNotTurn].grid.grid.GetLength(1); j++)
+                new SoundPlayer(Properties.Resources.explosion).Play();
+
+                for (int i = 0; i < players[playerNotTurn].grid.grid.GetLength(0); i++)
                 {
-                    if (Math.Sqrt(Math.Pow(x - i, 2) + Math.Pow(y - j, 2)) <= Properties.Settings.Default.nuclearBombRange)
+                    for (int j = 0; j < players[playerNotTurn].grid.grid.GetLength(1); j++)
                     {
-                        Shot(i, j);
-                        OnRefresh(i, j, playerTurn);
+                        if (Math.Sqrt(Math.Pow(x - i, 2) + Math.Pow(y - j, 2)) <= Properties.Settings.Default.nuclearBombRange)
+                        {
+                            shots.Add(new int[] { i, j, (int)Shot(i, j) });
+                            OnRefresh(i, j, playerTurn);
+                        }
                     }
                 }
+                players[playerTurn].nuclearBombs--;
+                OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
+                InvertPlayer();
             }
-            players[playerTurn].nuclearBombs--;
-            OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
-            InvertPlayer();
+            return shots;
         }
 
         public virtual bool SendMessage(string message, int player)

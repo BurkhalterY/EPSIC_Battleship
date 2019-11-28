@@ -1,6 +1,11 @@
 ﻿using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Properties;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Threading;
 
 namespace EPSIC_Bataille_Navale.Controllers
@@ -52,6 +57,34 @@ namespace EPSIC_Bataille_Navale.Controllers
                         RaiseOnActiveGrid(true);
                     }
                 };
+            }
+        }
+
+        public override bool SendMessage(string message, int player)
+        {
+            if (base.SendMessage(message, player))
+            {
+                if (player == 0)
+                {
+                    _ = Simsimi(message);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private async Task Simsimi(string message)
+        {
+            HttpClient client = new HttpClient();
+            StringContent content = new StringContent("{\"utext\":\"" + message + "\", \"lang\":\"fr\"}", Encoding.UTF8, "application/json");
+            content.Headers.Add("x-api-key", "x0oGe0JZXSMpNMYb1MNvCUi81aVRvjTXXIkEJe/B");
+            HttpResponseMessage response = await client.PostAsync("https://wsapi.simsimi.com/190410/talk", content);
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            Dictionary<string, object> values = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(responseString);
+            if (values["status"].ToString() == "200")
+            {
+                SendMessage(values["atext"].ToString(), 1);
             }
         }
     }
