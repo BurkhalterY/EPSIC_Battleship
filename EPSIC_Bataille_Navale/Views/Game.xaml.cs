@@ -17,8 +17,6 @@ namespace EPSIC_Bataille_Navale.Views
         public GameController controller;
         private Button[,] grid;
         private Button[,] gridSecond;
-        public RichTextBox rtb_history;
-        public TextBox txt_message;
         public int size;
         public GameType gameType;
         public MenuItem sonar;
@@ -42,6 +40,7 @@ namespace EPSIC_Bataille_Navale.Views
             controller.OnActiveGrid += new ActiveGrid(OnActiveGrid);
             controller.OnFinish += new Finish(OnFinish);
             MakeGrid(); //On ne génère les grilles qu'une seule fois
+            rtb_history.Document.Blocks.Clear();
 
             if (gameType == GameType.Solo || gameType == GameType.Host)
             {
@@ -60,11 +59,7 @@ namespace EPSIC_Bataille_Navale.Views
         private void MakeGrid()
         {
             grid = new Button[size, size];
-            Grid gridView = Content as Grid; //Objet graphique auquel on va greffer les boutons
-            double cellSize = 450.0 / size; //Taille d'une seule cellule
-
             gridSecond = new Button[size, size];
-            double cellSizeSecond = 225.0 / size;
 
             ContextMenu menu = new ContextMenu();
             sonar = new MenuItem();
@@ -80,51 +75,36 @@ namespace EPSIC_Bataille_Navale.Views
 
             for (int i = 0; i < size; i++)
             {
+                grid1.RowDefinitions.Add(new RowDefinition());
+                grid1.ColumnDefinitions.Add(new ColumnDefinition());
+                grid2.RowDefinitions.Add(new RowDefinition());
+                grid2.ColumnDefinitions.Add(new ColumnDefinition());
+
                 for (int j = 0; j < size; j++)
                 {
                     grid[i, j] = new Button();
                     grid[i, j].Tag = new int[] { i, j };
-                    grid[i, j].HorizontalAlignment = HorizontalAlignment.Left;
-                    grid[i, j].VerticalAlignment = VerticalAlignment.Top;
-                    grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
-                    grid[i, j].Width = cellSize;
-                    grid[i, j].Height = cellSize;
+                    grid[i, j].BorderThickness = new Thickness(1.0 / 32.0);
+                    grid[i, j].BorderBrush = System.Windows.Media.Brushes.Black;
                     grid[i, j].Click += new RoutedEventHandler(Cell_Click); //Ajout de l'évenement Click (seulement sur la grille 1)
                     grid[i, j].ContextMenu = menu;
-                    gridView.Children.Add(grid[i, j]);
+
+                    Grid.SetColumn(grid[i, j], i);
+                    Grid.SetRow(grid[i, j], j);
+                    grid1.Children.Add(grid[i, j]);
                     RefreshCell(i, j, 0);
 
+
                     gridSecond[i, j] = new Button();
-                    gridSecond[i, j].HorizontalAlignment = HorizontalAlignment.Left;
-                    gridSecond[i, j].VerticalAlignment = VerticalAlignment.Top;
-                    gridSecond[i, j].Margin = new Thickness(i * cellSizeSecond + 475, j * cellSizeSecond + 25, 0, 0);
-                    gridSecond[i, j].Width = cellSizeSecond;
-                    gridSecond[i, j].Height = cellSizeSecond;
-                    gridView.Children.Add(gridSecond[i, j]);
+                    gridSecond[i, j].BorderThickness = new Thickness(1.0 / 32.0);
+                    gridSecond[i, j].BorderBrush = System.Windows.Media.Brushes.Black;
+
+                    Grid.SetColumn(gridSecond[i, j], i);
+                    Grid.SetRow(gridSecond[i, j], j);
+                    grid2.Children.Add(gridSecond[i, j]);
                     RefreshCell(i, j, 1);
                 }
             }
-
-            //Création de la zone de texte contenant l'historique des tirs
-            rtb_history = new RichTextBox();
-            rtb_history.HorizontalAlignment = HorizontalAlignment.Left;
-            rtb_history.VerticalAlignment = VerticalAlignment.Top;
-            rtb_history.Margin = new Thickness(475, size * cellSizeSecond + 25, 0, 0);
-            rtb_history.Width = 225;
-            rtb_history.Height = 200;
-            rtb_history.IsReadOnly = true;
-            rtb_history.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            rtb_history.Document.Blocks.Clear();
-            gridView.Children.Add(rtb_history);
-
-            txt_message = new TextBox();
-            txt_message.HorizontalAlignment = HorizontalAlignment.Left;
-            txt_message.VerticalAlignment = VerticalAlignment.Top;
-            txt_message.Margin = new Thickness(475, size * cellSizeSecond + 25 + rtb_history.Height, 0, 0);
-            txt_message.Width = 225;
-            txt_message.Height = 25;
-            txt_message.KeyDown += Txt_message_KeyDown;
-            gridView.Children.Add(txt_message);
         }
 
         /// <summary>
@@ -179,6 +159,7 @@ namespace EPSIC_Bataille_Navale.Views
                                 ? boat.cells.IndexOf(controller.players[0].grid.grid[i, j])
                                 : boat.cells.Count - boat.cells.IndexOf(controller.players[0].grid.grid[i, j]) - 1
                         );
+                        sprite.RotateSprite(Direction.Right);
                     }
                 }
                 switch (controller.players[0].grid.grid[i, j].state)
@@ -273,6 +254,11 @@ namespace EPSIC_Bataille_Navale.Views
         public void OnActiveGrid(bool active)
         {
             gridActive = active;
+        }
+
+        private void btn_quit_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.LoadPage(new Home());
         }
     }
 }

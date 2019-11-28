@@ -8,6 +8,27 @@
       Title="Game">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Viewbox Margin="10" Stretch="Uniform" Grid.Column="0">
+            <Grid Name="grid1"></Grid>
+        </Viewbox>
+        <GridSplitter Grid.Column="0" Width="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" />
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="0.5*"/>
+            </Grid.RowDefinitions>
+            <Viewbox Margin="10" Stretch="Uniform" Grid.Row="0">
+                <Grid Name="grid2"></Grid>
+            </Viewbox>
+            <GridSplitter Grid.Row="1" Height="1"  VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+            <Button Name="btn_quit" Content="Quitter" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Grid.Row="1" Click="btn_quit_Click"/>
+            <RichTextBox Name="rtb_history" Margin="10,10,10,58" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Grid.Row="1"/>
+            <TextBox Name="txt_message" HorizontalAlignment="Right" Height="23" Margin="0,0,10,35" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" KeyDown="Txt_message_KeyDown" Grid.Row="1"/>
+
+        </Grid>
     </Grid>
 </Page>

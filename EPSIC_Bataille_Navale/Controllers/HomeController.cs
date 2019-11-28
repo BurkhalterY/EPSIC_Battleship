@@ -15,8 +15,6 @@ namespace EPSIC_Bataille_Navale.Controllers
             setupP1 = new SetupController(Settings.Default.size);
             setupP2 = new SetupController(Settings.Default.size);
 
-            setupP1.playerName = Settings.Default.playerName;
-
             setupP2.AIChoise();
             setupP2.playerName = "L'IA";
         }

@@ -15,6 +15,8 @@ namespace EPSIC_Bataille_Navale
         public MainWindow()
         {
             InitializeComponent();
+            //WindowState = WindowState.Maximized;
+            //WindowStyle = WindowStyle.None;
             Home home = new Home();
             Content = home;
             currentPage = home;

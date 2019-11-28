@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:EPSIC_Bataille_Navale.Views"
         mc:Ignorable="d"
-        Title="Bataille navale" Height="539" Width="766" ResizeMode="NoResize"
+        Title="Bataille navale" Height="539" Width="766"
+        MinHeight="539" MinWidth="766"
         Closed="Window_Closed">
     <Window.Background>
         <ImageBrush ImageSource="Assets/background.jpg" Stretch="UniformToFill" />

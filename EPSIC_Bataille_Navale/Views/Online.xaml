@@ -8,11 +8,11 @@
       Title="Online">
 
     <Grid>
-        <Button Name="btn_host" Content="Créer une partie" HorizontalAlignment="Left" Margin="275,240,0,0" VerticalAlignment="Top" Width="200" Click="Btn_host_Click"/>
-        <TextBox Name="txt_ip" HorizontalAlignment="Left" Height="20" Margin="275,265,0,0" TextWrapping="Wrap" Text="127.0.0.1" VerticalAlignment="Top" Width="120"/>
-        <Button Name="btn_join" Content="Rejoindre" HorizontalAlignment="Left" Margin="400,265,0,0" VerticalAlignment="Top" Width="75" Click="Btn_join_Click"/>
-        <Label Name="lbl_status" Content="" HorizontalAlignment="Left" Margin="275,292,0,0" VerticalAlignment="Top" Width="200"/>
-        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_back_Click"/>
+        <Button Name="btn_host" Content="Créer une partie" Margin="275,240" Height="20" Width="200" Click="Btn_host_Click"/>
+        <TextBox Name="txt_ip" Margin="275,265,355,215" TextWrapping="Wrap" Height="20" Width="120"/>
+        <Button Name="btn_join" Content="Rejoindre" Margin="400,265,275,215" Height="20" Width="75" Click="Btn_join_Click"/>
+        <Label Name="lbl_status" Content="" Margin="275,292,275,158" Height="50" Width="200"/>
+        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="75" Click="Btn_back_Click"/>
 
     </Grid>
 </Page>

@@ -17,6 +17,7 @@ namespace EPSIC_Bataille_Navale.Views
         public Online()
         {
             InitializeComponent();
+            txt_ip.Text = Properties.Settings.Default.ip;
             controller = new OnlineController();
             controller.OnEnableButtons += new EnableButtons(OnEnableButtons);
             controller.OnUpdateMessage += new UpdateMessage(OnUpdateMessage);
@@ -32,6 +33,8 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Btn_join_Click(object sender, RoutedEventArgs e)
         {
+            Properties.Settings.Default.ip = txt_ip.Text;
+            Properties.Settings.Default.Save();
             controller.Join(txt_ip.Text);
         }
 

@@ -34,23 +34,23 @@ namespace EPSIC_Bataille_Navale.Views
         protected void MakeGrid()
         {
             grid = new Button[size, size];
-            Grid gridView = Content as Grid;
-            int cellSize = 450 / size;
 
             for (int i = 0; i < size; i++)
             {
+                grid1.RowDefinitions.Add(new RowDefinition());
+                grid1.ColumnDefinitions.Add(new ColumnDefinition());
                 for (int j = 0; j < size; j++)
                 {
                     grid[i, j] = new Button();
                     grid[i, j].Tag = new int[] { i, j };
-                    grid[i, j].HorizontalAlignment = HorizontalAlignment.Left;
-                    grid[i, j].VerticalAlignment = VerticalAlignment.Top;
-                    grid[i, j].Margin = new Thickness(i * cellSize + 25, j * cellSize + 25, 0, 0);
-                    grid[i, j].Width = cellSize;
-                    grid[i, j].Height = cellSize;
+                    grid[i, j].BorderThickness = new Thickness(1.0 / 32.0);
+                    grid[i, j].BorderBrush = System.Windows.Media.Brushes.Black;
                     grid[i, j].Click += new RoutedEventHandler(CellClick);
                     grid[i, j].PreviewMouseRightButtonDown += CellRightClick;
-                    gridView.Children.Add(grid[i, j]);
+
+                    Grid.SetColumn(grid[i, j], i);
+                    Grid.SetRow(grid[i, j], j);
+                    grid1.Children.Add(grid[i, j]);
                     OnRefresh(i, j);
                 }
             }
@@ -79,17 +79,18 @@ namespace EPSIC_Bataille_Navale.Views
                             ? boat.cells.IndexOf(controller.grid.grid[i, j])
                             : boat.cells.Count - boat.cells.IndexOf(controller.grid.grid[i, j]) - 1
                     );
+                    sprite.RotateSprite(Direction.Right);
                 }
             }
             else
             {
                 if (controller.possibleCells.Contains(controller.grid.grid[i, j]))
                 {
-                    sprite.AddSprite(Properties.Resources.hide); //Green
+                    sprite.AddSprite(Properties.Resources.light_green);
                 }
                 else if (controller.clickedCell == controller.grid.grid[i, j])
                 {
-                    sprite.AddSprite(Properties.Resources.hide); //Yellow
+                    sprite.AddSprite(Properties.Resources.yellow);
                 }
             }
             grid[i, j].Background = sprite.ToBrush();

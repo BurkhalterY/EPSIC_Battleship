@@ -8,8 +8,8 @@
       Title="Credits">
 
     <Grid>
-        <Label Name="lbl_credits" Content="Jeu de bataille navale&#xA;2019&#xA;Burkhalter Yannis" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextBlock.TextAlignment="Center"  Height="455" Width="730"/>
-        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,470,0,0" VerticalAlignment="Top" Width="75" Click="Btn_back_Click"/>
+        <Label Name="lbl_credits" Content="Jeu de bataille navale&#xA;2019&#xA;Burkhalter Yannis" Margin="10,10,10,35" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextBlock.TextAlignment="Center"/>
+        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Left" Margin="10,0,0,10" Width="75" Click="Btn_back_Click" Height="20" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Page>

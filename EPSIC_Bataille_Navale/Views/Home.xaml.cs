@@ -17,7 +17,11 @@ namespace EPSIC_Bataille_Navale.Views
         public Home()
         {
             InitializeComponent();
-            txt_pseudo.Text = Environment.UserName;
+            if (Properties.Settings.Default.playerName == "")
+            {
+                CheckPlayerName();
+            }
+            txt_pseudo.Text = Properties.Settings.Default.playerName;
         }
 
         private void Btn_solo_Click(object sender, RoutedEventArgs e)
@@ -58,6 +62,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void StartGame(object sender, RoutedEventArgs e)
         {
+            controller.setupP1.playerName = Properties.Settings.Default.playerName;
             controller.setupP1.grid = setup.controller.grid;
             StartGame();
         }
@@ -81,7 +86,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void CheckPlayerName()
         {
-            if (txt_pseudo.Text.Length == 0)
+            if (txt_pseudo.Text == "")
             {
                 Properties.Settings.Default.playerName = Environment.UserName;
             }
