@@ -18,5 +18,6 @@
         <TextBox Name="txt_pseudo" Margin="338,264,259,213" TextWrapping="Wrap" Height="23" Width="153"/>
 
         <Button Name="btn_demo" Content="Démo (IA vs. IA)" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="153" Click="Btn_demo_Click"/>
+        <Button Name="btn_close" Content="Fermer" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="74" Background="LightCoral" Foreground="White" BorderBrush="Red" Click="Btn_close_Click"/>
     </Grid>
 </Page>

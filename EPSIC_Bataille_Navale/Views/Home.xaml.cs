@@ -60,6 +60,11 @@ namespace EPSIC_Bataille_Navale.Views
             StartGame();
         }
 
+        private void Btn_close_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         private void StartGame(object sender, RoutedEventArgs e)
         {
             controller.setupP1.playerName = Properties.Settings.Default.playerName;

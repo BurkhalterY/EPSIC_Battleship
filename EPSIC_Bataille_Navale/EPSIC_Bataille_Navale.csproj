@@ -55,6 +55,9 @@
   <PropertyGroup>
     <StartupObject>EPSIC_Bataille_Navale.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -173,6 +176,7 @@
     </EmbeddedResource>
     <Resource Include="Assets\background.jpg" />
     <Resource Include="Assets\spacecruiser.ttf" />
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

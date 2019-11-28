@@ -6,6 +6,7 @@
         mc:Ignorable="d"
         Title="Bataille navale" Height="539" Width="766"
         MinHeight="539" MinWidth="766"
+        KeyDown="Window_KeyDown"
         Closed="Window_Closed">
     <Window.Background>
         <ImageBrush ImageSource="Assets/background.jpg" Stretch="UniformToFill" />
