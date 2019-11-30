@@ -77,7 +77,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             HttpClient client = new HttpClient();
             StringContent content = new StringContent("{\"utext\":\"" + message + "\", \"lang\":\"fr\"}", Encoding.UTF8, "application/json");
-            content.Headers.Add("x-api-key", "x0oGe0JZXSMpNMYb1MNvCUi81aVRvjTXXIkEJe/B");
+            content.Headers.Add("x-api-key", "f4oaBjotM/VSE5Rgx3akA3JjFX+g3sIJUBCWz/Fc");
             HttpResponseMessage response = await client.PostAsync("https://wsapi.simsimi.com/190410/talk", content);
             string responseString = await response.Content.ReadAsStringAsync();
 
