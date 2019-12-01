@@ -7,6 +7,8 @@
         boat,
         fullBoat,
         revealed,
+        noFind,
+        partialFind,
         invalid
     }
 

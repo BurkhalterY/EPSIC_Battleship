@@ -12,7 +12,7 @@ namespace EPSIC_Bataille_Navale.Models
         private List<int[]> possibles = new List<int[]>();
         private int[] step = new int[6];
         private byte directions = 0b1111; //urdl
-        private int gridMask = random.Next(0, 1);
+        private int gridMask = random.Next(2);
         private static Random random = new Random();
         private int size;
         private int missSince;

@@ -125,6 +125,8 @@ namespace EPSIC_Bataille_Navale.Views
                         break;
                     case State.fullBoat:
                     case State.revealed:
+                    case State.noFind:
+                    case State.partialFind:
                         Boat boat = controller.players[1].grid.grid[i, j].boat;
                         sprite.RotateSprite(boat.orientation);
                         Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
@@ -134,6 +136,15 @@ namespace EPSIC_Bataille_Navale.Views
                                 ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
                                 : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
                         );
+                        sprite.RotateSprite(Direction.Right);
+                        if (controller.players[1].grid.grid[i, j].state == State.noFind)
+                        {
+                            sprite.AddSprite(Properties.Resources.hide);
+                        }
+                        else if (controller.players[1].grid.grid[i, j].state == State.partialFind)
+                        {
+                            sprite.AddSprite(Properties.Resources.touch);
+                        }
                         break;
                 }
                 grid[i, j].Background = sprite.ToBrush();

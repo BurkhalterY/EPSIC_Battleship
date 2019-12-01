@@ -217,6 +217,29 @@ namespace EPSIC_Bataille_Navale.Controllers
             playerNotTurn = prov;
         }
 
+        protected void RevealRemainingBoats()
+        {
+            foreach(Boat boat in players[1].grid.boats)
+            {
+                if(boat.touchedCell < boat.cells.Count)
+                {
+                    foreach(Cell cell in boat.cells)
+                    {
+                        if (cell.state == State.noActivity)
+                        {
+                            cell.state = State.noFind;
+                            OnRefresh(cell.x, cell.y, 0);
+                        }
+                        else if (cell.state == State.boat)
+                        {
+                            cell.state = State.partialFind;
+                            OnRefresh(cell.x, cell.y, 0);
+                        }
+                    }
+                }
+            }
+        }
+
         protected void RaiseOnRefresh(int x, int y, int gridToRefresh)
         {
             OnRefresh(x, y, gridToRefresh);
@@ -234,6 +257,7 @@ namespace EPSIC_Bataille_Navale.Controllers
 
         protected void RaiseOnFinish(string winnerName)
         {
+            RevealRemainingBoats();
             OnFinish(winnerName);
         }
     }
