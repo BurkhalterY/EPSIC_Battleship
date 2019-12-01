@@ -1,5 +1,6 @@
 ﻿using EPSIC_Bataille_Navale.Views;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,6 +17,17 @@ namespace EPSIC_Bataille_Navale
 
         public MainWindow()
         {
+            if (Environment.OSVersion.Version.Major < 10) //Pas Windows 10
+            {
+                try
+                {
+                    Application.Current.Resources.Source = new Uri("/PresentationFramework.Aero2;component/themes/Aero2.NormalColor.xaml", UriKind.RelativeOrAbsolute);
+                }
+                catch (FileNotFoundException)
+                {
+                    MessageBox.Show("Pour les versions antérieures à Windows 10, vous avez besoin de la DLL: PresentationFramework.Aero2.dll");
+                }
+            }
             InitializeComponent();
             Home home = new Home();
             Content = home;
