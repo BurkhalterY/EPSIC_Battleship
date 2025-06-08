@@ -224,6 +224,15 @@ namespace EPSIC_Battleship.I18n {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to On Windows 8.1 and below, you need the following DLL: PresentationFramework.Aero2.dll.
+        /// </summary>
+        public static string ErrMissingPresentationFrameworkAero2DLL {
+            get {
+                return ResourceManager.GetString("ErrMissingPresentationFrameworkAero2DLL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {

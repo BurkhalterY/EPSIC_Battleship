@@ -1,4 +1,5 @@
-﻿using EPSIC_Battleship.Views;
+﻿using EPSIC_Battleship.I18n;
+using EPSIC_Battleship.Views;
 using System;
 using System.IO;
 using System.Windows;
@@ -22,7 +23,7 @@ namespace EPSIC_Battleship
                 }
                 catch (FileNotFoundException)
                 {
-                    MessageBox.Show("Pour les versions antérieures à Windows 10, vous avez besoin de la DLL: PresentationFramework.Aero2.dll");
+                    MessageBox.Show(Strings.ErrMissingPresentationFrameworkAero2DLL);
                 }
             }
             InitializeComponent();
@@ -45,7 +46,6 @@ namespace EPSIC_Battleship
                 }
                 else
                 {
-                    WindowState = WindowState.Normal; //La fenêtre ne doit pas être maximizé lorsqu'on l'a met en plein écran, sinon la bar des tâches s'affiche quand même
                     ResizeMode = ResizeMode.NoResize;
                     WindowState = WindowState.Maximized;
                     WindowStyle = WindowStyle.None;

@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i18n="clr-namespace:EPSIC_Battleship.I18n"
         mc:Ignorable="d"
-        Title="Bataille navale" Height="539" Width="766"
+        Title="{x:Static i18n:Strings.GameTitle}" Height="539" Width="766"
         MinHeight="539" MinWidth="766"
         KeyDown="Window_KeyDown"
         Closed="Window_Closed">

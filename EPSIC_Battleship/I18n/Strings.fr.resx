@@ -245,4 +245,7 @@ Pour placer une mine, faites un clique droit</value>
   <data name="MsgWaitingOnOpponentPlacement" xml:space="preserve">
     <value>L'adversaire est encore en train de placer ses bateaux...</value>
   </data>
+  <data name="ErrMissingPresentationFrameworkAero2DLL" xml:space="preserve">
+    <value>Sur Windows 8.1 et antérieures, vous avez besoin de la DLL suivante : PresentationFramework.Aero2.dll</value>
+  </data>
 </root>

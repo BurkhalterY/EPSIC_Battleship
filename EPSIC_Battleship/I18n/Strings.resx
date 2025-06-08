@@ -246,4 +246,7 @@ Right click to place a mine</value>
   <data name="MsgWaitingOnOpponentPlacement" xml:space="preserve">
     <value>The opponent is still placing his ships...</value>
   </data>
+  <data name="ErrMissingPresentationFrameworkAero2DLL" xml:space="preserve">
+    <value>On Windows 8.1 and below, you need the following DLL: PresentationFramework.Aero2.dll</value>
+  </data>
 </root>
