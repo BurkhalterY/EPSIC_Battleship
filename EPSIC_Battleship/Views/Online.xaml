@@ -1,0 +1,19 @@
+﻿<Page x:Class="EPSIC_Battleship.Views.Online"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:i18n="clr-namespace:EPSIC_Battleship.I18n"
+      mc:Ignorable="d"
+      d:DesignHeight="500" d:DesignWidth="750"
+      Title="Online">
+
+    <Grid>
+        <Button Name="btn_host" Content="{x:Static i18n:Strings.BtnHost}" Margin="275,240" Height="20" Width="200" Click="Btn_host_Click"/>
+        <TextBox Name="txt_ip" Margin="275,265,355,215" TextWrapping="Wrap" Height="20" Width="120"/>
+        <Button Name="btn_join" Content="{x:Static i18n:Strings.BtnJoin}" Margin="400,265,275,215" Height="20" Width="75" Click="Btn_join_Click"/>
+        <Label Name="lbl_status" Content="" Margin="275,292,275,158" Height="50" Width="200"/>
+        <Button Name="btn_back" Content="{x:Static i18n:Strings.BtnBack}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="75" Click="Btn_back_Click"/>
+
+    </Grid>
+</Page>

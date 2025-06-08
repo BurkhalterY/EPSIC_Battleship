@@ -1,0 +1,24 @@
+﻿<Page x:Class="EPSIC_Battleship.Views.Home"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:i18n="clr-namespace:EPSIC_Battleship.I18n"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="750"
+      Title="Home">
+
+    <Grid>
+        <Label Name="lbl_title" Content="{x:Static i18n:Strings.GameTitle}" Margin="10,187,10,266" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" Height="46" FontSize="36" TextBlock.FontFamily="pack://application:,,,/Assets/#Space Cruiser"/>
+
+        <Button Name="btn_solo" Content="{x:Static i18n:Strings.BtnPlaySolo}" Margin="259,239,417,241" Height="20" Width="74" Click="Btn_solo_Click"/>
+        <Button Name="btn_online" Content="{x:Static i18n:Strings.BtnPlayOnline}" Margin="338,239,338,241" Height="20" Width="74" Click="Btn_online_Click"/>
+        <Button Name="btn_credits" Content="{x:Static i18n:Strings.BtnCredits}" Margin="417,239,259,241" Height="20" Width="74" Click="Btn_credits_Click"/>
+        <Button Name="btn_settings" Content="{x:Static i18n:Strings.BtnSettings}" Margin="496,239,180,241" Height="20" Width="74" Click="Btn_settings_Click"/>
+        <Label Name="lbl_pseudo" Content="{x:Static i18n:Strings.LabelPlayerName}" Margin="259,260,417,214" Height="25" Width="74"/>
+        <TextBox Name="txt_pseudo" Margin="338,264,259,213" TextWrapping="Wrap" Height="23" Width="153"/>
+
+        <Button Name="btn_demo" Content="{x:Static i18n:Strings.BtnDemo}" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="153" Click="Btn_demo_Click"/>
+        <Button Name="btn_close" Content="{x:Static i18n:Strings.BtnExit}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="74" Background="LightCoral" Foreground="White" BorderBrush="Red" Click="Btn_close_Click"/>
+    </Grid>
+</Page>

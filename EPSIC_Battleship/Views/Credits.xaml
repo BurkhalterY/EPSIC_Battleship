@@ -1,0 +1,16 @@
+﻿<Page x:Class="EPSIC_Battleship.Views.Credits"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:i18n="clr-namespace:EPSIC_Battleship.I18n"
+      mc:Ignorable="d" 
+      d:DesignHeight="500" d:DesignWidth="750"
+      Title="Credits">
+
+    <Grid>
+        <Label Name="lbl_credits" Content="{x:Static i18n:Strings.Credits}" Margin="10,10,10,35" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" TextBlock.TextAlignment="Center"/>
+        <Button Name="btn_back" Content="{x:Static i18n:Strings.BtnBack}" HorizontalAlignment="Left" Margin="10,0,0,10" Width="75" Click="Btn_back_Click" Height="20" VerticalAlignment="Bottom"/>
+
+    </Grid>
+</Page>
