@@ -1,4 +1,4 @@
-# EPSIC Battleship
+# EPSIC Battleship 🚢
 
 A fully functional battleship game with numerous additional features like "sonars" and "nuclear bombs".
 
@@ -20,7 +20,7 @@ If you want to build the project by yourself, you'll need Visual Studio (because
 
 ## Built With
 
-- C# and - .NET Framework 4.7.2
+- C# and .NET Framework 4.7.2
 - WPF (GUI)
 
 ## Contributing
