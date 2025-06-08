@@ -66,18 +66,18 @@ namespace EPSIC_Bataille_Navale.Controllers
             {
                 if (player == 0)
                 {
-                    _ = Simsimi(message);
+                    // _ = Simsimi(message);
                 }
                 return true;
             }
             return false;
         }
 
-        private async Task Simsimi(string message)
+        /*private async Task Simsimi(string message)
         {
             HttpClient client = new HttpClient();
             StringContent content = new StringContent("{\"utext\":\"" + message + "\", \"lang\":\"fr\"}", Encoding.UTF8, "application/json");
-            content.Headers.Add("x-api-key", "f4oaBjotM/VSE5Rgx3akA3JjFX+g3sIJUBCWz/Fc"); // TODO: Remove this hardcoded thing
+            content.Headers.Add("x-api-key", "TODO");
             HttpResponseMessage response = await client.PostAsync("https://wsapi.simsimi.com/190410/talk", content);
             string responseString = await response.Content.ReadAsStringAsync();
 
@@ -86,6 +86,6 @@ namespace EPSIC_Bataille_Navale.Controllers
             {
                 SendMessage(values["atext"].ToString(), 1);
             }
-        }
+        }*/
     }
 }
