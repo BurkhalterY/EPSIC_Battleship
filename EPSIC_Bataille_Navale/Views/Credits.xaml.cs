@@ -4,7 +4,7 @@ using System.Windows.Controls;
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Credits.xaml
+    /// Interaction logic for Credits.xaml
     /// </summary>
     public partial class Credits : Page
     {

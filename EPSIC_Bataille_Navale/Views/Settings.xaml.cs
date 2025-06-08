@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using EPSIC_Bataille_Navale.I18n;
 
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Settings.xaml
+    /// Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings : Page
     {
@@ -63,7 +64,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Validation du paramètre boatsList
+        /// Validate boatsList parameter
         /// </summary>
         /// <returns>isValid</returns>
         private bool Valid_boatsList()
@@ -75,7 +76,7 @@ namespace EPSIC_Bataille_Navale.Views
                 {
                     if (list[i] < 2 || list[i] > int.Parse(txt_size.Text))
                     {
-                        MessageBox.Show("Aucune taille de bateau ne peut être plus grande que la grille.");
+                        MessageBox.Show(Strings.ErrParamBoatGtGrid);
                         return false;
                     }
                 }
@@ -83,17 +84,17 @@ namespace EPSIC_Bataille_Navale.Views
             }
             catch (FormatException)
             {
-                MessageBox.Show("Chaque valeur doit être séparée par une virgule.");
+                MessageBox.Show(Strings.ErrParamBoatListFormat);
                 return false;
             }
         }
 
         /// <summary>
-        /// Validation d'un paramètre de type int
+        /// Validate parameters of type `int`
         /// </summary>
         /// <param name="textbox">TextBox</param>
-        /// <param name="min">Valeur minimum</param>
-        /// <param name="max">Valeur maximum</param>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
         /// <param name="label">Label</param>
         /// <returns></returns>
         private bool ValidInt(TextBox textbox, int min, int max, Label label)
@@ -113,17 +114,17 @@ namespace EPSIC_Bataille_Navale.Views
             }
             if (error)
             {
-                MessageBox.Show("La valeur de \""+ label.Content+"\" doit être un nombre compris entre "+min+" et "+max+".");
+                MessageBox.Show(string.Format(Strings.ErrParamNumber, label.Content, min, max));
             }
             return !error;
         }
 
         /// <summary>
-        /// Validation d'un paramètre de type double
+        /// Validate parameters of type `double`
         /// </summary>
         /// <param name="textbox">TextBox</param>
-        /// <param name="min">Valeur minimum</param>
-        /// <param name="max">Valeur maximum</param>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
         /// <param name="label">Label</param>
         /// <returns></returns>
         private bool ValidDouble(TextBox textbox, double min, double max, Label label)
@@ -143,7 +144,7 @@ namespace EPSIC_Bataille_Navale.Views
             }
             if (error)
             {
-                MessageBox.Show("La valeur de \"" + label.Content + "\" doit être un nombre compris entre " + min + " et " + max + ".");
+                MessageBox.Show(string.Format(Strings.ErrParamNumber, label.Content, min, max));
             }
             return !error;
         }

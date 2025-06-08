@@ -9,7 +9,7 @@ using static EPSIC_Bataille_Navale.Controllers.SetupController;
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Setup.xaml
+    /// Interaction logic for Setup.xaml
     /// </summary>
     public partial class Setup : Page
     {
@@ -29,7 +29,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Génère dynamiquement la grille
+        /// Generate the grid dynamically
         /// </summary>
         protected void MakeGrid()
         {
@@ -57,7 +57,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Actualise le sprite des cases de la grille
+        /// Refresh the sprite of a case of the grid
         /// </summary>
         public void OnRefresh(int i, int j)
         {

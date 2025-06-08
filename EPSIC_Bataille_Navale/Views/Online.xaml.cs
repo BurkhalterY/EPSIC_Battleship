@@ -1,13 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.I18n;
 using EPSIC_Bataille_Navale.Models;
 using static EPSIC_Bataille_Navale.Controllers.OnlineController;
 
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Online.xaml
+    /// Interaction logic for Online.xaml
     /// </summary>
     public partial class Online : Page
     {
@@ -39,7 +40,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Crée et affiche la view de setup
+        /// Create and show Setup view
         /// </summary>
         public void OnSetupGame()
         {
@@ -50,7 +51,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Crée et affiche la game view
+        /// Create and show Game view
         /// </summary>
         public void OnStartGame()
         {
@@ -61,12 +62,12 @@ namespace EPSIC_Bataille_Navale.Views
         }
     
         /// <summary>
-        /// Écran d'attente
+        /// Waiting screen
         /// </summary>
         public void OnWait()
         {
             controller.player1 = new Player(setup.controller.grid, Properties.Settings.Default.playerName);
-            lbl_status.Content = "L'adversaire est encore en train de\nplacer ses bateaux...";
+            lbl_status.Content = Strings.MsgWaitingOnOpponentPlacement;
             btn_back.IsEnabled = false;
             MainWindow.LoadPage(this);
         }
@@ -85,7 +86,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Back(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Voulez-vous vraiment quitter ?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show(Strings.MsgConfirmToLeave, "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 controller.Terminate();
                 MainWindow.LoadPage(new Home());

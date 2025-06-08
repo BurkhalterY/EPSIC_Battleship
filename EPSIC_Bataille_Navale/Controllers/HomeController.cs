@@ -1,4 +1,5 @@
-﻿using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.I18n;
+using EPSIC_Bataille_Navale.Models;
 using EPSIC_Bataille_Navale.Properties;
 
 namespace EPSIC_Bataille_Navale.Controllers
@@ -16,7 +17,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             setupP2 = new SetupController(Settings.Default.size);
 
             setupP2.AIChoise();
-            setupP2.playerName = "L'IA";
+            setupP2.playerName = Strings.TheAI;
         }
 
         public void PlayDemo()
@@ -26,10 +27,10 @@ namespace EPSIC_Bataille_Navale.Controllers
             setupP2 = new SetupController(Settings.Default.size);
 
             setupP1.AIChoise();
-            setupP1.playerName = "IA1";
+            setupP1.playerName = string.Format(Strings.AIn, 1);
 
             setupP2.AIChoise();
-            setupP2.playerName = "IA2";
+            setupP2.playerName = string.Format(Strings.AIn, 2);
         }
     }
 }

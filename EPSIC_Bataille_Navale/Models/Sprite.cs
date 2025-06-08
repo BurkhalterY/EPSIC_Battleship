@@ -13,14 +13,14 @@ namespace EPSIC_Bataille_Navale.Models
         public int angle = 0;
 
         /// <summary>
-        /// Crée une nouvelle sprite et y ajoute un bitmap
+        /// Create a new sprite and add a bitmap to it
         /// </summary>
-        /// <param name="bitmap">Image de base</param>
-        /// <param name="x">Découpe de 32x32 de l'image, pos X</param>
-        /// <param name="y">Découpe de 32x32 de l'image, pos Y</param>
+        /// <param name="bitmap">Base image</param>
+        /// <param name="x">Sprite is the next 32px from X</param>
+        /// <param name="y">Sprite is the next 32px from Y</param>
         public Sprite(Bitmap bitmap, int x = 0, int y = 0)
         {
-            x *= 32; //Une sprite mesure forcément 32 x 32
+            x *= 32; // A sprite is always a square of 32x32 px
             y *= 32;
             this.bitmap = new Bitmap(32, 32);
             Graphics g = Graphics.FromImage(this.bitmap);
@@ -29,11 +29,11 @@ namespace EPSIC_Bataille_Navale.Models
         }
 
         /// <summary>
-        /// Ajoute un bitmap au sprite
+        /// Add a bitmap to the sprite
         /// </summary>
-        /// <param name="bitmap">Image à ajouter</param>
-        /// <param name="x">Découpe de 32x32 de l'image, pos X</param>
-        /// <param name="y">Découpe de 32x32 de l'image, pos Y</param>
+        /// <param name="bitmap">Image to add</param>
+        /// <param name="x">Sprite is the next 32px from X</param>
+        /// <param name="y">Sprite is the next 32px from Y</param>
         public void AddSprite(Bitmap bitmap, int x = 0, int y = 0)
         {
             x *= 32;
@@ -43,21 +43,21 @@ namespace EPSIC_Bataille_Navale.Models
             g.RotateTransform(angle);
             g.TranslateTransform(-(float)this.bitmap.Width / 2, -(float)this.bitmap.Height / 2);
 
-            if (bitmap.Tag == null) //Si le Tag n'a pas été défini
+            if (bitmap.Tag == null) // If Tag isn't defined (why?)
             {
                 g.DrawImage(bitmap, -x, -y);
             }
             else
             {
-                //Tracer un morceau d'ovale
+                // Draw part of an ellipse
                 g.FillEllipse(System.Drawing.Brushes.DarkGray, -x, -y, bitmap.Width * 32, bitmap.Height * 32);
             }
             bitmap.Dispose();
         }
 
         /// <summary>
-        /// Change la rotation du sprite
-        /// Les prochains bitmap auront cette valeur
+        /// Change the sprite rotation
+        /// Next bitmaps will have this value
         /// </summary>
         /// <param name="direction"></param>
         public void RotateSprite(Direction direction)
@@ -79,9 +79,9 @@ namespace EPSIC_Bataille_Navale.Models
         }
 
         /// <summary>
-        /// Finalisation de l'image
+        /// Finalize image
         /// </summary>
-        /// <returns>Objet de type ImageBrush directement applicable</returns>
+        /// <returns>Objet of type ImageBrush, immediatly usable</returns>
         public ImageBrush ToBrush()
         {
             return new ImageBrush(ToImageSource());

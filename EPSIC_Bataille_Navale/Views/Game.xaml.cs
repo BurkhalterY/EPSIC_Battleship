@@ -1,4 +1,5 @@
 ﻿using EPSIC_Bataille_Navale.Controllers;
+using EPSIC_Bataille_Navale.I18n;
 using EPSIC_Bataille_Navale.Models;
 using System.Drawing;
 using System.Windows;
@@ -10,7 +11,7 @@ using static EPSIC_Bataille_Navale.Controllers.GameController;
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Game.xaml
+    /// Interaction logic for Game.xaml
     /// </summary>
     public partial class Game : Page
     {
@@ -28,7 +29,7 @@ namespace EPSIC_Bataille_Navale.Views
             InitializeComponent();
             this.gameType = gameType;
             this.size = size;
-            switch (gameType) //Le controller dépend du type de partie
+            switch (gameType) // The controller depends on the game mode
             {
                 case GameType.Solo: controller = new SoloGameController(players); break;
                 case GameType.Demo: controller = new DemoGameController(players); break;
@@ -39,7 +40,7 @@ namespace EPSIC_Bataille_Navale.Views
             controller.OnHistoryUpdate += new HistoryUpdate(OnHistoryUpdate);
             controller.OnActiveGrid += new ActiveGrid(OnActiveGrid);
             controller.OnFinish += new Finish(OnFinish);
-            MakeGrid(); //On ne génère les grilles qu'une seule fois
+            MakeGrid(); // Generate grids only once
             rtb_history.Document.Blocks.Clear();
 
             if (gameType == GameType.Solo || gameType == GameType.Host)
@@ -53,8 +54,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Génère dynamiquement les grilles de jeu et les bouton
-        /// en fonction des options
+        /// Generate the grid and buttons dynamically depending on settings
         /// </summary>
         private void MakeGrid()
         {
@@ -86,7 +86,7 @@ namespace EPSIC_Bataille_Navale.Views
                     grid[i, j].Tag = new int[] { i, j };
                     grid[i, j].BorderThickness = new Thickness(1.0 / 32.0);
                     grid[i, j].BorderBrush = System.Windows.Media.Brushes.Black;
-                    grid[i, j].Click += new RoutedEventHandler(Cell_Click); //Ajout de l'évenement Click (seulement sur la grille 1)
+                    grid[i, j].Click += new RoutedEventHandler(Cell_Click); // Add Click event only on grid 1
                     grid[i, j].ContextMenu = menu;
 
                     Grid.SetColumn(grid[i, j], i);
@@ -108,13 +108,13 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Actualise le sprite d'une case de la grille
+        /// Refresh the sprite of a case of the grid
         /// </summary>
         public void RefreshCell(int i, int j, int gridToRefresh)
         {
             if(gridToRefresh == 0)
             {
-                Sprite sprite = new Sprite(Properties.Resources.water); //Toutes les cases ont de l'eau dessous
+                Sprite sprite = new Sprite(Properties.Resources.water); // Every cases have water on background
                 switch (controller.players[1].grid.grid[i, j].state)
                 {
                     case State.noBoat:
@@ -129,10 +129,10 @@ namespace EPSIC_Bataille_Navale.Views
                     case State.partialFind:
                         Boat boat = controller.players[1].grid.grid[i, j].boat;
                         sprite.RotateSprite(boat.orientation);
-                        Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); //Load la ressource en fonction du nombre de cases
+                        Bitmap bitmap = (Bitmap)Properties.Resources.ResourceManager.GetObject("boat_" + boat.cells.Count); // Choose the bitmap based on the boat size
                         sprite.AddSprite(
-                            bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, //Si bitmap = null, alors Renvoie un bitmap sensé mesurer la même taille que celui qui aurait dû être chargé
-                            boat.orientation == Direction.Right || boat.orientation == Direction.Down //Determine le sens du bateau
+                            bitmap != null ? bitmap : new Bitmap(boat.cells.Count, 1) { Tag = new object() }, // If bitmap is null, then create a new bitmap with the size of the missing one
+                            boat.orientation == Direction.Right || boat.orientation == Direction.Down // Choose the boat orientation
                                 ? boat.cells.IndexOf(controller.players[1].grid.grid[i, j])
                                 : boat.cells.Count - boat.cells.IndexOf(controller.players[1].grid.grid[i, j]) - 1
                         );
@@ -215,7 +215,7 @@ namespace EPSIC_Bataille_Navale.Views
 
         private void Cell_Click(object sender, RoutedEventArgs e)
         {
-            if (gridActive) //Variable définissant à qui est-ce le tour de jouer
+            if (gridActive) // To avoid playing when not our turn
             {
                 Button button = (Button)sender;
                 int[] coord = (int[])button.Tag;
@@ -251,15 +251,16 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Termine la partie
+        /// The game is finish
         /// </summary>
-        /// <param name="winnerName">Nom du gagnant</param>
+        /// <param name="winnerName">Name of the winner</param>
         public void OnFinish(string winnerName)
         {
-            MessageBox.Show(winnerName + " a gagné !");
+            string msg = string.Format(Strings.MsgPlayerWins, winnerName);
+            MessageBox.Show(msg);
             Home home = new Home();
             MainWindow.LoadPage(home);
-            home.lbl_title.Content = winnerName + " a gagné !";
+            home.lbl_title.Content = msg;
         }
 
         public void OnActiveGrid(bool active)

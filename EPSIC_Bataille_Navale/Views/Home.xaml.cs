@@ -7,7 +7,7 @@ using System.Windows.Controls;
 namespace EPSIC_Bataille_Navale.Views
 {
     /// <summary>
-    /// Logique d'interaction pour Home.xaml
+    /// Interaction logic for Home.xaml
     /// </summary>
     public partial class Home : Page
     {
@@ -78,7 +78,7 @@ namespace EPSIC_Bataille_Navale.Views
         }
 
         /// <summary>
-        /// Démarre une partie
+        /// Start a game
         /// </summary>
         /// <param name="dependencyObject"></param>
         public void StartGame()

@@ -15,10 +15,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Methode qui gère le tour par tour entre les IA
+        /// Manage turn by turn
         /// </summary>
-        /// <param name="x">Coordonnée X</param>
-        /// <param name="y">Coordonnée Y</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
         public override void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot)
         {
             if (!finish)

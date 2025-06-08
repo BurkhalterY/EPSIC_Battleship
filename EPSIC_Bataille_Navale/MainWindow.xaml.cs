@@ -7,9 +7,6 @@ using System.Windows.Input;
 
 namespace EPSIC_Bataille_Navale
 {
-    /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private static Page currentPage;
@@ -17,7 +14,7 @@ namespace EPSIC_Bataille_Navale
 
         public MainWindow()
         {
-            if (Environment.OSVersion.Version.Major < 10) //Pas Windows 10
+            if (Environment.OSVersion.Version.Major < 10) // Not Windows 10
             {
                 try
                 {

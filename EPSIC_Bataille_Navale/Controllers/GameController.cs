@@ -1,4 +1,5 @@
-﻿using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.I18n;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Collections.Generic;
 using System.Media;
@@ -34,18 +35,18 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Méthode appelée par les views lors d'un clic sur un bouton
+        /// Method called by views when a button is clicked
         /// </summary>
-        /// <param name="x">Coordonnée X du button</param>
-        /// <param name="y">Coordonnée Y du button</param>
+        /// <param name="x">Button X coordinate</param>
+        /// <param name="y">Button Y coordinate</param>
         public abstract void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot);
 
         /// <summary>
-        /// Tire standart sur une case
+        /// Standard shot
         /// </summary>
-        /// <param name="x">Coordonnée X de la case</param>
-        /// <param name="y">Coordonnée Y de la case</param>
-        /// <returns>Le nouvel état de la case visée</returns>
+        /// <param name="x">Case X coordinate</param>
+        /// <param name="y">Case Y coordinate</param>
+        /// <returns>The new state of the case</returns>
         public State ClickAt(int x, int y)
         {
             State state = Shot(x, y);
@@ -66,11 +67,11 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Tir sur une seule case
+        /// Shot on only one case
         /// </summary>
-        /// <param name="x">Coordonnée X de la case</param>
-        /// <param name="y">Coordonnée Y de la case</param>
-        /// <returns>Le nouvel état de la case visée</returns>
+        /// <param name="x">Case X coordinate</param>
+        /// <param name="y">Case Y coordinate</param>
+        /// <returns>The new state of the case</returns>
         private State Shot(int x, int y)
         {
             if (players[playerNotTurn].grid.grid[x, y].state == State.noActivity || players[playerNotTurn].grid.grid[x, y].state == State.revealed)
@@ -114,7 +115,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Révèle l'emplacement d'un bateau
+        /// Reveals a boat location
         /// </summary>
         public int[] Sonar()
         {
@@ -135,7 +136,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     }
                     if (intact)
                     {
-                        cells.Add(boat.cells[random.Next(boat.cells.Count)]); //Pour que les bateaux de différente taille aient le même risque d'être trouvé
+                        cells.Add(boat.cells[random.Next(boat.cells.Count)]); // Boats of different size have the same risk of being found
                     }
                 }
                 if (cells.Count > 0)
@@ -147,7 +148,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     new SoundPlayer(Properties.Resources.sonar).Play();
 
                     OnRefresh(cell.x, cell.y, playerTurn);
-                    OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+                    OnHistoryUpdate(string.Format(Strings.MsgPlayerUseSonar, players[playerTurn].playerName), playerTurn);
                     InvertPlayer();
                     return new int[] { cell.x, cell.y };
                 }
@@ -155,6 +156,9 @@ namespace EPSIC_Bataille_Navale.Controllers
             return new int[0];
         }
 
+        /// <summary>
+        /// Variant of the method Sonar() used by the online mode to keep both games synched
+        /// </summary>
         public bool Sonar(int x, int y)
         {
             if (players[playerTurn].sonars > 0)
@@ -163,7 +167,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                 players[playerTurn].sonars--;
                 new SoundPlayer(Properties.Resources.sonar).Play();
                 OnRefresh(x, y, playerTurn);
-                OnHistoryUpdate(players[playerTurn].playerName + " utilise sonar", playerTurn);
+                OnHistoryUpdate(string.Format(Strings.MsgPlayerUseSonar, players[playerTurn].playerName), playerTurn);
                 InvertPlayer();
                 return true;
             }
@@ -171,10 +175,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Lance une bombe nucléaire en (x;y)
+        /// Throw a nuclear bomb in (x;y)
         /// </summary>
-        /// <param name="x">Centre X de l'attaque</param>
-        /// <param name="y">Centre Y de l'attaque</param>
+        /// <param name="x">X attack center</param>
+        /// <param name="y">Y attack center</param>
         public List<int[]> NuclearAttack(int x, int y)
         {
             List<int[]> shots = new List<int[]>();
@@ -194,7 +198,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     }
                 }
                 players[playerTurn].nuclearBombs--;
-                OnHistoryUpdate(players[playerTurn].playerName + " lance une bombe nucléaire en " + ((char)(x + 65)).ToString() + (y + 1), playerTurn);
+                OnHistoryUpdate(string.Format(Strings.MsgPlayerThrowsNuclearBomb, players[playerTurn].playerName, ((char)(x + 65)).ToString() + (y + 1)), playerTurn);
                 InvertPlayer();
             }
             return shots;

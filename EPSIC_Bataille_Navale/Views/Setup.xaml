@@ -1,8 +1,9 @@
 ﻿<Page x:Class="EPSIC_Bataille_Navale.Views.Setup"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:i18n="clr-namespace:EPSIC_Bataille_Navale.I18n"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="750"
       Title="Setup">
@@ -12,11 +13,11 @@
             <Grid Name="grid1"></Grid>
         </Viewbox>
         <Button Name="btn_cancel" Content="&lt;--" Margin="0,10,10,0" VerticalAlignment="Top" Click="Btn_cancel_Click" IsEnabled="False" HorizontalAlignment="Right" Width="75"/>
-        <Button Name="btn_random" Content="Auto" Margin="0,35,10,0" VerticalAlignment="Top" Click="Btn_random_Click" HorizontalAlignment="Right" Width="75"/>
-        <Button Name="btn_next" Content="Suivant" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" IsEnabled="False"/>
-        <Button Name="btn_back" Content="Retour" HorizontalAlignment="Right" Margin="0,0,90,10" VerticalAlignment="Bottom" Width="75"/>
+        <Button Name="btn_random" Content="{x:Static i18n:Strings.BtnRandom}" Margin="0,35,10,0" VerticalAlignment="Top" Click="Btn_random_Click" HorizontalAlignment="Right" Width="75"/>
+        <Button Name="btn_next" Content="{x:Static i18n:Strings.BtnNext}" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" IsEnabled="False"/>
+        <Button Name="btn_back" Content="{x:Static i18n:Strings.BtnBack}" HorizontalAlignment="Right" Margin="0,0,90,10" VerticalAlignment="Bottom" Width="75"/>
         <Label HorizontalAlignment="Right" Margin="0,62,10,35" Width="260" Grid.RowSpan="2">
-            <AccessText TextWrapping="WrapWithOverflow" Text="Placer un bateau :&#xD;&#xA;- Sélectionnez la case de départ&#xD;&#xA;- Sélectionnez la dernière case parmi les cases vertes&#xD;&#xA;&#xD;&#xA;Pour placer une mine : faites un clique droit"/>
+            <AccessText TextWrapping="WrapWithOverflow" Text="{x:Static i18n:Strings.TextSetup}"/>
         </Label>
 
     </Grid>

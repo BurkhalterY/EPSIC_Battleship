@@ -20,10 +20,10 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Gère le tour par tour
+        /// Manage turn by turn
         /// </summary>
-        /// <param name="x">Coordonnée X</param>
-        /// <param name="y">Coordonnée Y</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
         public override void Click(int x = 0, int y = 0, ActionType action = ActionType.NormalShot)
         {
             if (playerTurn == 0)
@@ -77,7 +77,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         {
             HttpClient client = new HttpClient();
             StringContent content = new StringContent("{\"utext\":\"" + message + "\", \"lang\":\"fr\"}", Encoding.UTF8, "application/json");
-            content.Headers.Add("x-api-key", "f4oaBjotM/VSE5Rgx3akA3JjFX+g3sIJUBCWz/Fc");
+            content.Headers.Add("x-api-key", "f4oaBjotM/VSE5Rgx3akA3JjFX+g3sIJUBCWz/Fc"); // TODO: Remove this hardcoded thing
             HttpResponseMessage response = await client.PostAsync("https://wsapi.simsimi.com/190410/talk", content);
             string responseString = await response.Content.ReadAsStringAsync();
 

@@ -35,11 +35,11 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Méthode appelée par les views lors d'un clic sur un bouton
-        /// Sert à poser les bateaux
+        /// Method called by views when a button is clicked
+        /// Is used to choose boat emplacements
         /// </summary>
-        /// <param name="x">Coordonnée X du button</param>
-        /// <param name="y">Coordonnée Y du button</param>
+        /// <param name="x">Button X coordinate</param>
+        /// <param name="y">Button Y coordinate</param>
         public void Click(Cell cell)
         {
             if (possibleCells.Count == 0)
@@ -122,11 +122,11 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Méthode appelée par les views lors d'un clic droit sur un bouton
-        /// Sert à poser une mine
+        /// Method called by views when a button is right-clicked
+        /// Is used to place a mine
         /// </summary>
-        /// <param name="x">Coordonnée X du button</param>
-        /// <param name="y">Coordonnée Y du button</param>
+        /// <param name="x">Button X coordinate</param>
+        /// <param name="y">Button Y coordinate</param>
         public void RightClick(int x, int y)
         {
             if(nbMines > 0 && grid.grid[x, y].boat == null)
@@ -144,7 +144,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Supprime le dernier bateau ou la dernière mine posé
+        /// Remove the last boat or the last mine (undo feature)
         /// </summary>
         public void DeleteLastBoat()
         {
@@ -177,7 +177,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Choix aléatoire de la position des bateaux
+        /// Random choose of boat emplacements
         /// </summary>
         public void AIChoise()
         {

@@ -1,4 +1,5 @@
-﻿using EPSIC_Bataille_Navale.Models;
+﻿using EPSIC_Bataille_Navale.I18n;
+using EPSIC_Bataille_Navale.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -69,20 +70,20 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Démarre le serveur
+        /// Start the server
         /// </summary>
         public void Host()
         {
             OnEnableButtons(false);
             gameType = GameType.Host;
             backgroundWaitClient.RunWorkerAsync();
-            OnUpdateMessage("IP : " + GetLocalIPAddress() + Environment.NewLine + "En attente d'un adversaire.");
+            OnUpdateMessage(string.Format(Strings.LabelIP, GetLocalIPAddress()) + Environment.NewLine + Strings.MsgWaitingForAnOpponent);
         }
 
         /// <summary>
-        /// Rejoint une partie à l'IP indiquée
+        /// Join a party at a certain IP
         /// </summary>
-        /// <param name="ip"></param>
+        /// <param name="ip">IP address</param>
         public void Join(string ip)
         {
             try
@@ -99,7 +100,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             }
             catch (Exception)
             {
-                MessageBox.Show("Hôte introuvable.");
+                MessageBox.Show(Strings.ErrHostNotFound);
                 OnEnableButtons(true);
             }
         }
@@ -144,7 +145,7 @@ namespace EPSIC_Bataille_Navale.Controllers
             else
             {
                 OnUpdateMessage("");
-                MessageBox.Show("Impossible de créer la partie.");
+                MessageBox.Show(Strings.ErrUnableToCreateTheGame);
                 OnEnableButtons(true);
             }
         }
@@ -228,7 +229,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Fonction à appeller pour fermer le serveur et autres objets réseaux
+        /// To call to stop the server and close some objects
         /// </summary>
         public void Terminate()
         {
@@ -250,7 +251,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Lance une partie si les 2 joueurs ont placé leurs bateaux
+        /// Run the game if both players had place theirs boats
         /// </summary>
         private void TryStartGame()
         {
@@ -262,9 +263,9 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Retourne l'adresse IP locale
+        /// Get the local IP address
         /// </summary>
-        /// <returns></returns>
+        /// <returns>My IP address</returns>
         public static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -275,7 +276,7 @@ namespace EPSIC_Bataille_Navale.Controllers
                     return ip.ToString();
                 }
             }
-            return "erreur";
+            return Strings.Error;
         }
     }
 }

@@ -70,7 +70,7 @@ namespace EPSIC_Bataille_Navale.Controllers
         }
 
         /// <summary>
-        /// Pour checker le win de l'adversaire
+        /// Check if the opponent won
         /// </summary>
         public void CheckWinAndTurn()
         {
