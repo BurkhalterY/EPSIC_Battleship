@@ -4,13 +4,15 @@ A fully functional battleship game with numerous additional features like "sonar
 
 This game was created for one of my IT courses at EPSIC in 2019.
 
-This project have two repos:
+This project has two repos:
 - https://github.com/BurkhalterY/EPSIC_Battleship
 - https://github.com/Yannis-edu/EPSIC_Bataille_Navale
 
 This one is in both English and French and is the most up-to-date.
 
-While the one from Yannis-edu is the version I handed for my EPSIC course. This repo is a fork of it. It's almost all in French and it will not be updated anymore. The organisation Yannis-edu is all dedicated to my school projects.
+While the one from Yannis-edu is the version I handed for my EPSIC course. It's almost all in French and it will not be updated anymore. The organisation Yannis-edu is all dedicated to my school projects.
+
+This repo (BurkhalterY) is a fork of the Yannis-edu's one.
 
 ## Getting Started
 
